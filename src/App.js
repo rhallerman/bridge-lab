@@ -8,6 +8,8 @@ import atlantaLogo from "./Images/Atlanta.png";
 // import { Blob } from "buffer";
 
 const copyStyles = (sourceDoc, targetDoc) => {
+  console.log(sourceDoc);
+  console.log(sourceDoc.head);
   sourceDoc.head.querySelectorAll("link, style").forEach((htmlElement) => {
     console.log(htmlElement);
     targetDoc.head.appendChild(htmlElement.cloneNode(true));
