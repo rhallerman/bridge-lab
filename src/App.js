@@ -17,6 +17,7 @@ import atlantaLogo from "./Images/Atlanta.png";
 // };
 
 function copyStyles(sourceDoc, targetDoc) {
+  console.log(sourceDoc.styleSheets);
   Array.from(sourceDoc.styleSheets).forEach(styleSheet => {
     if (styleSheet.cssRules) { // for <style> elements
       const newStyleEl = sourceDoc.createElement('style');
