@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/bridge-viewer/static/css/main.23b0cd3d.css",
+    "main.js": "/bridge-viewer/static/js/main.536caa64.js",
+    "static/js/453.90ae0d5f.chunk.js": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js",
+    "static/media/Atlanta.png": "/bridge-viewer/static/media/Atlanta.6b6cdbe3357b6e6c95fe.png",
+    "index.html": "/bridge-viewer/index.html",
+    "main.23b0cd3d.css.map": "/bridge-viewer/static/css/main.23b0cd3d.css.map",
+    "main.536caa64.js.map": "/bridge-viewer/static/js/main.536caa64.js.map",
+    "453.90ae0d5f.chunk.js.map": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.23b0cd3d.css",
+    "static/js/main.536caa64.js"
+  ]
+}
