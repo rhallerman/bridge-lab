@@ -9,6 +9,7 @@ import atlantaLogo from "./Images/Atlanta.png";
 
 const copyStyles = (sourceDoc, targetDoc) => {
   sourceDoc.head.querySelectorAll("link, style").forEach((htmlElement) => {
+    console.log(htmlElement);
     targetDoc.head.appendChild(htmlElement.cloneNode(true));
   });
 };
