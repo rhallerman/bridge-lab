@@ -1,7 +1,3 @@
-.appBar {
-    background-color: #003438 !important;
-}
-
 .viewAndControls {
     display: flex;
     gap: 5px;

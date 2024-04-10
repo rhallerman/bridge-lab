@@ -7,14 +7,35 @@ import View from "./View/View";
 import atlantaLogo from "./Images/Atlanta.png";
 // import { Blob } from "buffer";
 
-const copyStyles = (sourceDoc, targetDoc) => {
-  console.log(sourceDoc);
-  console.log(sourceDoc.head);
-  sourceDoc.head.querySelectorAll("link, style").forEach((htmlElement) => {
-    console.log(htmlElement);
-    targetDoc.head.appendChild(htmlElement.cloneNode(true));
+// const copyStyles = (sourceDoc, targetDoc) => {
+//   console.log(sourceDoc);
+//   console.log(sourceDoc.head);
+//   sourceDoc.head.querySelectorAll("link, style").forEach((htmlElement) => {
+//     console.log(htmlElement);
+//     targetDoc.head.appendChild(htmlElement.cloneNode(true));
+//   });
+// };
+
+function copyStyles(sourceDoc, targetDoc) {
+  Array.from(sourceDoc.styleSheets).forEach(styleSheet => {
+    if (styleSheet.cssRules) { // for <style> elements
+      const newStyleEl = sourceDoc.createElement('style');
+
+      Array.from(styleSheet.cssRules).forEach(cssRule => {
+        // write the text of each rule into the body of the style element
+        newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
+      });
+
+      targetDoc.head.appendChild(newStyleEl);
+    } else if (styleSheet.href) { // for <link> elements loading CSS from a URL
+      const newLinkEl = sourceDoc.createElement('link');
+
+      newLinkEl.rel = 'stylesheet';
+      newLinkEl.href = styleSheet.href;
+      targetDoc.head.appendChild(newLinkEl);
+    }
   });
-};
+}
 
 const App = () => {
   // const cld = new Cloudinary({ cloud: { cloudName: "dpm9xofa3" } });
@@ -55,10 +76,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(controlView);
-    if (controlView?.document?.body) {
-      copyStyles(document, controlView.document);
-    }
+  console.log(controlView);
+  if (controlView?.document?.body) {
+    copyStyles(document, controlView.document);
+  }
   }, [controlView?.document]);
 
   const controlViewWindow = useMemo(() => {

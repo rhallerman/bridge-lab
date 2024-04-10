@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Control.css";
+import "../View/View.css";
 import {
   Button,
   FormControl,
