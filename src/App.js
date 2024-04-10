@@ -52,6 +52,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log(controlView);
     if (controlView?.document?.body) {
       copyStyles(document, controlView.document);
     }
