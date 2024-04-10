@@ -27,17 +27,12 @@ export const ContextProvider = ({ children }) => {
   const [contractSuit, setContractSuit] = useState(null);
   const [declarer, setDeclarer] = useState(null);
   const [leader, setLeader] = useState(0);
-  const [leaderDup, setLeaderDup] = useState(0);
   const [suitLed, setSuitLed] = useState(null);
-  const [suitLedDup, setSuitLedDup] = useState(null);
   const [whoseTurn, setWhoseTurn] = useState(0);
-  const [whoseTurnDup, setWhoseTurnDup] = useState(0);
   const [trickCards, setTrickCards] = useState(new Set());
   const [trickCardsDup, setTrickCardsDup] = useState(new Set());
   const [currentWinningCard, setCurrentWinningCard] = useState(null);
-  const [currentWinningCardDup, setCurrentWinningCardDup] = useState(null);
   const [currentWinningPlayer, setCurrentWinningPlayer] = useState(null);
-  const [currentWinningPlayerDup, setCurrentWinningPlayerDup] = useState(null);
   const [storedStates, setStoredStates] = useState(null);
   const [reality, setReality] = useState(true);
   const [mode, setMode] = useState("play");
@@ -63,10 +58,16 @@ export const ContextProvider = ({ children }) => {
 
   const handsRef = useRef();
   handsRef.current = hands;
+  const handsDupRef = useRef();
+  handsDupRef.current = handsDup;
   const playedHandsRef = useRef();
   playedHandsRef.current = playedHands;
+  const playedHandsDupRef = useRef();
+  playedHandsDupRef.current = playedHandsDup;
   const playedCardsRef = useRef();
   playedCardsRef.current = playedCards;
+  const playedCardsDupRef = useRef();
+  playedCardsDupRef.current = playedCardsDup;
   const leaderRef = useRef();
   leaderRef.current = leader;
   const suitLedRef = useRef();
@@ -75,6 +76,8 @@ export const ContextProvider = ({ children }) => {
   whoseTurnRef.current = whoseTurn;
   const trickCardsRef = useRef();
   trickCardsRef.current = trickCards;
+  const trickCardsDupRef = useRef();
+  trickCardsDupRef.current = trickCardsDup;
   const currentWinningCardRef = useRef();
   currentWinningCardRef.current = currentWinningCard;
   const currentWinningPlayerRef = useRef();
@@ -188,116 +191,91 @@ export const ContextProvider = ({ children }) => {
 
   const play = useCallback(
     (card, playedInReality) => {
-      console.log(playedInReality);
       (playedInReality ? setHistory : setHistoryDup)([
         {
           action: "play",
-          hands: playedInReality ? handsRef.current : handsDup,
+          hands: playedInReality ? handsRef.current : handsDupRef.current,
           playedHands: playedInReality
             ? playedHandsRef.current
-            : playedHandsDup,
+            : playedHandsDupRef.current,
           playedCards: playedInReality
             ? playedCardsRef.current
-            : playedCardsDup,
-          suitLed: playedInReality ? suitLedRef.current : suitLedDup,
-          currentWinningCard: playedInReality
-            ? currentWinningCardRef.current
-            : currentWinningCardDup,
-          currentWinningPlayer: playedInReality
-            ? currentWinningPlayerRef.current
-            : currentWinningPlayerDup,
-          leader: playedInReality ? leaderRef.current : leaderDup,
-          whoseTurn: playedInReality ? whoseTurnRef.current : whoseTurnDup,
-          trickCards: playedInReality ? trickCardsRef.current : trickCardsDup,
+            : playedCardsDupRef.current,
+          suitLed: playedInReality ? suitLedRef.current : null,
+          currentWinningCard: currentWinningCardRef.current,
+          currentWinningPlayer: currentWinningPlayerRef.current,
+          leader: playedInReality ? leaderRef.current : null,
+          whoseTurn: playedInReality ? whoseTurnRef.current : null,
+          trickCards: playedInReality
+            ? trickCardsRef.current
+            : trickCardsDupRef.current,
         },
-        ...(playedInReality ? historyRef.current : historyDup),
+        ...(playedInReality ? historyRef.current : historyDupRef.current),
       ]);
-      const cardIdx = (playedInReality ? handsRef.current : handsDup)[
-        card.hand
-      ].findIndex(
+      const cardIdx = (
+        playedInReality ? handsRef.current : handsDupRef.current
+      )[card.hand].findIndex(
         (cardInHand) =>
           cardInHand.suit === card.suit && cardInHand.rank === card.rank
       );
       let tempHands = _.cloneDeep(
-        playedInReality ? handsRef.current : handsDup
+        playedInReality ? handsRef.current : handsDupRef.current
       );
       tempHands[card.hand].splice(cardIdx, 1);
       (playedInReality ? setHands : setHandsDup)(tempHands);
       let tempPlayedHands = _.cloneDeep(
-        playedInReality ? playedHandsRef.current : playedHandsDup
+        playedInReality ? playedHandsRef.current : playedHandsDupRef.current
       );
       tempPlayedHands[card.hand].push(card);
       (playedInReality ? setPlayedHands : setPlayedHandsDup)(tempPlayedHands);
       if (
-        (playedInReality ? trickCardsRef.current : trickCardsDup).size === 4
+        (playedInReality ? trickCardsRef.current : trickCardsDupRef.current)
+          .size === 4
       ) {
         let tempTrickCards = new Set();
         tempTrickCards.add({ ...card, hand: card.hand });
         (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
       } else {
         let tempTrickCards = new Set(
-          playedInReality ? trickCardsRef.current : trickCardsDup
+          playedInReality ? trickCardsRef.current : trickCardsDupRef.current
         );
         tempTrickCards.add({ ...card, hand: card.hand });
         (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
       }
       let tempPlayedCards = new Set(
-        playedInReality ? playedCardsRef.current : playedCardsDup
+        playedInReality ? playedCardsRef.current : playedCardsDupRef.current
       );
       tempPlayedCards.add(`${card.suit},${card.rank}`);
       (playedInReality ? setPlayedCards : setPlayedCardsDup)(tempPlayedCards);
-      const isCardWinning =
-        card.hand === (playedInReality ? leaderRef.current : leaderDup) ||
-        (card.suit === trump &&
-          ((playedInReality
-            ? currentWinningCardRef.current
-            : currentWinningCardDup
-          ).suit !== trump ||
-            card.rank <
-              (playedInReality
-                ? currentWinningCardRef.current
-                : currentWinningCardDup
-              ).rank)) ||
-        (card.suit === (playedInReality ? suitLedRef.current : suitLedDup) &&
-          card.rank <
-            (playedInReality
-              ? currentWinningCardRef.current
-              : currentWinningCardDup
-            ).rank);
-      const newCurrentWinningCard = isCardWinning
-        ? card
-        : playedInReality
-        ? currentWinningCardRef.current
-        : currentWinningCardDup;
-      const newCurrentWinningPlayer = isCardWinning
-        ? card.hand
-        : playedInReality
-        ? currentWinningPlayerRef.current
-        : currentWinningPlayerDup;
-      if (card.hand === (playedInReality ? leaderRef.current : leaderDup)) {
-        (playedInReality ? setSuitLed : setSuitLedDup)(card.suit);
-      }
-      (playedInReality ? setCurrentWinningCard : setCurrentWinningCardDup)(
-        newCurrentWinningCard
-      );
-      (playedInReality ? setCurrentWinningPlayer : setCurrentWinningPlayerDup)(
-        newCurrentWinningPlayer
-      );
-      const nextTurn = (card.hand + 1) % 4;
-      if (nextTurn === (playedInReality ? leaderRef.current : leaderDup)) {
-        (playedInReality ? setLeader : setLeaderDup)(newCurrentWinningPlayer);
-        (playedInReality ? setSuitLed : setSuitLedDup)(null);
-        (playedInReality ? setCurrentWinningCard : setCurrentWinningCardDup)(
-          null
-        );
-        (playedInReality
-          ? setCurrentWinningPlayer
-          : setCurrentWinningPlayerDup)(null);
-        (playedInReality ? setWhoseTurn : setWhoseTurnDup)(
-          newCurrentWinningPlayer
-        );
-      } else {
-        (playedInReality ? setWhoseTurn : setWhoseTurnDup)(nextTurn);
+      if (playedInReality) {
+        const isCardWinning =
+          card.hand === leaderRef.current ||
+          (card.suit === trump &&
+            (currentWinningCardRef.current.suit !== trump ||
+              card.rank < currentWinningCardRef.current.rank)) ||
+          (card.suit === suitLedRef.current &&
+            card.rank < currentWinningCardRef.current.rank);
+        const newCurrentWinningCard = isCardWinning
+          ? card
+          : currentWinningCardRef.current;
+        const newCurrentWinningPlayer = isCardWinning
+          ? card.hand
+          : currentWinningPlayerRef.current;
+        if (card.hand === leaderRef.current) {
+          setSuitLed(card.suit);
+        }
+        setCurrentWinningCard(newCurrentWinningCard);
+        setCurrentWinningPlayer(newCurrentWinningPlayer);
+        const nextTurn = (card.hand + 1) % 4;
+        if (nextTurn === leaderRef.current) {
+          setLeader(newCurrentWinningPlayer);
+          setSuitLed(null);
+          setCurrentWinningCard(null);
+          setCurrentWinningPlayer(null);
+          setWhoseTurn(newCurrentWinningPlayer);
+        } else {
+          setWhoseTurn(nextTurn);
+        }
       }
     },
     [trump]
@@ -513,12 +491,7 @@ export const ContextProvider = ({ children }) => {
     setHandsDup(_.cloneDeep(handsRef.current));
     setPlayedHandsDup(playedHandsRef.current);
     setPlayedCardsDup(playedCardsRef.current);
-    setLeaderDup(leaderRef.current);
-    setSuitLedDup(suitLedRef.current);
-    setWhoseTurnDup(whoseTurnRef.current);
     setTrickCardsDup(trickCardsRef.current);
-    setCurrentWinningCardDup(currentWinningCardRef.current);
-    setCurrentWinningPlayerDup(currentWinningPlayerRef.current);
     setUnassignedCardsDup(unassignedCardsRef.current);
     setHistoryDup(historyRef.current);
     if (broadcastType === "video") {
@@ -564,14 +537,7 @@ export const ContextProvider = ({ children }) => {
         setHandsDup(historyDupRef.current[0].hands);
         setPlayedHandsDup(historyDupRef.current[0].playedHands);
         setPlayedCardsDup(historyDupRef.current[0].playedCards);
-        setLeaderDup(historyDupRef.current[0].leader);
-        setSuitLedDup(historyDupRef.current[0].suitLed);
-        setWhoseTurnDup(historyDupRef.current[0].whoseTurn);
         setTrickCardsDup(historyDupRef.current[0].trickCards);
-        setCurrentWinningCardDup(historyDupRef.current[0].currentWinningCard);
-        setCurrentWinningPlayerDup(
-          historyDupRef.current[0].currentWinningPlayer
-        );
         break;
       case "assign":
         const deleteCardIdx = tempHands[card.hand].findIndex(
@@ -706,7 +672,9 @@ export const ContextProvider = ({ children }) => {
       >
         <div
           className={`cardFont suit${card.suit} ${
-            !includeSuit && playedCardsDup.has(`${card.suit},${card.rank}`)
+            showAnalysis &&
+            !includeSuit &&
+            playedCardsDup.has(`${card.suit},${card.rank}`)
               ? "playedCard"
               : ""
           }`}
@@ -784,9 +752,7 @@ export const ContextProvider = ({ children }) => {
       <div className={`handNameWidthWrapper hand${player}`}>
         <div
           className={`handNameWrapper ${
-            player === (showAnalysis ? whoseTurnDup : whoseTurn)
-              ? "myTurn"
-              : "notMyTurn"
+            !showAnalysis && player === whoseTurn ? "myTurn" : "notMyTurn"
           }`}
         >
           <div
@@ -850,28 +816,18 @@ export const ContextProvider = ({ children }) => {
         declarer,
         leader,
         setLeader,
-        leaderDup,
-        setLeaderDup,
         suitLed,
         setSuitLed,
-        suitLedDup,
-        setSuitLedDup,
         whoseTurn,
         setWhoseTurn,
-        whoseTurnDup,
-        setWhoseTurnDup,
         trickCards,
         setTrickCards,
         trickCardsDup,
         setTrickCardsDup,
         currentWinningCard,
         setCurrentWinningCard,
-        currentWinningCardDup,
-        setCurrentWinningCardDup,
         currentWinningPlayer,
         setCurrentWinningPlayer,
-        currentWinningPlayerDup,
-        setCurrentWinningPlayerDup,
         storedStates,
         setStoredStates,
         reality,

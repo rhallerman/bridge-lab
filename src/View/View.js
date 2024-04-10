@@ -178,7 +178,7 @@ const View = ({ editable }) => {
 
   const leftArea = (
     <div className="leftArea">
-      {webcam("Raphael Hallerman", false)}
+      {webcam("Raphael Hallerman", true)}
       {webcam("Robert Barrington", false)}
       {webcam("Jan Martel", false)}
     </div>

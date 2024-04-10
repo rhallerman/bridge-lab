@@ -3,18 +3,6 @@ import "./App.css";
 import Control from "./Control/Control";
 import ReactDOM from "react-dom";
 import View from "./View/View";
-// import { Cloudinary } from "@cloudinary/url-gen";
-import atlantaLogo from "./Images/Atlanta.png";
-// import { Blob } from "buffer";
-
-// const copyStyles = (sourceDoc, targetDoc) => {
-//   console.log(sourceDoc);
-//   console.log(sourceDoc.head);
-//   sourceDoc.head.querySelectorAll("link, style").forEach((htmlElement) => {
-//     console.log(htmlElement);
-//     targetDoc.head.appendChild(htmlElement.cloneNode(true));
-//   });
-// };
 
 function copyStyles(sourceDoc, targetDoc) {
   console.log(sourceDoc.styleSheets);
@@ -39,37 +27,6 @@ function copyStyles(sourceDoc, targetDoc) {
 }
 
 const App = () => {
-  // const cld = new Cloudinary({ cloud: { cloudName: "dpm9xofa3" } });
-
-  // useEffect(() => {
-  // const createFile = async (path, name, type) => {
-  //   let response = await fetch(path);
-  //   let data = await response.blob();
-  //   let metadata = {
-  //     type: type,
-  //   };
-  //   return new File([data], name, metadata);
-  // };
-
-  // const getBase64 = (file) => {
-  //   var reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onload = function () {
-  //     return reader.result;
-  //   };
-  //   reader.onerror = function (error) {
-  //     console.log("Error: ", error);
-  //   };
-  // };
-
-  // createFile("./Images/Atlanta.png", "Atlanta.png", "image/png").then(
-  //   async (file) => {
-  //     const file64 = await getBase64(file);
-  //     uploadFile(file64);
-  //   }
-  // );
-  // }, []);
-
   const [controlView, setControlView] = useState(null);
 
   useEffect(() => {
@@ -77,7 +34,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-  console.log(controlView);
   if (controlView?.document?.body) {
     copyStyles(document, controlView.document);
   }

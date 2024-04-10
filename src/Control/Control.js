@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
-  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -44,6 +43,7 @@ const Control = ({ controlView }) => {
     realityOff,
     back,
     forward,
+    play,
     assign,
     unassign,
   } = context;
@@ -247,6 +247,8 @@ const Control = ({ controlView }) => {
         3 = 11
         2 = 12
         */
+      } else if (e.key === "Tab") {
+        console.log(e.key);
       } else {
         console.log(e.key);
       }
@@ -286,7 +288,9 @@ const Control = ({ controlView }) => {
           )
         );
         card.hand = hand;
-        if (mode === "unassign") {
+        if (mode === "play") {
+          play(card, false);
+        } else if (mode === "unassign") {
           unassign(card);
         } else if (mode === "trade") {
           trade(card, hands, tradeCard, setTradeCard, history, setHistory);
@@ -298,42 +302,38 @@ const Control = ({ controlView }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typedSuit, typedRank, assignTo]);
 
-  // const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
 
-  // useEffect(() => {
-  //   if (file !== null) {
-  //     console.log(file);
-  //     const cloudName = "dpm9xofa3";
-  //     const unsignedUploadPreset = "xzbzngn1";
+  useEffect(() => {
+    if (file !== null) {
+      const cloudName = "dpm9xofa3";
+      const unsignedUploadPreset = "xzbzngn1";
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+      const fd = new FormData();
+      fd.append("upload_preset", unsignedUploadPreset);
+      fd.append("file", file);
+      fd.append("public_id", "bidding.txt");
+      fetch(url, {
+        method: "POST",
+        body: fd,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // File uploaded successfully
+          console.log("upload successful");
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error uploading the file:", error);
+        });
+    }
+  }, [file]);
 
-  //     const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-  //     const fd = new FormData();
-  //     fd.append("upload_preset", unsignedUploadPreset);
-  //     fd.append("file", file);
-  //     fd.append("public_id", "bidding.txt");
-  //     console.log(file);
+  const handleFile = (event) => {
+    setFile(event.target.files[0]);
+  };
 
-  //     fetch(url, {
-  //       method: "POST",
-  //       body: fd,
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         // File uploaded successfully
-  //         console.log("upload successful");
-  //         console.log(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading the file:", error);
-  //       });
-  //   }
-  // }, [file]);
-
-  // const handleFile = (event) => {
-  //   setFile(event.target.files[0]);
-  // };
-
-  // const uploadButton = <input type="file" onChange={handleFile} />;
+  const uploadButton = <input type="file" onChange={handleFile} />;
 
   return (
     <div className="viewAndControls">
@@ -355,7 +355,7 @@ const Control = ({ controlView }) => {
           {modeGroup}
           {assignToGroup}
         </div>
-        {/* {uploadButton} */}
+        {uploadButton}
       </div>
     </div>
   );
