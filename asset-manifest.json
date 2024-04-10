@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/bridge-viewer/static/css/main.23b0cd3d.css",
-    "main.js": "/bridge-viewer/static/js/main.1df7fddf.js",
+    "main.css": "/bridge-viewer/static/css/main.e3db9a5f.css",
+    "main.js": "/bridge-viewer/static/js/main.a20142a0.js",
     "static/js/453.90ae0d5f.chunk.js": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js",
     "static/media/Atlanta.png": "/bridge-viewer/static/media/Atlanta.6b6cdbe3357b6e6c95fe.png",
     "index.html": "/bridge-viewer/index.html",
-    "main.23b0cd3d.css.map": "/bridge-viewer/static/css/main.23b0cd3d.css.map",
-    "main.1df7fddf.js.map": "/bridge-viewer/static/js/main.1df7fddf.js.map",
+    "main.e3db9a5f.css.map": "/bridge-viewer/static/css/main.e3db9a5f.css.map",
+    "main.a20142a0.js.map": "/bridge-viewer/static/js/main.a20142a0.js.map",
     "453.90ae0d5f.chunk.js.map": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.23b0cd3d.css",
-    "static/js/main.1df7fddf.js"
+    "static/css/main.e3db9a5f.css",
+    "static/js/main.a20142a0.js"
   ]
 }
