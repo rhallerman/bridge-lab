@@ -1,0 +1,38 @@
+.appBar {
+    background-color: #003438 !important;
+}
+
+.viewAndControls {
+    display: flex;
+    gap: 5px;
+}
+
+.controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+}
+
+.selected {
+    background-color: lightblue !important;
+}
+
+.buttonUp {
+    background-color: #003438 !important;
+    width: fit-content;
+}
+
+.buttonUp:disabled {
+    background-color: darkgrey !important;
+    color: white !important;
+}
+
+.buttonDown {
+    background-color: #002124 !important;
+    color: white !important;
+    width: 100px;
+}

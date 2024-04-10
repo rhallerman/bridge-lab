@@ -1,0 +1,26 @@
+.auctionAndExplanations {
+    display: flex;
+    flex-direction: column;
+    gap: min(1vw, 1vh);
+}
+
+@container areas (min-width: 20px) {
+    .auction {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        box-shadow: 0px 0px 10px black;
+    }
+}
+
+.bid {
+    text-align: center;
+    background-color: white;
+}
+
+@container areas (min-width: 20px) {
+    .bidDirection {
+        background-color: rgba(0, 0, 0, 0.4);
+        text-align: center;
+        color: white;
+    }
+}
