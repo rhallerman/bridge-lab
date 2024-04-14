@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/bridge-viewer/static/css/main.b55c3276.css",
-    "main.js": "/bridge-viewer/static/js/main.ecae5e09.js",
-    "static/js/453.90ae0d5f.chunk.js": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js",
-    "static/media/lovebridge_logo_red_black.png": "/bridge-viewer/static/media/lovebridge_logo_red_black.15082832658c86a43da4.png",
-    "static/media/usbflogo.png": "/bridge-viewer/static/media/usbflogo.48e910a577ba5a7361d2.png",
-    "index.html": "/bridge-viewer/index.html",
-    "main.b55c3276.css.map": "/bridge-viewer/static/css/main.b55c3276.css.map",
-    "main.ecae5e09.js.map": "/bridge-viewer/static/js/main.ecae5e09.js.map",
-    "453.90ae0d5f.chunk.js.map": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js.map"
+    "main.css": "/kib-sync/static/css/main.b55c3276.css",
+    "main.js": "/kib-sync/static/js/main.bbd11e53.js",
+    "static/js/453.7ba38324.chunk.js": "/kib-sync/static/js/453.7ba38324.chunk.js",
+    "static/media/lovebridge_logo_red_black.png": "/kib-sync/static/media/lovebridge_logo_red_black.15082832658c86a43da4.png",
+    "static/media/usbflogo.png": "/kib-sync/static/media/usbflogo.48e910a577ba5a7361d2.png",
+    "index.html": "/kib-sync/index.html",
+    "main.b55c3276.css.map": "/kib-sync/static/css/main.b55c3276.css.map",
+    "main.bbd11e53.js.map": "/kib-sync/static/js/main.bbd11e53.js.map",
+    "453.7ba38324.chunk.js.map": "/kib-sync/static/js/453.7ba38324.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b55c3276.css",
-    "static/js/main.ecae5e09.js"
+    "static/js/main.bbd11e53.js"
   ]
 }
