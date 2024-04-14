@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/bridge-viewer/static/css/main.2cca562b.css",
-    "main.js": "/bridge-viewer/static/js/main.eb73526c.js",
+    "main.css": "/bridge-viewer/static/css/main.b55c3276.css",
+    "main.js": "/bridge-viewer/static/js/main.ecae5e09.js",
     "static/js/453.90ae0d5f.chunk.js": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js",
+    "static/media/lovebridge_logo_red_black.png": "/bridge-viewer/static/media/lovebridge_logo_red_black.15082832658c86a43da4.png",
+    "static/media/usbflogo.png": "/bridge-viewer/static/media/usbflogo.48e910a577ba5a7361d2.png",
     "index.html": "/bridge-viewer/index.html",
-    "main.2cca562b.css.map": "/bridge-viewer/static/css/main.2cca562b.css.map",
-    "main.eb73526c.js.map": "/bridge-viewer/static/js/main.eb73526c.js.map",
+    "main.b55c3276.css.map": "/bridge-viewer/static/css/main.b55c3276.css.map",
+    "main.ecae5e09.js.map": "/bridge-viewer/static/js/main.ecae5e09.js.map",
     "453.90ae0d5f.chunk.js.map": "/bridge-viewer/static/js/453.90ae0d5f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2cca562b.css",
-    "static/js/main.eb73526c.js"
+    "static/css/main.b55c3276.css",
+    "static/js/main.ecae5e09.js"
   ]
 }
