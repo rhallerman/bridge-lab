@@ -2,7 +2,7 @@
   "name": "bridgeseer",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://rhallerman.github.io/bridge-viewer",
+  "homepage": "https://rhallerman.github.io/kib-sync",
   "dependencies": {
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.19.0",
