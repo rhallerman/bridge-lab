@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
@@ -8,27 +8,25 @@ import {
   Radio,
   RadioGroup,
   Switch,
+  Tooltip,
 } from "@mui/material";
 import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
 // import { play } from "./Play";
-import { trade } from "./Trade";
 
 const Control = ({ controlView }) => {
   let context = useContext(Context);
   let {
     hands,
+    handsDup,
     playedCards,
     reality,
     mode,
     setMode,
     assignTo,
     setAssignTo,
-    tradeCard,
-    setTradeCard,
     history,
-    setHistory,
     typedSuit,
     setTypedSuit,
     typedRank,
@@ -46,22 +44,52 @@ const Control = ({ controlView }) => {
     play,
     assign,
     unassign,
+    trade,
+    shape,
+    setShape,
   } = context;
 
   const broadcastTypeGroup = (
-    <FormControl>
+    <FormControl className="radioGroupHeader">
       <FormLabel>Broadcast type:</FormLabel>
       <RadioGroup
         row
         value={broadcastType}
         onChange={(event) => setBroadcastType(event.target.value)}
       >
-        <FormControlLabel value="stream" control={<Radio />} label="Stream" />
-        <FormControlLabel
-          value="video"
-          control={<Radio disabled={true} />}
-          label="Video"
-        />
+        <Tooltip
+          title={
+            <div className="tooltip">
+              The event will continue to play live during analysis.
+            </div>
+          }
+          enterTouchDelay={0}
+        >
+          <FormControlLabel
+            value="stream"
+            control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+            label="Stream"
+            sx={{ marginLeft: "0px" }}
+          />
+        </Tooltip>
+        <Tooltip
+          title={
+            <div className="tooltip">The event will pause during analysis.</div>
+          }
+          enterTouchDelay={0}
+        >
+          <FormControlLabel
+            value="video"
+            control={
+              <Radio
+                disabled={true}
+                sx={{ paddingTop: "0px", paddingBottom: "0px" }}
+              />
+            }
+            label="Video"
+            sx={{ marginLeft: "0px" }}
+          />
+        </Tooltip>
       </RadioGroup>
     </FormControl>
   );
@@ -74,7 +102,11 @@ const Control = ({ controlView }) => {
           onChange={() => (reality ? realityOff() : realityOn())}
         />
       }
-      label="Analysis mode (_)"
+      label={
+        <>
+          Analysis Mode (<u> </u>)
+        </>
+      }
     />
   );
 
@@ -92,7 +124,7 @@ const Control = ({ controlView }) => {
   );
 
   const modeGroup = (
-    <FormControl disabled={reality}>
+    <FormControl disabled={reality} className="radioGroupHeader">
       <FormLabel>Mode:</FormLabel>
       <RadioGroup
         value={mode}
@@ -100,46 +132,60 @@ const Control = ({ controlView }) => {
       >
         <FormControlLabel
           value="play"
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>P</u>lay
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value="assign"
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>A</u>ssign
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value="unassign"
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>U</u>nassign
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value="trade"
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>T</u>rade
             </>
           }
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value="shape"
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              Shape (<u>x</u>)
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
         />
       </RadioGroup>
     </FormControl>
   );
 
   const assignToGroup = (
-    <FormControl disabled={reality}>
+    <FormControl disabled={reality} className="radioGroupHeader">
       <FormLabel>Player:</FormLabel>
       <RadioGroup
         value={assignTo}
@@ -147,39 +193,94 @@ const Control = ({ controlView }) => {
       >
         <FormControlLabel
           value={0}
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>N</u>orth
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value={1}
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>E</u>ast
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value={2}
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>S</u>outh
             </>
           }
+          sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
           value={3}
-          control={<Radio />}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
               <u>W</u>est
             </>
           }
+          sx={{ marginLeft: "0px" }}
+        />
+      </RadioGroup>
+    </FormControl>
+  );
+
+  const suitGroup = (
+    <FormControl disabled={reality} className="radioGroupHeader">
+      <FormLabel>Suit:</FormLabel>
+      <RadioGroup
+        value={typedSuit}
+        onChange={(event) => setTypedSuit(event.target.value)}
+      >
+        <FormControlLabel
+          value={0}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              <u>s</u>pade
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value={1}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              <u>h</u>eart
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value={2}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              <u>d</u>iamond
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value={3}
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              <u>c</u>lub
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
         />
       </RadioGroup>
     </FormControl>
@@ -197,20 +298,24 @@ const Control = ({ controlView }) => {
         }
       } else if (e.key === " ") {
         reality ? realityOff() : realityOn();
+      } else if (e.key === "P") {
+        if (!reality) setMode("play");
       } else if (e.key === "A") {
         if (!reality) setMode("assign");
       } else if (e.key === "U") {
         if (!reality) setMode("unassign");
       } else if (e.key === "T") {
         if (!reality) setMode("trade");
+      } else if (e.key === "x") {
+        if (!reality) setMode("shape");
       } else if (e.key === "N") {
-        if (mode === "assign") setAssignTo(0);
+        if (["assign", "shape"].includes(mode)) setAssignTo(0);
       } else if (e.key === "S") {
-        if (mode === "assign") setAssignTo(2);
+        if (["assign", "shape"].includes(mode)) setAssignTo(2);
       } else if (e.key === "W") {
-        if (mode === "assign") setAssignTo(3);
+        if (["assign", "shape"].includes(mode)) setAssignTo(3);
       } else if (e.key === "E") {
-        if (mode === "assign") setAssignTo(1);
+        if (["assign", "shape"].includes(mode)) setAssignTo(1);
       } else if (e.key === "s") {
         setTypedSuit(0);
       } else if (e.key === "h") {
@@ -229,9 +334,17 @@ const Control = ({ controlView }) => {
         if (typedSuit !== null) setTypedRank(3);
       } else if (e.key === "t") {
         if (typedSuit !== null) setTypedRank(4);
-      } else if (e.keyCode >= 50 && e.keyCode <= 57) {
-        // 2 - 9
-        if (typedSuit !== null) setTypedRank(62 - e.keyCode);
+      } else if (e.keyCode >= 48 && e.keyCode <= 57) {
+        if (
+          ["play", "assign", "unassign", "trade"].includes(mode) &&
+          e.keyCode >= 50 &&
+          e.keyCode <= 57
+        ) {
+          // 2 - 9
+          if (typedSuit !== null) setTypedRank(62 - e.keyCode);
+        } else if (mode === "shape") {
+          setShape([...shape, parseInt(e.key)]);
+        }
         /*
         A = 0
         K = 1
@@ -247,8 +360,6 @@ const Control = ({ controlView }) => {
         3 = 11
         2 = 12
         */
-      } else if (e.key === "Tab") {
-        console.log(e.key);
       } else {
         console.log(e.key);
       }
@@ -274,6 +385,7 @@ const Control = ({ controlView }) => {
     typedRank,
     auction,
     liveEvents,
+    shape,
   ]);
 
   useEffect(() => {
@@ -282,58 +394,59 @@ const Control = ({ controlView }) => {
       if (mode === "assign") {
         assign(card);
       } else {
-        const hand = hands.findIndex((hand) =>
+        const hand = handsDup.findIndex((hand) =>
           hand.some(
             (card) => card.suit === typedSuit && card.rank === typedRank
           )
         );
-        card.hand = hand;
-        if (mode === "play") {
-          play(card, false);
-        } else if (mode === "unassign") {
-          unassign(card);
-        } else if (mode === "trade") {
-          trade(card, hands, tradeCard, setTradeCard, history, setHistory);
+        if (hand >= 0) {
+          card.hand = hand;
+          if (mode === "play") {
+            play(card, false);
+          } else if (mode === "unassign") {
+            unassign(card);
+          } else if (mode === "trade") {
+            trade(card);
+          }
         }
       }
-      setTypedSuit(null);
       setTypedRank(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typedSuit, typedRank, assignTo]);
 
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    if (file !== null) {
-      const cloudName = "dpm9xofa3";
-      const unsignedUploadPreset = "xzbzngn1";
-      const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-      const fd = new FormData();
-      fd.append("upload_preset", unsignedUploadPreset);
-      fd.append("file", file);
-      fd.append("public_id", "bidding.txt");
-      fetch(url, {
-        method: "POST",
-        body: fd,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // File uploaded successfully
-          console.log("upload successful");
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error("Error uploading the file:", error);
-        });
-    }
-  }, [file]);
+  // useEffect(() => {
+  //   if (file !== null) {
+  //     const cloudName = "dpm9xofa3";
+  //     const unsignedUploadPreset = "xzbzngn1";
+  //     const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+  //     const fd = new FormData();
+  //     fd.append("upload_preset", unsignedUploadPreset);
+  //     fd.append("file", file);
+  //     fd.append("public_id", "");
+  //     fetch(url, {
+  //       method: "POST",
+  //       body: fd,
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         // File uploaded successfully
+  //         console.log("upload successful");
+  //         console.log(data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error uploading the file:", error);
+  //       });
+  //   }
+  // }, [file]);
 
-  const handleFile = (event) => {
-    setFile(event.target.files[0]);
-  };
+  // const handleFile = (event) => {
+  //   setFile(event.target.files[0]);
+  // };
 
-  const uploadButton = <input type="file" onChange={handleFile} />;
+  // const uploadButton = <input type="file" onChange={handleFile} />;
 
   return (
     <div className="viewAndControls">
@@ -351,11 +464,12 @@ const Control = ({ controlView }) => {
         {broadcastTypeGroup}
         {analysisSwitch}
         {showPlayedCardsSwitch}
+        <div className="row">{modeGroup}</div>
         <div className="row">
-          {modeGroup}
           {assignToGroup}
+          {suitGroup}
         </div>
-        {uploadButton}
+        {/* {uploadButton} */}
       </div>
     </div>
   );

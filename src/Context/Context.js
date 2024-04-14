@@ -40,11 +40,12 @@ export const ContextProvider = ({ children }) => {
   const [unassignedCards, setUnassignedCards] = useState([]);
   const [unassignedCardsDup, setUnassignedCardsDup] = useState([]);
   const [tradeCard, setTradeCard] = useState(null);
+  const [shape, setShape] = useState([]);
   const [kibitzPlayer, setKibitzPlayer] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyDup, setHistoryDup] = useState([]);
   const [trump, setTrump] = useState(3);
-  const [typedSuit, setTypedSuit] = useState(null);
+  const [typedSuit, setTypedSuit] = useState(0);
   const [typedRank, setTypedRank] = useState(null);
   const [broadcastType, setBroadcastType] = useState("stream");
   const [showPlayedCards, setShowPlayedCards] = useState(false);
@@ -609,9 +610,15 @@ export const ContextProvider = ({ children }) => {
 
   const assign = (card) => {
     let tempHands = [...handsDup];
+    const maybeXCardIdx = tempHands[assignTo].findIndex(
+      (xCard) => xCard.suit === card.suit && xCard.rank === 13
+    );
+    if (maybeXCardIdx >= 0) {
+      tempHands[assignTo].splice(maybeXCardIdx, 1);
+    }
     let assignedCard = { ...card, hand: assignTo };
     tempHands[assignTo].push(assignedCard);
-    setHands(tempHands);
+    setHandsDup(tempHands);
     let tempUnassignedCards = [...unassignedCardsDup];
     const deleteIdx = tempUnassignedCards.findIndex(
       (unassignedCard) =>
@@ -636,6 +643,57 @@ export const ContextProvider = ({ children }) => {
     setHistoryDup([{ action: "unassign", card: card }, ...historyDup]);
   };
 
+  const trade = (card) => {
+    if (tradeCard) {
+      let tempHands = [...handsDup];
+      const deleteIdx1 = tempHands[tradeCard.hand].findIndex(
+        (assignedCard) =>
+          assignedCard.suit === tradeCard.suit &&
+          assignedCard.rank === tradeCard.rank
+      );
+      tempHands[tradeCard.hand].splice(deleteIdx1, 1);
+      tempHands[card.hand].push({ ...tradeCard, hand: card.hand });
+      const deleteIdx2 = tempHands[card.hand].findIndex(
+        (assignedCard) =>
+          assignedCard.suit === card.suit && assignedCard.rank === card.rank
+      );
+      tempHands[card.hand].splice(deleteIdx2, 1);
+      tempHands[tradeCard.hand].push({ ...card, hand: tradeCard.hand });
+      setHistoryDup([
+        { action: "trade", cards: [tradeCard, card] },
+        ...historyDup,
+      ]);
+      setTradeCard(null);
+    } else {
+      setTradeCard(card);
+    }
+  };
+
+  const assignShape = () => {
+    let tempHands = [...handsDup];
+    const handWithShape = [];
+    shape.forEach((suitLength, suitIdx) => {
+      const suitCard = { suit: suitIdx, rank: 13, hand: assignTo };
+      const playedCardsInSuit = playedHandsDup[assignTo].filter(
+        (card) => card.suit === suitIdx
+      ).length;
+      for (let i = playedCardsInSuit; i < suitLength; i++) {
+        handWithShape.push({ ...suitCard, xIdx: i });
+      }
+    });
+    tempHands[assignTo] = handWithShape;
+    setHandsDup(tempHands);
+    setShowPlayedCards(true);
+  };
+
+  useEffect(() => {
+    if (shape.length === 4) {
+      assignShape();
+      setShape([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shape]);
+
   const renderCard = (
     card,
     className,
@@ -645,7 +703,9 @@ export const ContextProvider = ({ children }) => {
     showAnalysis
   ) => {
     const rank =
-      card.rank === 0
+      card.rank === 13
+        ? "x"
+        : card.rank === 0
         ? "A"
         : card.rank === 1
         ? "K"
@@ -656,11 +716,14 @@ export const ContextProvider = ({ children }) => {
         : (14 - card.rank).toString();
     return (
       <div
-        key={card.suit.toString() + card.rank.toString()}
+        key={`${card.suit.toString()}${card.rank.toString()}${
+          card.xIdx?.toString() ?? ""
+        }`}
         className={`${className} ${
           showAnalysis &&
           tradeCard?.suit === card.suit &&
-          tradeCard?.rank === card.rank
+          tradeCard?.rank === card.rank &&
+          tradeCard?.xIdx === card.xIdx
             ? "selected"
             : ""
         }`}
@@ -842,6 +905,8 @@ export const ContextProvider = ({ children }) => {
         setUnassignedCardsDup,
         tradeCard,
         setTradeCard,
+        shape,
+        setShape,
         kibitzPlayer,
         setKibitzPlayer,
         history,
@@ -882,6 +947,7 @@ export const ContextProvider = ({ children }) => {
         forward,
         assign,
         unassign,
+        trade,
         suitChars,
         strToSuit,
         strToDirection,

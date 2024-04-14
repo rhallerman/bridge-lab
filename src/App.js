@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 import View from "./View/View";
 
 function copyStyles(sourceDoc, targetDoc) {
-  console.log(sourceDoc.styleSheets);
   Array.from(sourceDoc.styleSheets).forEach(styleSheet => {
     if (styleSheet.cssRules) { // for <style> elements
       const newStyleEl = sourceDoc.createElement('style');

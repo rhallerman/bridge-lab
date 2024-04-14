@@ -8,7 +8,9 @@ import "./View.css";
 // import { unassign } from "../Control/Unassign";
 import Webcam from "react-webcam";
 // import atlantaLogo from "../Images/Atlanta.png";
-import usbfLogo from "../Images/usbflogo2.jpg";
+import usbfLogo from "../Images/usbflogo.png";
+import lovebridgeLogo from "../Images/lovebridge_logo_red_black.png";
+import kibsyncLogo from "../Images/KibSync.png";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
@@ -56,7 +58,7 @@ const View = ({ editable }) => {
   const header = (
     <div className="header">
       <Grid container alignItems="center">
-        <Grid item xs={3}>
+        <Grid item xs={2.5}>
           <div className="headerInfoItem">
             <div className="headerTextKey">SEGMENT: </div>
             {editable ? (
@@ -90,9 +92,15 @@ const View = ({ editable }) => {
             )}
           </div>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={7}>
           <div className="logoAndTitle">
-            <img src={usbfLogo} className="logo" alt="USBF" />
+            {!editable && <img src={usbfLogo} className="logo" alt="USBF" />}
+            {!editable && (
+              <img src={lovebridgeLogo} className="logo" alt="lovebridge" />
+            )}
+            {!editable && (
+              <img src={kibsyncLogo} className="logo" alt="kibsync" />
+            )}
             <div className={editable ? "title titleInput" : "title"}>
               {editable ? (
                 headerInputField(
@@ -117,7 +125,7 @@ const View = ({ editable }) => {
             </div>
           </div>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2.5}>
           <div className="subtitle">
             {editable ? (
               headerInputField("Round Info", roundInfo, setRoundInfo, "right")
@@ -178,7 +186,7 @@ const View = ({ editable }) => {
 
   const leftArea = (
     <div className="leftArea">
-      {webcam("Raphael Hallerman", true)}
+      {webcam("Raphael Hallerman", false)}
       {webcam("Robert Barrington", false)}
       {webcam("Jan Martel", false)}
     </div>

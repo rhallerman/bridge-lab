@@ -32,3 +32,13 @@
     color: white !important;
     width: 100px;
 }
+
+.tooltip {
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.radioGroupHeader {
+    margin-top: 8px !important;
+}

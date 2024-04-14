@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Context } from "../Context/Context";
-import { trade } from "../Control/Trade";
 
 const AnalysisTable = () => {
   const {
@@ -9,14 +8,11 @@ const AnalysisTable = () => {
     trickCardsDup,
     reality,
     mode,
-    tradeCard,
-    setTradeCard,
-    historyDup,
-    setHistoryDup,
     play,
     renderCard,
     renderHand,
     unassign,
+    trade,
     vul,
   } = useContext(Context);
 
@@ -86,7 +82,7 @@ const AnalysisTable = () => {
     } else if (mode === "unassign") {
       unassign(card);
     } else if (mode === "trade") {
-      trade(card, handsDup, tradeCard, setTradeCard, historyDup, setHistoryDup);
+      trade(card);
     }
   };
 
