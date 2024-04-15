@@ -117,9 +117,6 @@ const View = ({ editable }) => {
             {!editable && (
               <img src={lovebridgeLogo} className="logo" alt="lovebridge" />
             )}
-            {!editable && (
-              <img src={kibsyncLogo} className="logo" alt="kibsync" />
-            )}
             <div className={editable ? "title titleInput" : "title"}>
               {editable ? (
                 headerInputField(
@@ -142,6 +139,9 @@ const View = ({ editable }) => {
                 <div className="headerTextVal">{eventName}</div>
               )}
             </div>
+            {!editable && (
+              <img src={kibsyncLogo} className="logo" alt="kibsync" />
+            )}
           </div>
         </Grid>
         <Grid item xs={2.5}>
