@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/kib-sync/static/css/main.b55c3276.css",
-    "main.js": "/kib-sync/static/js/main.47b53204.js",
+    "main.js": "/kib-sync/static/js/main.93bb614e.js",
     "static/js/453.90ae0d5f.chunk.js": "/kib-sync/static/js/453.90ae0d5f.chunk.js",
     "static/media/lovebridge_logo_red_black.png": "/kib-sync/static/media/lovebridge_logo_red_black.15082832658c86a43da4.png",
     "static/media/usbflogo.png": "/kib-sync/static/media/usbflogo.48e910a577ba5a7361d2.png",
     "index.html": "/kib-sync/index.html",
     "main.b55c3276.css.map": "/kib-sync/static/css/main.b55c3276.css.map",
-    "main.47b53204.js.map": "/kib-sync/static/js/main.47b53204.js.map",
+    "main.93bb614e.js.map": "/kib-sync/static/js/main.93bb614e.js.map",
     "453.90ae0d5f.chunk.js.map": "/kib-sync/static/js/453.90ae0d5f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b55c3276.css",
-    "static/js/main.47b53204.js"
+    "static/js/main.93bb614e.js"
   ]
 }
