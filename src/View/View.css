@@ -546,6 +546,11 @@
     }
 }
 
+.removeCommentator {
+    color: red;
+    position: absolute;
+}
+
 @container leftArea (min-width: 20px) {
     .webcam {
         flex: 1;
@@ -564,13 +569,14 @@
 
 @container leftArea (min-width: 1px) {
     .name {
+        display: flex;
         color: white;
         justify-content: center;
         align-items: center;
         text-align: center;
         background-color: rgba(0, 0, 0, 0.4);
         width: 100%;
-        height: fit-content;
+        height: 7cqh;
         box-sizing: border-box;
         padding: 3cqw;
     }

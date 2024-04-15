@@ -57,7 +57,7 @@ export const ContextProvider = ({ children }) => {
   const [nextEventID, setNextEventID] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
   const [commentators, setCommentators] = useState([
-    { name: "Jan Martel", video: false },
+    { name: "", video: false },
   ]);
 
   const handsRef = useRef();

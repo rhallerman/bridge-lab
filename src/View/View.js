@@ -9,6 +9,7 @@ import kibsyncLogo from "../Images/kibsync.png";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const View = ({ editable }) => {
   let {
@@ -225,6 +226,18 @@ const View = ({ editable }) => {
             )
           : commentator.name.toUpperCase()}
       </div>
+      {editable && (
+        <div className="removeCommentator">
+          <ClearIcon
+            fontSize="small"
+            onClick={() => {
+              const tempCommentators = [...commentators];
+              tempCommentators.splice(idx, 1);
+              setCommentators(tempCommentators);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 
