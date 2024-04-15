@@ -217,7 +217,9 @@ export const ContextProvider = ({ children }) => {
         playedInReality ? handsRef.current : handsDupRef.current
       )[card.hand].findIndex(
         (cardInHand) =>
-          cardInHand.suit === card.suit && cardInHand.rank === card.rank
+          cardInHand.suit === card.suit &&
+          cardInHand.rank === card.rank &&
+          cardInHand.xIdx === card.xIdx
       );
       let tempHands = _.cloneDeep(
         playedInReality ? handsRef.current : handsDupRef.current
@@ -246,7 +248,7 @@ export const ContextProvider = ({ children }) => {
       let tempPlayedCards = new Set(
         playedInReality ? playedCardsRef.current : playedCardsDupRef.current
       );
-      tempPlayedCards.add(`${card.suit},${card.rank}`);
+      tempPlayedCards.add(`${card.suit},${card.rank},${card.xIdx ?? ""}`);
       (playedInReality ? setPlayedCards : setPlayedCardsDup)(tempPlayedCards);
       if (playedInReality) {
         const isCardWinning =
@@ -283,24 +285,16 @@ export const ContextProvider = ({ children }) => {
   );
 
   const strToLevel = (str) => {
-    switch (str) {
-      case "ONE":
-        return 1;
-      case "TWO":
-        return 2;
-      case "THREE":
-        return 3;
-      case "FOUR":
-        return 4;
-      case "FIVE":
-        return 5;
-      case "SIX":
-        return 6;
-      case "SEVEN":
-        return 7;
-      default:
-        return -1;
-    }
+    const lookup = {
+      ONE: 1,
+      TWO: 2,
+      THREE: 3,
+      FOUR: 4,
+      FIVE: 5,
+      SIX: 6,
+      SEVEN: 7,
+    };
+    return lookup[str];
   };
 
   const strToSuit = (str) => {
@@ -312,33 +306,13 @@ export const ContextProvider = ({ children }) => {
   };
 
   const strToDirection = (str) => {
-    switch (str) {
-      case "NORTH":
-        return 0;
-      case "EAST":
-        return 1;
-      case "SOUTH":
-        return 2;
-      case "WEST":
-        return 3;
-      default:
-        return -1;
-    }
+    const lookup = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 };
+    return lookup[str];
   };
 
   const directionToStr = (dir) => {
-    switch (dir) {
-      case "0":
-        return "N";
-      case "1":
-        return "E";
-      case "2":
-        return "S";
-      case "3":
-        return "W";
-      default:
-        return "";
-    }
+    const lookup = { 0: "NORTH", 1: "EAST", 2: "SOUTH", 3: "WEST" };
+    return lookup[dir];
   };
 
   const bidFromInput = useCallback(() => {
@@ -463,7 +437,7 @@ export const ContextProvider = ({ children }) => {
             const tempDeclarer =
               input.events[liveEventsRef.current.length].message.contract
                 .declarer;
-            setDeclarer(tempDeclarer.substring(0, 1));
+            setDeclarer(strToDirection(tempDeclarer));
             setWhoseTurn((strToDirection(tempDeclarer) + 1) % 4);
             setAuctionEnded(true);
           } else if (eventClass === "PlayCardMessage") {
@@ -683,7 +657,6 @@ export const ContextProvider = ({ children }) => {
     });
     tempHands[assignTo] = handWithShape;
     setHandsDup(tempHands);
-    setShowPlayedCards(true);
   };
 
   useEffect(() => {
@@ -737,7 +710,7 @@ export const ContextProvider = ({ children }) => {
           className={`cardFont suit${card.suit} ${
             showAnalysis &&
             !includeSuit &&
-            playedCardsDup.has(`${card.suit},${card.rank}`)
+            playedCardsDup.has(`${card.suit},${card.rank},${card.xIdx ?? ""}`)
               ? "playedCard"
               : ""
           }`}
@@ -759,8 +732,12 @@ export const ContextProvider = ({ children }) => {
     onClickCard,
     showAnalysis
   ) => {
+    const isHandConstructed = handsDup[player].some((card) => card.rank === 13);
     const hand = showAnalysis
-      ? kibitzPlayer === null || kibitzPlayer === player
+      ? kibitzPlayer === null ||
+        kibitzPlayer === player ||
+        player === (declarer + 2) % 4 ||
+        isHandConstructed
         ? handsDup[player]
         : []
       : hands[player];
@@ -768,12 +745,12 @@ export const ContextProvider = ({ children }) => {
     for (const card of hand) {
       handSuits[card.suit].push(card);
     }
-    if (showAnalysis && showPlayedCards) {
+    if (showAnalysis && (showPlayedCards || isHandConstructed)) {
       for (const card of playedHandsDup[player]) {
         handSuits[card.suit].push(card);
       }
     }
-    const suitSort = (a, b) => (a.rank < b.rank ? -1 : 1);
+    const suitSort = (a, b) => (a.rank < b.rank || a.xIdx < b.xIdx ? -1 : 1);
     for (const suit of handSuits) {
       suit.sort(suitSort);
     }

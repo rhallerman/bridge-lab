@@ -14,6 +14,7 @@ const LiveTable = () => {
     suitChars,
     renderCard,
     renderHand,
+    directionToStr,
   } = context;
 
   const liveStatus = (
@@ -27,7 +28,9 @@ const LiveTable = () => {
     <div className="contractAndDirection">
       <div className="contract">{contractLevel}</div>
       <div className="suit3">{suitChars[contractSuit]}</div>
-      <div className="direction">{declarer}</div>
+      <div className="direction">
+        {directionToStr(declarer)?.substring(0, 1) ?? ""}
+      </div>
     </div>
   );
 
