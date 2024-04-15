@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Divider, Grid, TextField } from "@mui/material";
+import { Button, Divider, Grid, TextField } from "@mui/material";
 import { Context } from "../Context/Context";
 import "./View.css";
 import Webcam from "react-webcam";
@@ -214,7 +214,7 @@ const View = ({ editable }) => {
       <div className="name">
         {editable
           ? headerInputField(
-              "Name",
+              "",
               commentator.name,
               (event) => {
                 const tempCommentators = [...commentators];
@@ -231,6 +231,16 @@ const View = ({ editable }) => {
   const leftArea = (
     <div className="leftArea">
       {commentators.map((commentator, idx) => webcam(commentator, idx))}
+      {editable && (
+        <Button
+          className="addCommentator"
+          onClick={() =>
+            setCommentators([...commentators, { name: "", video: false }])
+          }
+        >
+          +
+        </Button>
+      )}
     </div>
   );
 

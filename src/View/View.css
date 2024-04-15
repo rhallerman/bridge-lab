@@ -552,9 +552,14 @@
         border: 1px solid gray;
         object-fit: cover;
     }
+
     .webcamOff {
         flex: 1;
     }
+}
+
+.addCommentator {
+    color: white !important;
 }
 
 @container leftArea (min-width: 1px) {
