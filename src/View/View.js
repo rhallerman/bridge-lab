@@ -10,6 +10,7 @@ import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
 import ClearIcon from "@mui/icons-material/Clear";
+import AddIcon from "@mui/icons-material/Add";
 
 const View = ({ editable }) => {
   let {
@@ -251,7 +252,7 @@ const View = ({ editable }) => {
             setCommentators([...commentators, { name: "", video: false }])
           }
         >
-          +
+          <AddIcon fontSize="small" />
         </Button>
       )}
     </div>
