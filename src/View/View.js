@@ -31,13 +31,15 @@ const View = ({ editable }) => {
     reality,
     suitChars,
     strToSuit,
+    commentators,
+    setCommentators,
   } = useContext(Context);
 
   const headerInputField = (label, value, onChange, textAlign) => (
     <TextField
       label={label}
       value={value}
-      onChange={(event) => onChange(event.target.value.toUpperCase())}
+      onChange={onChange}
       className="headerInput"
       size="small"
       fullWidth
@@ -57,7 +59,12 @@ const View = ({ editable }) => {
           <div className="headerInfoItem">
             <div className="headerTextKey">SEGMENT: </div>
             {editable ? (
-              headerInputField("", segmentNum, setSegmentNum, "center")
+              headerInputField(
+                "",
+                segmentNum,
+                (event) => setSegmentNum(event.target.value.toUpperCase()),
+                "center"
+              )
             ) : (
               <div className="headerTextVal">{segmentNum}</div>
             )}
@@ -65,7 +72,12 @@ const View = ({ editable }) => {
               {editable || numSegments ? "OF" : ""}
             </div>
             {editable ? (
-              headerInputField("", numSegments, setNumSegments, "center")
+              headerInputField(
+                "",
+                numSegments,
+                (event) => setNumSegments(event.target.value.toUpperCase()),
+                "center"
+              )
             ) : (
               <div className="headerTextVal">{numSegments}</div>
             )}
@@ -73,7 +85,12 @@ const View = ({ editable }) => {
           <div className="headerInfoItem">
             <div className="headerTextKey">BOARD: </div>
             {editable ? (
-              headerInputField("", boardNum, setBoardNum, "center")
+              headerInputField(
+                "",
+                boardNum,
+                (event) => setBoardNum(event.target.value.toUpperCase()),
+                "center"
+              )
             ) : (
               <div className="headerTextVal">{boardNum}</div>
             )}
@@ -81,7 +98,12 @@ const View = ({ editable }) => {
               {editable || numBoards ? "OF" : ""}
             </div>
             {editable ? (
-              headerInputField("", numBoards, setNumBoards, "center")
+              headerInputField(
+                "",
+                numBoards,
+                (event) => setNumBoards(event.target.value.toUpperCase()),
+                "center"
+              )
             ) : (
               <div className="headerTextVal">{numBoards}</div>
             )}
@@ -101,7 +123,7 @@ const View = ({ editable }) => {
                 headerInputField(
                   "Meta Event Name",
                   metaEventName,
-                  setMetaEventName,
+                  (event) => setMetaEventName(event.target.value.toUpperCase()),
                   "center"
                 )
               ) : (
@@ -111,7 +133,7 @@ const View = ({ editable }) => {
                 headerInputField(
                   "Event Name",
                   eventName,
-                  setEventName,
+                  (event) => setEventName(event.target.value.toUpperCase()),
                   "center"
                 )
               ) : (
@@ -123,12 +145,22 @@ const View = ({ editable }) => {
         <Grid item xs={2.5}>
           <div className="subtitle">
             {editable ? (
-              headerInputField("Round Info", roundInfo, setRoundInfo, "right")
+              headerInputField(
+                "Round Info",
+                roundInfo,
+                (event) => setRoundInfo(event.target.value.toUpperCase()),
+                "right"
+              )
             ) : (
               <div className="headerTextKey">{roundInfo}</div>
             )}
             {editable ? (
-              headerInputField("Room Info", roomInfo, setRoomInfo, "right")
+              headerInputField(
+                "Room Info",
+                roomInfo,
+                (event) => setRoomInfo(event.target.value.toUpperCase()),
+                "right"
+              )
             ) : (
               <div className="headerTextVal">{roomInfo}</div>
             )}
@@ -172,18 +204,33 @@ const View = ({ editable }) => {
   //   </div>
   // );
 
-  const webcam = (name, on) => (
+  const webcam = (commentator, idx) => (
     <div className="commentator">
-      {on ? <Webcam className="webcam" /> : <div className="webcamOff" />}
-      <div className="name">{name.toUpperCase()}</div>
+      {commentator.video ? (
+        <Webcam className="webcam" />
+      ) : (
+        <div className="webcamOff" />
+      )}
+      <div className="name">
+        {editable
+          ? headerInputField(
+              "Name",
+              commentator.name,
+              (event) => {
+                const tempCommentators = [...commentators];
+                commentators[idx].name = event.target.value.toUpperCase();
+                setCommentators(tempCommentators);
+              },
+              "center"
+            )
+          : commentator.name.toUpperCase()}
+      </div>
     </div>
   );
 
   const leftArea = (
     <div className="leftArea">
-      {webcam("Raphael Hallerman", false)}
-      {webcam("Robert Barrington", false)}
-      {webcam("Jan Martel", false)}
+      {commentators.map((commentator, idx) => webcam(commentator, idx))}
     </div>
   );
 

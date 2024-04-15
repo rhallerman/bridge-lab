@@ -104,7 +104,7 @@
     display: flex;
     flex-direction: column;
     gap: min(1vw, 1vh);
-    justify-content: center;
+    /* justify-content: center; */
     container-type: size;
     container-name: leftArea;
 }
@@ -542,7 +542,7 @@
         flex-direction: column;
         border: 1px solid white;
         height: 30cqh;
-        font-size: 3cqh;
+        font-size: 2.5cqh;
     }
 }
 

@@ -56,6 +56,9 @@ export const ContextProvider = ({ children }) => {
   const [timeUntilNextEvent, setTimeUntilNextEvent] = useState(null);
   const [nextEventID, setNextEventID] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
+  const [commentators, setCommentators] = useState([
+    { name: "Jan Martel", video: true },
+  ]);
 
   const handsRef = useRef();
   handsRef.current = hands;
@@ -931,6 +934,8 @@ export const ContextProvider = ({ children }) => {
         directionToStr,
         renderCard,
         renderHand,
+        commentators,
+        setCommentators,
       }}
     >
       {children}
