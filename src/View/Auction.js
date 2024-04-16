@@ -11,6 +11,10 @@ const Auction = () => {
     const text =
       bid.action === "BID"
         ? `${bid.level}${suitChars[bid.strain] ?? "NT"}`
+        : bid.action === "DBL"
+        ? "X"
+        : bid.action === "RDBL"
+        ? "XX"
         : bid.action;
     return (
       <div className={`bid ${bid.strain >= 0 ? `suit${bid.strain}` : ""}`}>

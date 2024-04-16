@@ -770,7 +770,7 @@ export const ContextProvider = ({ children }) => {
         const disabled =
           disableAllCards ||
           (showAnalysis ? playedCardsDup : playedCards).has(
-            `${card.suit},${card.rank}`
+            `${card.suit},${card.rank},${card.xIdx ?? ""}`
           );
         const cardButton = renderCard(
           card,
