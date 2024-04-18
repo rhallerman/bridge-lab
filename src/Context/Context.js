@@ -790,7 +790,12 @@ export const ContextProvider = ({ children }) => {
       );
     }
     return (
-      <div className={`handNameWidthWrapper hand${player}`}>
+      <div
+        className={`handNameWidthWrapper hand${player} ${
+          showAnalysis ? "analysis" : "live"
+        }`}
+        key={`hand${player}`}
+      >
         <div
           className={`handNameWrapper ${
             !showAnalysis && player === whoseTurn ? "myTurn" : "notMyTurn"

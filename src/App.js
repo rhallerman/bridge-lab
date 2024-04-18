@@ -102,7 +102,6 @@ const App = () => {
     if (notif) {
       switch (notif.type) {
         case "offer":
-          console.log(`offer from ${notif.from}`);
           setConnectedUser(notif.from);
           listenToConnectionEvents(
             localConnection,
@@ -112,7 +111,6 @@ const App = () => {
             remoteVideoRef,
             doCandidate
           );
-          console.log("listenToConnectionEvents done");
           sendAnswer(
             localConnection,
             localStream,
@@ -121,10 +119,8 @@ const App = () => {
             database,
             username
           );
-          console.log("sendAnswer done");
           break;
         case "answer":
-          console.log(`answer from ${notif.from}`);
           setConnectedUser(notif.from);
           startCall(localConnection, notif);
           break;
@@ -146,7 +142,6 @@ const App = () => {
       remoteVideoRef,
       doCandidate
     );
-    console.log("listenToConnectionEvents done");
     createOffer(
       localConnection,
       localStream,
@@ -155,7 +150,6 @@ const App = () => {
       database,
       username
     );
-    console.log("createOffer done");
   };
 
   const onLogin = async (username) => {

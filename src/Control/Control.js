@@ -368,7 +368,7 @@ const Control = ({
         2 = 12
         */
       } else {
-        console.log(e.key);
+        // console.log(e.key);
       }
     };
     document.addEventListener("keydown", handleKeyDown);

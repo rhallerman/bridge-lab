@@ -17,25 +17,27 @@ const AnalysisTable = () => {
   } = useContext(Context);
 
   const contract = (
-    <div className="contractAndDirection">
+    <div className="contractAndDirection" key="contract">
       <div className="contract">6</div>
       <div className="suit3">{"\u2663"}</div>
       <div className="direction">W</div>
     </div>
   );
 
-  const cardsOnTable = Array.from(trickCardsDup).map((card) =>
-    renderCard(
-      card,
-      `card trickOnTable trickOnTable${card.hand}`,
-      false,
-      () => {},
-      true
-    )
-  );
+  const cardsOnTable = Array.from(trickCardsDup).map((card, cardIdx) => (
+    <div key={cardIdx}>
+      {renderCard(
+        card,
+        `card trickOnTable trickOnTable${card.hand}`,
+        false,
+        () => {},
+        true
+      )}
+    </div>
+  ));
 
   const table = (
-    <div className="table">
+    <div className="table" key="table">
       <div className="nsVuls">
         <div
           className={`northTrapezoid ${
@@ -86,47 +88,36 @@ const AnalysisTable = () => {
     }
   };
 
-  const northHand = renderHand(
-    0,
-    "Kalita",
-    "card",
-    false,
-    handleCardClicked,
-    true
+  const northHand = (
+    <div key="north analysis">
+      {renderHand(0, "Kalita", "card", false, handleCardClicked, true)}
+    </div>
   );
 
-  const southHand = renderHand(
-    2,
-    "Klukowski",
-    "card",
-    false,
-    handleCardClicked,
-    true
+  const southHand = (
+    <div key="south analysis">
+      {renderHand(2, "Klukowski", "card", false, handleCardClicked, true)}
+    </div>
   );
 
-  const eastHand = renderHand(
-    1,
-    "Di Franco",
-    "card",
-    false,
-    handleCardClicked,
-    true
+  const eastHand = (
+    <div key="east analysis">
+      {renderHand(1, "Di Franco", "card", false, handleCardClicked, true)}
+    </div>
   );
 
-  const westHand = renderHand(
-    3,
-    "Manno",
-    "card",
-    false,
-    handleCardClicked,
-    true
+  const westHand = (
+    <div key="west analysis">
+      {renderHand(3, "Manno", "card", false, handleCardClicked, true)}
+    </div>
   );
 
-  const playArea = (
+  return (
     <div
       className={`playArea animate offAnalysis ${
         !reality ? "onAnalysis" : ""
       } enabledCursor`}
+      key="playArea analysis"
     >
       {contract}
       <div className="board">
@@ -138,8 +129,6 @@ const AnalysisTable = () => {
       </div>
     </div>
   );
-
-  return playArea;
 };
 
 export default AnalysisTable;

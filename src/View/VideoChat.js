@@ -23,8 +23,6 @@ const VideoChat = ({
   const handleConnectTo = (event) =>
     setConnectTo(event.target.value.toUpperCase());
 
-  console.log(connectedUser);
-
   return (
     <div className="commentators">
       <div className="commentator">
@@ -53,9 +51,7 @@ const VideoChat = ({
             <IconButton
               className="removeCommentator"
               onClick={() => {
-                console.log("remove");
                 const tempCommentators = [...commentators];
-                console.log(tempCommentators);
                 // tempCommentators.splice(0, 1);
                 // setCommentators(tempCommentators);
               }}
@@ -66,7 +62,6 @@ const VideoChat = ({
               <IconButton
                 className="logInCommentator"
                 onClick={async () => {
-                  console.log(commentators);
                   await onLogin(commentators[0]);
                   setIsLoggedIn(true);
                 }}
@@ -108,11 +103,7 @@ const VideoChat = ({
             className="logInCommentator"
             size="small"
             onClick={async () => {
-              console.log("calling...");
-              console.log(commentators[0]);
-              console.log(connectTo);
               await startCall(commentators[0], connectTo);
-              console.log("started call");
             }}
           >
             <CallIcon fontSize="small" />

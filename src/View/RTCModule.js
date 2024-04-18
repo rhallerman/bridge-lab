@@ -7,8 +7,6 @@ export const createOffer = async (
   username
 ) => {
   try {
-    console.log("createOffer");
-    console.log(localStream);
     localStream
       .getTracks()
       .forEach((track) => connection.addTrack(track, localStream));
@@ -49,13 +47,20 @@ export const sendAnswer = async (
   username
 ) => {
   try {
+    console.log("sendAnswer");
+    console.log(JSON.parse(notif.offer));
+    const offer = JSON.parse(notif.offer);
+    connection.setRemoteDescription(offer);
+    console.log("set remote description");
     localStream
       .getTracks()
       .forEach((track) => connection.addTrack(track, localStream));
-    const offer = JSON.parse(notif.offer);
-    connection.setRemoteDescription(offer);
+    console.log("added track");
     const answer = await connection.createAnswer();
+    console.log("created answer");
+    console.log(answer);
     connection.setLocalDescription(answer);
+    console.log("set local description");
     doAnswer(notif.from, answer, database, username);
   } catch (exception) {
     console.error(exception);
@@ -63,17 +68,11 @@ export const sendAnswer = async (
 };
 
 export const startCall = (conn, notif) => {
-  console.log("startCall");
-  console.log(conn);
-  console.log(notif);
   const answer = JSON.parse(notif.answer);
   conn.setRemoteDescription(answer);
 };
 
 export const addCandidate = (conn, notif) => {
-  console.log("addCandidate");
-  console.log(conn);
-  console.log(notif);
   const candidate = JSON.parse(notif.candidate);
   conn.addIceCandidate(new RTCIceCandidate(candidate));
 };
