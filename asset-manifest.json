@@ -1,17 +1,15 @@
 {
   "files": {
-    "main.css": "/kib-sync/static/css/main.733f24b5.css",
-    "main.js": "/kib-sync/static/js/main.b3f0227c.js",
+    "main.css": "/kib-sync/static/css/main.8693357f.css",
+    "main.js": "/kib-sync/static/js/main.37e52719.js",
     "static/js/453.90ae0d5f.chunk.js": "/kib-sync/static/js/453.90ae0d5f.chunk.js",
-    "static/media/lovebridge.png": "/kib-sync/static/media/lovebridge.15082832658c86a43da4.png",
-    "static/media/usbf.png": "/kib-sync/static/media/usbf.48e910a577ba5a7361d2.png",
     "index.html": "/kib-sync/index.html",
-    "main.733f24b5.css.map": "/kib-sync/static/css/main.733f24b5.css.map",
-    "main.b3f0227c.js.map": "/kib-sync/static/js/main.b3f0227c.js.map",
+    "main.8693357f.css.map": "/kib-sync/static/css/main.8693357f.css.map",
+    "main.37e52719.js.map": "/kib-sync/static/js/main.37e52719.js.map",
     "453.90ae0d5f.chunk.js.map": "/kib-sync/static/js/453.90ae0d5f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.733f24b5.css",
-    "static/js/main.b3f0227c.js"
+    "static/css/main.8693357f.css",
+    "static/js/main.37e52719.js"
   ]
 }
