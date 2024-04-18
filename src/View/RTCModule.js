@@ -63,11 +63,17 @@ export const sendAnswer = async (
 };
 
 export const startCall = (conn, notif) => {
+  console.log("startCall");
+  console.log(conn);
+  console.log(notif);
   const answer = JSON.parse(notif.answer);
   conn.setRemoteDescription(answer);
 };
 
 export const addCandidate = (conn, notif) => {
+  console.log("addCandidate");
+  console.log(conn);
+  console.log(notif);
   const candidate = JSON.parse(notif.candidate);
   conn.addIceCandidate(new RTCIceCandidate(candidate));
 };
