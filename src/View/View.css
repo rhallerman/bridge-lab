@@ -580,12 +580,8 @@
 @container leftArea (min-width: 20px) {
     .webcam {
         flex: 1;
-        border: 1px solid gray;
+        border-bottom: 1px solid white;
         object-fit: cover;
-    }
-
-    .webcamOff {
-        flex: 1;
     }
 }
 

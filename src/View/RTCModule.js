@@ -29,15 +29,13 @@ export const initiateLocalStream = async () => {
     console.error(exception);
   }
 };
+
 export const initiateConnection = async () => {
   try {
-    // using Google public stun server
     var configuration = {
       iceServers: [{ urls: "stun:stun2.1.google.com:19302" }],
     };
-
     const conn = new RTCPeerConnection(configuration);
-
     return conn;
   } catch (exception) {
     console.error(exception);
@@ -57,11 +55,10 @@ export const listenToConnectionEvents = (
       doCandidate(remoteUsername, event.candidate, database, username);
     }
   };
-
-  // when a remote user adds stream to the peer connection, we display it
   conn.ontrack = function (e) {
-    if (remoteVideoRef.srcObject !== e.streams[0]) {
-      remoteVideoRef.srcObject = e.streams[0];
+    if (remoteVideoRef.current.srcObject !== e.streams[0]) {
+      remoteVideoRef.current.srcObject = e.streams[0];
+      remoteVideoRef.current.muted = true;
     }
   };
 };
@@ -80,11 +77,8 @@ export const sendAnswer = async (
     });
     const offer = JSON.parse(notif.offer);
     conn.setRemoteDescription(offer);
-
-    // create an answer to an offer
     const answer = await conn.createAnswer();
     conn.setLocalDescription(answer);
-
     doAnswer(notif.from, answer, database, username);
   } catch (exception) {
     console.error(exception);
@@ -97,7 +91,6 @@ export const startCall = (yourConn, notif) => {
 };
 
 export const addCandidate = (yourConn, notif) => {
-  // apply the new received candidate to the connection
   const candidate = JSON.parse(notif.candidate);
   yourConn.addIceCandidate(new RTCIceCandidate(candidate));
 };

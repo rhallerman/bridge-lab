@@ -225,18 +225,7 @@ const View = ({
 
   const leftArea = (
     <div className="leftArea">
-      <VideoChatContainer
-        localStream={localStream}
-        startCall={startCall}
-        onLogin={onLogin}
-        setLocalVideoRef={setLocalVideoRef}
-        setRemoteVideoRef={setRemoteVideoRef}
-        connectedUser={connectedUser}
-        headerInputField={headerInputField}
-        commentators={commentators}
-        setCommentators={setCommentators}
-        editable={editable}
-      />
+      <VideoChatContainer />
     </div>
   );
 

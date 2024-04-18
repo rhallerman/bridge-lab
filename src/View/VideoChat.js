@@ -1,93 +1,85 @@
-import React from "react";
-import "./App.css";
+import React, { useState } from "react";
 import "firebase/database";
-import classnames from "classnames";
+import { IconButton } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import CallIcon from "@mui/icons-material/Call";
+import "./View.css";
 
-export default class VideoChat extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoggedIn: false,
-      userToCall: null,
-      username: null,
-    };
-  }
+const VideoChat = ({
+  onLogin,
+  startCall,
+  localVideoRef,
+  remoteVideoRef,
+  connectedUser,
+}) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userToCall, setUserToCall] = useState(null);
+  const [username, setUsername] = useState(null);
 
-  onLoginClicked = async () => {
-    await this.props.onLogin(this.state.username);
-    this.setState({
-      isLoggedIn: true,
-    });
+  const onLoginClicked = async () => {
+    await onLogin(username);
+    setIsLoggedIn(true);
   };
 
-  onStartCallClicked = () => {
-    this.props.startCall(this.state.username, this.state.userToCall);
+  const onStartCallClicked = () => {
+    startCall(username, userToCall);
   };
 
-  renderVideos = () => {
+  const renderVideos = () => {
     return (
-      <div className={classnames("videos", { active: this.state.isLoggedIn })}>
-        <div>
-          <label>{this.state.username}</label>
-
-          <video ref={this.props.setLocalVideoRef} autoPlay playsInline></video>
+      <div className="commentators">
+        <div className="commentator">
+          <video ref={localVideoRef} autoPlay playsInline className="webcam" />
+          <div className="name">{username?.toUpperCase()}</div>
         </div>
-        <div>
-          <label>{this.props.connectedUser}</label>
-          <video
-            ref={this.props.setRemoteVideoRef}
-            autoPlay
-            playsInline
-          ></video>
-        </div>
+        {connectedUser && (
+          <div className="commentator">
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              playsInline
+              className="webcam"
+            />
+            <div className="name">{connectedUser?.toUpperCase()}</div>
+          </div>
+        )}
       </div>
     );
   };
 
-  renderForms = () => {
-    return this.state.isLoggedIn ? (
-      <div key="a" className="form">
+  const renderForms = () => {
+    return isLoggedIn ? (
+      <div key="a">
         <label>Call to</label>
         <input
-          value={this.state.userToCall}
+          value={userToCall}
           type="text"
-          onChange={(e) => this.setState({ userToCall: e.target.value })}
+          onChange={(e) => setUserToCall(e.target.value)}
         />
-        <button
-          onClick={this.onStartCallClicked}
-          id="call-btn"
-          className="btn btn-primary"
-        >
-          Call
-        </button>
+        <IconButton onClick={onStartCallClicked}>
+          <CallIcon />
+        </IconButton>
       </div>
     ) : (
       <div key="b" className="form">
-        <label>Type a name</label>
         <input
-          value={this.state.username}
+          value={username}
           type="text"
-          onChange={(e) => this.setState({ username: e.target.value })}
+          onChange={(e) => setUsername(e.target.value)}
         />
-
-        <button
-          onClick={this.onLoginClicked}
-          id="login-btn"
-          className="btn btn-primary"
-        >
-          Login
-        </button>
+        <IconButton onClick={onLoginClicked}>
+          <CheckIcon />
+        </IconButton>
       </div>
     );
   };
 
-  render() {
-    return (
-      <section id="container">
-        {this.props.connectedUser ? null : this.renderForms()}
+  return (
+    <section id="container">
+      {renderVideos()}
+      {connectedUser ? null : renderForms()}
+    </section>
+  );
+};
 
-        {this.renderVideos()}
-      </section>
-    );
-  }
-}
+export default VideoChat;
