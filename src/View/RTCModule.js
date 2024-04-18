@@ -7,6 +7,8 @@ export const createOffer = async (
   username
 ) => {
   try {
+    console.log("createOffer");
+    console.log(localStream);
     localStream
       .getTracks()
       .forEach((track) => connection.addTrack(track, localStream));

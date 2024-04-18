@@ -48,32 +48,34 @@ const VideoChat = ({
               )
             : commentators[0]?.toUpperCase() ?? ""}
         </div>
-        <div className="commentatorControls">
-          <IconButton
-            className="removeCommentator"
-            onClick={() => {
-              console.log("remove");
-              const tempCommentators = [...commentators];
-              console.log(tempCommentators);
-              // tempCommentators.splice(0, 1);
-              // setCommentators(tempCommentators);
-            }}
-          >
-            <ClearIcon fontSize="small" />
-          </IconButton>
-          {!isLoggedIn && (
+        {editable && (
+          <div className="commentatorControls">
             <IconButton
-              className="logInCommentator"
-              onClick={async () => {
-                console.log(commentators);
-                await onLogin(commentators[0]);
-                setIsLoggedIn(true);
+              className="removeCommentator"
+              onClick={() => {
+                console.log("remove");
+                const tempCommentators = [...commentators];
+                console.log(tempCommentators);
+                // tempCommentators.splice(0, 1);
+                // setCommentators(tempCommentators);
               }}
             >
-              <CheckIcon fontSize="small" />
+              <ClearIcon fontSize="small" />
             </IconButton>
-          )}
-        </div>
+            {!isLoggedIn && (
+              <IconButton
+                className="logInCommentator"
+                onClick={async () => {
+                  console.log(commentators);
+                  await onLogin(commentators[0]);
+                  setIsLoggedIn(true);
+                }}
+              >
+                <CheckIcon fontSize="small" />
+              </IconButton>
+            )}
+          </div>
+        )}
       </div>
       {connectedUser && (
         <div className="commentator">
