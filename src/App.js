@@ -14,42 +14,43 @@ import {
 } from "./View/RTCModule";
 import "webrtc-adapter";
 import { doAnswer, doCandidate, doLogin, doOffer } from "./View/FirebaseModule";
+import VideoChatContainer from "./View/VideoChatContainer";
 
-function copyStyles(sourceDoc, targetDoc) {
-  Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
-    if (styleSheet.cssRules) {
-      // for <style> elements
-      const newStyleEl = sourceDoc.createElement("style");
+// function copyStyles(sourceDoc, targetDoc) {
+//   Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
+//     if (styleSheet.cssRules) {
+//       // for <style> elements
+//       const newStyleEl = sourceDoc.createElement("style");
 
-      Array.from(styleSheet.cssRules).forEach((cssRule) => {
-        // write the text of each rule into the body of the style element
-        newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
-      });
+//       Array.from(styleSheet.cssRules).forEach((cssRule) => {
+//         // write the text of each rule into the body of the style element
+//         newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
+//       });
 
-      targetDoc.head.appendChild(newStyleEl);
-    } else if (styleSheet.href) {
-      // for <link> elements loading CSS from a URL
-      const newLinkEl = sourceDoc.createElement("link");
+//       targetDoc.head.appendChild(newStyleEl);
+//     } else if (styleSheet.href) {
+//       // for <link> elements loading CSS from a URL
+//       const newLinkEl = sourceDoc.createElement("link");
 
-      newLinkEl.rel = "stylesheet";
-      newLinkEl.href = styleSheet.href;
-      targetDoc.head.appendChild(newLinkEl);
-    }
-  });
-}
+//       newLinkEl.rel = "stylesheet";
+//       newLinkEl.href = styleSheet.href;
+//       targetDoc.head.appendChild(newLinkEl);
+//     }
+//   });
+// }
 
 const App = () => {
-  const [controlView, setControlView] = useState(null);
+  // const [controlView, setControlView] = useState(null);
 
-  useEffect(() => {
-    setControlView(window.open());
-  }, []);
+  // useEffect(() => {
+  //   setControlView(window.open());
+  // }, []);
 
-  useEffect(() => {
-    if (controlView?.document?.body) {
-      copyStyles(document, controlView.document);
-    }
-  }, [controlView?.document]);
+  // useEffect(() => {
+  //   if (controlView?.document?.body) {
+  //     copyStyles(document, controlView.document);
+  //   }
+  // }, [controlView?.document]);
 
   const [database, setDatabase] = useState(null);
   const [localStream, setLocalStream] = useState(null);
@@ -58,37 +59,6 @@ const App = () => {
 
   const localVideoRef = useRef();
   const remoteVideoRef = useRef();
-
-  useEffect(() => {
-    if (localVideoRef !== null) {
-      firebase.initializeApp(config);
-      const initiateLocalStream = async () => {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-          setLocalStream(stream);
-        } catch (exception) {
-          console.error(exception);
-        }
-      };
-      initiateLocalStream();
-      const initiateConnection = async () => {
-        try {
-          const configuration = {
-            iceServers: [{ urls: "stun:stun2.1.google.com:19302" }],
-          };
-          const conn = new RTCPeerConnection(configuration);
-          setLocalConnection(conn);
-        } catch (exception) {
-          console.error(exception);
-        }
-      };
-      initiateConnection();
-      setDatabase(firebase.database());
-    }
-  }, [localVideoRef]);
 
   const setLocalVideoRef = (ref) => {
     localVideoRef.current = ref;
@@ -156,36 +126,41 @@ const App = () => {
     await doLogin(username, database, handleUpdate);
   };
 
-  const controlViewWindow = useMemo(() => {
-    if (controlView?.document?.body) {
-      return ReactDOM.createPortal(
-        <Control
-          controlView={controlView}
-          localStream={localStream}
-          startCall={startCall}
-          onLogin={onLogin}
-          setLocalVideoRef={setLocalVideoRef}
-          setRemoteVideoRef={setRemoteVideoRef}
-          connectedUser={connectedUser}
-        />,
-        controlView.document.body
-      );
-    } else return null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controlView, localStream, connectedUser]);
+  // const controlViewWindow = useMemo(() => {
+  //   if (controlView?.document?.body) {
+  //     return ReactDOM.createPortal(
+  //       <Control
+  //         controlView={controlView}
+  //         localStream={localStream}
+  //         startCall={startCall}
+  //         onLogin={onLogin}
+  //         setLocalVideoRef={setLocalVideoRef}
+  //         setRemoteVideoRef={setRemoteVideoRef}
+  //         connectedUser={connectedUser}
+  //       />,
+  //       controlView.document.body
+  //     );
+  //   } else return null;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [controlView, localStream, connectedUser]);
 
   return (
-    <>
-      <View
-        localStream={localStream}
-        startCall={startCall}
-        onLogin={onLogin}
-        setLocalVideoRef={setLocalVideoRef}
-        setRemoteVideoRef={setRemoteVideoRef}
-        connectedUser={connectedUser}
-      />
-      {controlViewWindow}
-    </>
+    // <>
+    //   <View
+    //     localStream={localStream}
+    //     startCall={startCall}
+    //     onLogin={onLogin}
+    //     setLocalVideoRef={setLocalVideoRef}
+    //     setRemoteVideoRef={setRemoteVideoRef}
+    //     connectedUser={connectedUser}
+    //   />
+    //   {controlViewWindow}
+    // </>
+    <div className="app">
+      <h1>React Video Chat App</h1>
+      <h2>WebRTC + Firebase</h2>
+      <VideoChatContainer />
+    </div>
   );
 };
 

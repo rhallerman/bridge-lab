@@ -7,12 +7,38 @@ export const createOffer = async (
   username
 ) => {
   try {
-    localStream
-      .getTracks()
-      .forEach((track) => connection.addTrack(track, localStream));
+    localStream.getTracks().forEach((track) => {
+      connection.addTrack(track, localStream);
+    });
     const offer = await connection.createOffer();
     await connection.setLocalDescription(offer);
     doOffer(userToCall, offer, database, username);
+  } catch (exception) {
+    console.error(exception);
+  }
+};
+
+export const initiateLocalStream = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false,
+    });
+    return stream;
+  } catch (exception) {
+    console.error(exception);
+  }
+};
+export const initiateConnection = async () => {
+  try {
+    // using Google public stun server
+    var configuration = {
+      iceServers: [{ urls: "stun:stun2.1.google.com:19302" }],
+    };
+
+    const conn = new RTCPeerConnection(configuration);
+
+    return conn;
   } catch (exception) {
     console.error(exception);
   }
@@ -26,20 +52,22 @@ export const listenToConnectionEvents = (
   remoteVideoRef,
   doCandidate
 ) => {
-  conn.onicecandidate = (event) => {
+  conn.onicecandidate = function (event) {
     if (event.candidate) {
       doCandidate(remoteUsername, event.candidate, database, username);
     }
   };
-  conn.ontrack = (event) => {
-    if (remoteVideoRef.srcObject !== event.streams[0]) {
-      remoteVideoRef.srcObject = event.streams[0];
+
+  // when a remote user adds stream to the peer connection, we display it
+  conn.ontrack = function (e) {
+    if (remoteVideoRef.srcObject !== e.streams[0]) {
+      remoteVideoRef.srcObject = e.streams[0];
     }
   };
 };
 
 export const sendAnswer = async (
-  connection,
+  conn,
   localStream,
   notif,
   doAnswer,
@@ -47,32 +75,29 @@ export const sendAnswer = async (
   username
 ) => {
   try {
-    console.log("sendAnswer");
-    console.log(JSON.parse(notif.offer));
+    localStream.getTracks().forEach((track) => {
+      conn.addTrack(track, localStream);
+    });
     const offer = JSON.parse(notif.offer);
-    connection.setRemoteDescription(offer);
-    console.log("set remote description");
-    localStream
-      .getTracks()
-      .forEach((track) => connection.addTrack(track, localStream));
-    console.log("added track");
-    const answer = await connection.createAnswer();
-    console.log("created answer");
-    console.log(answer);
-    connection.setLocalDescription(answer);
-    console.log("set local description");
+    conn.setRemoteDescription(offer);
+
+    // create an answer to an offer
+    const answer = await conn.createAnswer();
+    conn.setLocalDescription(answer);
+
     doAnswer(notif.from, answer, database, username);
   } catch (exception) {
     console.error(exception);
   }
 };
 
-export const startCall = (conn, notif) => {
+export const startCall = (yourConn, notif) => {
   const answer = JSON.parse(notif.answer);
-  conn.setRemoteDescription(answer);
+  yourConn.setRemoteDescription(answer);
 };
 
-export const addCandidate = (conn, notif) => {
+export const addCandidate = (yourConn, notif) => {
+  // apply the new received candidate to the connection
   const candidate = JSON.parse(notif.candidate);
-  conn.addIceCandidate(new RTCIceCandidate(candidate));
+  yourConn.addIceCandidate(new RTCIceCandidate(candidate));
 };

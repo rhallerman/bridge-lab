@@ -1,117 +1,93 @@
-import React, { useState } from "react";
+import React from "react";
+import "./App.css";
 import "firebase/database";
-import "./View.css";
-import ClearIcon from "@mui/icons-material/Clear";
-import CheckIcon from "@mui/icons-material/Check";
-import { IconButton, TextField, Typography } from "@mui/material";
-import CallIcon from "@mui/icons-material/Call";
+import classnames from "classnames";
 
-const VideoChat = ({
-  startCall,
-  onLogin,
-  setLocalVideoRef,
-  setRemoteVideoRef,
-  connectedUser,
-  headerInputField,
-  commentators,
-  setCommentators,
-  editable,
-}) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [connectTo, setConnectTo] = useState("");
+export default class VideoChat extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false,
+      userToCall: null,
+      username: null,
+    };
+  }
 
-  const handleConnectTo = (event) =>
-    setConnectTo(event.target.value.toUpperCase());
+  onLoginClicked = async () => {
+    await this.props.onLogin(this.state.username);
+    this.setState({
+      isLoggedIn: true,
+    });
+  };
 
-  return (
-    <div className="commentators">
-      <div className="commentator">
-        <video
-          id="localVideo"
-          className="webcam"
-          ref={setLocalVideoRef}
-          autoPlay
-        />
-        <div className="name">
-          {editable
-            ? headerInputField(
-                "",
-                commentators[0] ?? "",
-                (event) => {
-                  const tempCommentators = [...commentators];
-                  tempCommentators[0] = event.target.value.toUpperCase();
-                  setCommentators(tempCommentators);
-                },
-                "center"
-              )
-            : commentators[0]?.toUpperCase() ?? ""}
+  onStartCallClicked = () => {
+    this.props.startCall(this.state.username, this.state.userToCall);
+  };
+
+  renderVideos = () => {
+    return (
+      <div className={classnames("videos", { active: this.state.isLoggedIn })}>
+        <div>
+          <label>{this.state.username}</label>
+
+          <video ref={this.props.setLocalVideoRef} autoPlay playsInline></video>
         </div>
-        {editable && (
-          <div className="commentatorControls">
-            <IconButton
-              className="removeCommentator"
-              onClick={() => {
-                const tempCommentators = [...commentators];
-                // tempCommentators.splice(0, 1);
-                // setCommentators(tempCommentators);
-              }}
-            >
-              <ClearIcon fontSize="small" />
-            </IconButton>
-            {!isLoggedIn && (
-              <IconButton
-                className="logInCommentator"
-                onClick={async () => {
-                  await onLogin(commentators[0]);
-                  setIsLoggedIn(true);
-                }}
-              >
-                <CheckIcon fontSize="small" />
-              </IconButton>
-            )}
-          </div>
-        )}
-      </div>
-      {connectedUser && (
-        <div className="commentator">
+        <div>
+          <label>{this.props.connectedUser}</label>
           <video
-            id="remoteVideo"
-            ref={setRemoteVideoRef}
+            ref={this.props.setRemoteVideoRef}
             autoPlay
             playsInline
-          />
+          ></video>
         </div>
-      )}
-      {editable && isLoggedIn && !connectedUser && (
-        <>
-          <Typography variant="body1" className="connectTo">
-            Connect to
-          </Typography>
-          <TextField
-            value={connectTo}
-            onChange={handleConnectTo}
-            size="small"
-            fullWidth
-            inputProps={{
-              style: { color: "white", padding: 0 },
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" },
-            }}
-          />
-          <IconButton
-            className="logInCommentator"
-            size="small"
-            onClick={async () => {
-              await startCall(commentators[0], connectTo);
-            }}
-          >
-            <CallIcon fontSize="small" />
-          </IconButton>
-        </>
-      )}
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
-export default VideoChat;
+  renderForms = () => {
+    return this.state.isLoggedIn ? (
+      <div key="a" className="form">
+        <label>Call to</label>
+        <input
+          value={this.state.userToCall}
+          type="text"
+          onChange={(e) => this.setState({ userToCall: e.target.value })}
+        />
+        <button
+          onClick={this.onStartCallClicked}
+          id="call-btn"
+          className="btn btn-primary"
+        >
+          Call
+        </button>
+      </div>
+    ) : (
+      <div key="b" className="form">
+        <label>Type a name</label>
+        <input
+          value={this.state.username}
+          type="text"
+          onChange={(e) => this.setState({ username: e.target.value })}
+        />
+
+        <button
+          onClick={this.onLoginClicked}
+          id="login-btn"
+          className="btn btn-primary"
+        >
+          Login
+        </button>
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <section id="container">
+        {this.props.connectedUser ? null : this.renderForms()}
+
+        {this.renderVideos()}
+      </section>
+    );
+  }
+}
