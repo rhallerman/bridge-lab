@@ -1,19 +1,25 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Button, Divider, Grid, TextField } from "@mui/material";
+import { Divider, Grid, TextField } from "@mui/material";
 import { Context } from "../Context/Context";
 import "./View.css";
-import Webcam from "react-webcam";
+// import Webcam from "react-webcam";
 import usbfLogo from "../Images/usbf.png";
 import lovebridgeLogo from "../Images/lovebridge.png";
 import kibsyncLogo from "../Images/kibsync.png";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
-import ClearIcon from "@mui/icons-material/Clear";
-import AddIcon from "@mui/icons-material/Add";
 import VideoChatContainer from "./VideoChatContainer";
 
-const View = ({ editable }) => {
+const View = ({
+  editable,
+  localStream,
+  startCall,
+  onLogin,
+  setLocalVideoRef,
+  setRemoteVideoRef,
+  connectedUser,
+}) => {
   let {
     metaEventName,
     setMetaEventName,
@@ -37,10 +43,6 @@ const View = ({ editable }) => {
     commentators,
     setCommentators,
   } = useContext(Context);
-
-  const [database, setDatabase] = useState(null);
-  const [localStream, setLocalStream] = useState(null);
-  const [localConnection, setLocalConnection] = useState(null);
 
   const headerInputField = (label, value, onChange, textAlign) => (
     <TextField
@@ -211,53 +213,30 @@ const View = ({ editable }) => {
   //   </div>
   // );
 
-  const webcam = (commentator, idx) => (
-    <div className="commentator">
-      {commentator.video ? (
-        <Webcam className="webcam" />
-      ) : (
-        <div className="webcamOff" />
-      )}
-      {editable && (
-        <div className="removeCommentator">
-          <ClearIcon
-            fontSize="small"
-            onClick={() => {
-              const tempCommentators = [...commentators];
-              tempCommentators.splice(idx, 1);
-              setCommentators(tempCommentators);
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
+  // const webcam = (commentator, idx) => (
+  //   <div className="commentator">
+  //     {commentator.video ? (
+  //       <Webcam className="webcam" />
+  //     ) : (
+  //       <div className="webcamOff" />
+  //     )}
+  //   </div>
+  // );
 
   const leftArea = (
     <div className="leftArea">
       <VideoChatContainer
-        database={database}
-        setDatabase={setDatabase}
         localStream={localStream}
-        setLocalStream={setLocalStream}
-        localConnection={localConnection}
-        setLocalConnection={setLocalConnection}
+        startCall={startCall}
+        onLogin={onLogin}
+        setLocalVideoRef={setLocalVideoRef}
+        setRemoteVideoRef={setRemoteVideoRef}
+        connectedUser={connectedUser}
         headerInputField={headerInputField}
         commentators={commentators}
         setCommentators={setCommentators}
         editable={editable}
       />
-      {/* {commentators.map((commentator, idx) => webcam(commentator, idx))}
-      {editable && (
-        <Button
-          className="addCommentator"
-          onClick={() =>
-            setCommentators([...commentators, { name: "", video: false }])
-          }
-        >
-          <AddIcon fontSize="small" />
-        </Button>
-      )} */}
     </div>
   );
 

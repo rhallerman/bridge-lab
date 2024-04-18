@@ -107,9 +107,6 @@
     /* background-color: rgba(0, 0, 0, 0.4); */
     margin: min(1vw, 1vh);
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: min(1vw, 1vh);
     /* justify-content: center; */
     container-type: size;
     container-name: leftArea;
@@ -542,6 +539,12 @@
     height: 40%;
 }
 
+.commentators {
+    display: flex;
+    flex-direction: column;
+    gap: min(1vw, 1vh);
+}
+
 @container leftArea (min-width: 20px) {
     .commentator {
         display: flex;
@@ -550,13 +553,28 @@
         height: 30cqh;
         width: 100cqw;
         font-size: 2.5cqh;
-        object-fit: cover;
     }
 }
 
-.removeCommentator {
-    color: #c00000;
+.commentatorControls {
     position: absolute;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.removeCommentator {
+    color: #c00000 !important;
+    padding: 0px !important;
+}
+
+.logInCommentator {
+    color: green !important;
+    padding: 0px !important;
+}
+
+.connectTo {
+    color: white !important;
 }
 
 @container leftArea (min-width: 20px) {

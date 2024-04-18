@@ -14,6 +14,9 @@ export const doOffer = async (to, offer, database, username) => {
 };
 
 export const doAnswer = async (to, answer, database, username) => {
+  console.log(to);
+  console.log(answer);
+  console.log(username);
   await database.ref("/notifs/" + to).update({
     type: "answer",
     from: username,

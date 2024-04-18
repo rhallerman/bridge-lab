@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
@@ -14,7 +14,15 @@ import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
 
-const Control = ({ controlView }) => {
+const Control = ({
+  controlView,
+  localStream,
+  startCall,
+  onLogin,
+  setLocalVideoRef,
+  setRemoteVideoRef,
+  connectedUser,
+}) => {
   let context = useContext(Context);
   let {
     hands,
@@ -414,31 +422,39 @@ const Control = ({ controlView }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typedSuit, typedRank, assignTo]);
 
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    if (file)
-      fetch("https://content.dropboxapi.com/2/files/upload", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer sl.BzfwH5pceWZeKGn1dSpTWOKEc0FWT72cz1PjKd-SkVMzcqO8DfGsm3ZtKQVssUk1DxVwjFY1bhwWQvX7ox59PO_Zv7kxaMXCyNp0S8VjiHc4yyGYXQxMyPOcqhRxK4_v4MZAXWZjp9cU",
-          "Dropbox-API-Arg": `{"autorename":false,"mode":"add","mute":false,"path":"/${file.name}","strict_conflict":false}`,
-          "Content-Type": "application/octet-stream",
-        },
-        body: file,
-      });
-  }, [file]);
+  // useEffect(() => {
+  //   if (file)
+  //     fetch("https://content.dropboxapi.com/2/files/upload", {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization:
+  //           "Bearer sl.BzfwH5pceWZeKGn1dSpTWOKEc0FWT72cz1PjKd-SkVMzcqO8DfGsm3ZtKQVssUk1DxVwjFY1bhwWQvX7ox59PO_Zv7kxaMXCyNp0S8VjiHc4yyGYXQxMyPOcqhRxK4_v4MZAXWZjp9cU",
+  //         "Dropbox-API-Arg": `{"autorename":false,"mode":"add","mute":false,"path":"/${file.name}","strict_conflict":false}`,
+  //         "Content-Type": "application/octet-stream",
+  //       },
+  //       body: file,
+  //     });
+  // }, [file]);
 
-  const handleFile = (event) => {
-    setFile(event.target.files[0]);
-  };
+  // const handleFile = (event) => {
+  //   setFile(event.target.files[0]);
+  // };
 
-  const uploadButton = <input type="file" onChange={handleFile} />;
+  // const uploadButton = <input type="file" onChange={handleFile} />;
 
   return (
     <div className="viewAndControls">
-      <View editable={true} />
+      <View
+        editable={true}
+        localStream={localStream}
+        startCall={startCall}
+        onLogin={onLogin}
+        setLocalVideoRef={setLocalVideoRef}
+        setRemoteVideoRef={setRemoteVideoRef}
+        connectedUser={connectedUser}
+      />
       {/* {renderHand(
         unassignedCards,
         undefined,
@@ -457,7 +473,7 @@ const Control = ({ controlView }) => {
           {assignToGroup}
           {suitGroup}
         </div>
-        {uploadButton}
+        {/* {uploadButton} */}
       </div>
     </div>
   );
