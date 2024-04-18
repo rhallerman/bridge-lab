@@ -11,6 +11,7 @@ import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddIcon from "@mui/icons-material/Add";
+import VideoChatContainer from "./VideoChatContainer";
 
 const View = ({ editable }) => {
   let {
@@ -36,6 +37,10 @@ const View = ({ editable }) => {
     commentators,
     setCommentators,
   } = useContext(Context);
+
+  const [database, setDatabase] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [localConnection, setLocalConnection] = useState(null);
 
   const headerInputField = (label, value, onChange, textAlign) => (
     <TextField
@@ -213,20 +218,6 @@ const View = ({ editable }) => {
       ) : (
         <div className="webcamOff" />
       )}
-      <div className="name">
-        {editable
-          ? headerInputField(
-              "",
-              commentator.name,
-              (event) => {
-                const tempCommentators = [...commentators];
-                commentators[idx].name = event.target.value.toUpperCase();
-                setCommentators(tempCommentators);
-              },
-              "center"
-            )
-          : commentator.name.toUpperCase()}
-      </div>
       {editable && (
         <div className="removeCommentator">
           <ClearIcon
@@ -244,7 +235,19 @@ const View = ({ editable }) => {
 
   const leftArea = (
     <div className="leftArea">
-      {commentators.map((commentator, idx) => webcam(commentator, idx))}
+      <VideoChatContainer
+        database={database}
+        setDatabase={setDatabase}
+        localStream={localStream}
+        setLocalStream={setLocalStream}
+        localConnection={localConnection}
+        setLocalConnection={setLocalConnection}
+        headerInputField={headerInputField}
+        commentators={commentators}
+        setCommentators={setCommentators}
+        editable={editable}
+      />
+      {/* {commentators.map((commentator, idx) => webcam(commentator, idx))}
       {editable && (
         <Button
           className="addCommentator"
@@ -254,7 +257,7 @@ const View = ({ editable }) => {
         >
           <AddIcon fontSize="small" />
         </Button>
-      )}
+      )} */}
     </div>
   );
 

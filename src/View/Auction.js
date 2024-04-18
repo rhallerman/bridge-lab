@@ -5,7 +5,7 @@ import { Context } from "../Context/Context";
 import input from "../Input/Input.json";
 
 const Auction = () => {
-  const { auction, explanations } = useContext(Context);
+  const { auction } = useContext(Context);
   const bidText = (bid) => {
     const suitChars = { 0: "\u2660", 1: "\u2665", 2: "\u2666", 3: "\u2663" };
     const text =

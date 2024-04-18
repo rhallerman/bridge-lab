@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
@@ -13,7 +13,6 @@ import {
 import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
-// import { play } from "./Play";
 
 const Control = ({ controlView }) => {
   let context = useContext(Context);
@@ -415,38 +414,27 @@ const Control = ({ controlView }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typedSuit, typedRank, assignTo]);
 
-  // const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
 
-  // useEffect(() => {
-  //   if (file !== null) {
-  //     const cloudName = "dpm9xofa3";
-  //     const unsignedUploadPreset = "xzbzngn1";
-  //     const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-  //     const fd = new FormData();
-  //     fd.append("upload_preset", unsignedUploadPreset);
-  //     fd.append("file", file);
-  //     fd.append("public_id", "");
-  //     fetch(url, {
-  //       method: "POST",
-  //       body: fd,
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         // File uploaded successfully
-  //         console.log("upload successful");
-  //         console.log(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error uploading the file:", error);
-  //       });
-  //   }
-  // }, [file]);
+  useEffect(() => {
+    if (file)
+      fetch("https://content.dropboxapi.com/2/files/upload", {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer sl.BzfwH5pceWZeKGn1dSpTWOKEc0FWT72cz1PjKd-SkVMzcqO8DfGsm3ZtKQVssUk1DxVwjFY1bhwWQvX7ox59PO_Zv7kxaMXCyNp0S8VjiHc4yyGYXQxMyPOcqhRxK4_v4MZAXWZjp9cU",
+          "Dropbox-API-Arg": `{"autorename":false,"mode":"add","mute":false,"path":"/${file.name}","strict_conflict":false}`,
+          "Content-Type": "application/octet-stream",
+        },
+        body: file,
+      });
+  }, [file]);
 
-  // const handleFile = (event) => {
-  //   setFile(event.target.files[0]);
-  // };
+  const handleFile = (event) => {
+    setFile(event.target.files[0]);
+  };
 
-  // const uploadButton = <input type="file" onChange={handleFile} />;
+  const uploadButton = <input type="file" onChange={handleFile} />;
 
   return (
     <div className="viewAndControls">
@@ -469,7 +457,7 @@ const Control = ({ controlView }) => {
           {assignToGroup}
           {suitGroup}
         </div>
-        {/* {uploadButton} */}
+        {uploadButton}
       </div>
     </div>
   );
