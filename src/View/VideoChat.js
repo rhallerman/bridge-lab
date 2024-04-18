@@ -19,10 +19,11 @@ const VideoChat = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [connectTo, setConnectTo] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
 
   const handleConnectTo = (event) =>
     setConnectTo(event.target.value.toUpperCase());
+
+  console.log(connectedUser);
 
   return (
     <div className="commentators">
@@ -74,7 +75,7 @@ const VideoChat = ({
           )}
         </div>
       </div>
-      {isConnected && (
+      {connectedUser && (
         <div className="commentator">
           <video
             id="remoteVideo"
@@ -110,7 +111,6 @@ const VideoChat = ({
               console.log(connectTo);
               await startCall(commentators[0], connectTo);
               console.log("started call");
-              setIsConnected(true);
             }}
           >
             <CallIcon fontSize="small" />

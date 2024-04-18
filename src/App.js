@@ -178,7 +178,7 @@ const App = () => {
       );
     } else return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controlView, localStream]);
+  }, [controlView, localStream, connectedUser]);
 
   return (
     <>
