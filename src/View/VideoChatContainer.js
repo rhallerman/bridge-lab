@@ -10,7 +10,7 @@ import {
   listenToConnectionEvents,
 } from "./RTCModule";
 import firebase from "firebase/compat/app";
-import "firebase/database";
+import "firebase/compat/database";
 import config from "./config";
 import {
   doOffer,
