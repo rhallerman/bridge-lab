@@ -9,9 +9,8 @@ import kibsyncLogo from "../Images/kibsync.png";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
-import VideoChatContainer from "./VideoChatContainer";
 
-const View = ({ editable }) => {
+const View = ({ editable, videoChatContainer }) => {
   let {
     metaEventName,
     setMetaEventName,
@@ -32,8 +31,6 @@ const View = ({ editable }) => {
     reality,
     suitChars,
     strToSuit,
-    commentators,
-    setCommentators,
   } = useContext(Context);
 
   const headerInputField = (label, value, onChange, textAlign) => (
@@ -215,11 +212,7 @@ const View = ({ editable }) => {
   //   </div>
   // );
 
-  const leftArea = (
-    <div className="leftArea">
-      <VideoChatContainer editable={editable} />
-    </div>
-  );
+  const leftArea = <div className="leftArea">{videoChatContainer}</div>;
 
   const [thisMatchResults, setThisMatchResults] = useState(true);
 

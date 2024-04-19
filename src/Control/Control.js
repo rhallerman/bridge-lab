@@ -14,7 +14,7 @@ import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
 
-const Control = ({ controlView }) => {
+const Control = ({ controlView, videoChatContainer }) => {
   let context = useContext(Context);
   let {
     hands,
@@ -287,64 +287,65 @@ const Control = ({ controlView }) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") {
-        if (!reality && liveEvents.length < input.events.length) {
-          forward();
-        }
-      } else if (e.key === "ArrowLeft") {
-        if (!reality) {
-          back();
-        }
-      } else if (e.key === " ") {
-        reality ? realityOff() : realityOn();
-      } else if (e.key === "P") {
-        if (!reality) setMode("play");
-      } else if (e.key === "A") {
-        if (!reality) setMode("assign");
-      } else if (e.key === "U") {
-        if (!reality) setMode("unassign");
-      } else if (e.key === "T") {
-        if (!reality) setMode("trade");
-      } else if (e.key === "x") {
-        if (!reality) setMode("shape");
-      } else if (e.key === "N") {
-        if (["assign", "shape"].includes(mode)) setAssignTo(0);
-      } else if (e.key === "S") {
-        if (["assign", "shape"].includes(mode)) setAssignTo(2);
-      } else if (e.key === "W") {
-        if (["assign", "shape"].includes(mode)) setAssignTo(3);
-      } else if (e.key === "E") {
-        if (["assign", "shape"].includes(mode)) setAssignTo(1);
-      } else if (e.key === "s") {
-        setTypedSuit(0);
-      } else if (e.key === "h") {
-        setTypedSuit(1);
-      } else if (e.key === "d") {
-        setTypedSuit(2);
-      } else if (e.key === "c") {
-        setTypedSuit(3);
-      } else if (e.key === "a") {
-        if (typedSuit !== null) setTypedRank(0);
-      } else if (e.key === "k") {
-        if (typedSuit !== null) setTypedRank(1);
-      } else if (e.key === "q") {
-        if (typedSuit !== null) setTypedRank(2);
-      } else if (e.key === "j") {
-        if (typedSuit !== null) setTypedRank(3);
-      } else if (e.key === "t") {
-        if (typedSuit !== null) setTypedRank(4);
-      } else if (e.keyCode >= 48 && e.keyCode <= 57) {
-        if (
-          ["play", "assign", "unassign", "trade"].includes(mode) &&
-          e.keyCode >= 50 &&
-          e.keyCode <= 57
-        ) {
-          // 2 - 9
-          if (typedSuit !== null) setTypedRank(62 - e.keyCode);
-        } else if (mode === "shape") {
-          setShape([...shape, parseInt(e.key)]);
-        }
-        /*
+      if (e.target.tagName === "BODY") {
+        if (e.key === "ArrowRight") {
+          if (!reality && liveEvents.length < input.events.length) {
+            forward();
+          }
+        } else if (e.key === "ArrowLeft") {
+          if (!reality) {
+            back();
+          }
+        } else if (e.key === " ") {
+          reality ? realityOff() : realityOn();
+        } else if (e.key === "P") {
+          if (!reality) setMode("play");
+        } else if (e.key === "A") {
+          if (!reality) setMode("assign");
+        } else if (e.key === "U") {
+          if (!reality) setMode("unassign");
+        } else if (e.key === "T") {
+          if (!reality) setMode("trade");
+        } else if (e.key === "x") {
+          if (!reality) setMode("shape");
+        } else if (e.key === "N") {
+          if (["assign", "shape"].includes(mode)) setAssignTo(0);
+        } else if (e.key === "S") {
+          if (["assign", "shape"].includes(mode)) setAssignTo(2);
+        } else if (e.key === "W") {
+          if (["assign", "shape"].includes(mode)) setAssignTo(3);
+        } else if (e.key === "E") {
+          if (["assign", "shape"].includes(mode)) setAssignTo(1);
+        } else if (e.key === "s") {
+          setTypedSuit(0);
+        } else if (e.key === "h") {
+          setTypedSuit(1);
+        } else if (e.key === "d") {
+          setTypedSuit(2);
+        } else if (e.key === "c") {
+          setTypedSuit(3);
+        } else if (e.key === "a") {
+          if (typedSuit !== null) setTypedRank(0);
+        } else if (e.key === "k") {
+          if (typedSuit !== null) setTypedRank(1);
+        } else if (e.key === "q") {
+          if (typedSuit !== null) setTypedRank(2);
+        } else if (e.key === "j") {
+          if (typedSuit !== null) setTypedRank(3);
+        } else if (e.key === "t") {
+          if (typedSuit !== null) setTypedRank(4);
+        } else if (e.keyCode >= 48 && e.keyCode <= 57) {
+          if (
+            ["play", "assign", "unassign", "trade"].includes(mode) &&
+            e.keyCode >= 50 &&
+            e.keyCode <= 57
+          ) {
+            // 2 - 9
+            if (typedSuit !== null) setTypedRank(62 - e.keyCode);
+          } else if (mode === "shape") {
+            setShape([...shape, parseInt(e.key)]);
+          }
+          /*
         A = 0
         K = 1
         Q = 2
@@ -359,8 +360,9 @@ const Control = ({ controlView }) => {
         3 = 11
         2 = 12
         */
-      } else {
-        // console.log(e.key);
+        } else {
+          // console.log(e.key);
+        }
       }
     };
     document.addEventListener("keydown", handleKeyDown);
@@ -438,7 +440,7 @@ const Control = ({ controlView }) => {
 
   return (
     <div className="viewAndControls">
-      <View editable={true} />
+      <View editable={true} videoChatContainer={videoChatContainer} />
       {/* {renderHand(
         unassignedCards,
         undefined,

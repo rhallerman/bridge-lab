@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import "firebase/database";
 import { IconButton, TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import CallIcon from "@mui/icons-material/Call";
+import AddIcon from "@mui/icons-material/Add";
 import "./View.css";
 import { Context } from "../Context/Context";
 
@@ -51,10 +51,15 @@ const VideoChat = ({
               muted
             />
           )}
-          {editable ? (
+          {(!editable || isLoggedIn) && <div className="name">{username}</div>}
+          {editable && !isLoggedIn && (
             <TextField
               value={username}
-              onChange={(e) => setUsername(e.target.value.toUpperCase())}
+              onChange={(e) => {
+                setUsername(e.target.value.toUpperCase());
+                e.stopPropagation();
+                e.preventDefault();
+              }}
               size="small"
               inputProps={{
                 style: { color: "white", padding: 0 },
@@ -63,8 +68,6 @@ const VideoChat = ({
                 style: { color: "#fff" },
               }}
             />
-          ) : (
-            <div className="name">{username}</div>
           )}
         </div>
         {connectedUser && !editable && (
@@ -97,7 +100,7 @@ const VideoChat = ({
 
   const renderForms = () => {
     return isLoggedIn ? (
-      <div>
+      <div className="callTo">
         <TextField
           value={userToCall}
           onChange={(e) => setUserToCall(e.target.value.toUpperCase())}
@@ -110,22 +113,20 @@ const VideoChat = ({
           }}
         />
         <IconButton onClick={onStartCallClicked}>
-          <CallIcon />
+          <AddIcon />
         </IconButton>
       </div>
     ) : (
-      <div key="b" className="form">
-        <IconButton onClick={onLoginClicked}>
-          <CheckIcon />
-        </IconButton>
-      </div>
+      <IconButton onClick={onLoginClicked}>
+        <CheckIcon />
+      </IconButton>
     );
   };
 
   return (
     <section id="container">
       {renderVideos()}
-      {connectedUser || !editable ? null : renderForms()}
+      {editable && renderForms()}
     </section>
   );
 };

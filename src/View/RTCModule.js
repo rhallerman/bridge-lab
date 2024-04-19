@@ -57,15 +57,12 @@ export const listenToConnectionEvents = (
     }
   };
   conn.ontrack = function (e) {
-    console.log(remoteVideoRef1.current);
+    const stream = e.streams[0];
     if (remoteVideoRef1.current) {
-      remoteVideoRef1.current.srcObject = e.streams[0];
-      remoteVideoRef1.current.muted = true;
+      remoteVideoRef1.current.srcObject = stream.clone();
     }
-    console.log(remoteVideoRef2.current);
     if (remoteVideoRef2.current) {
-      remoteVideoRef2.current.srcObject = e.streams[0];
-      remoteVideoRef2.current.muted = true;
+      remoteVideoRef2.current.srcObject = stream.clone();
     }
   };
 };

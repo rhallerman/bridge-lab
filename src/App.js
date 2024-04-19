@@ -1,8 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext, useRef } from "react";
 import "./App.css";
 import View from "./View/View";
 import Control from "./Control/Control";
 import ReactDOM from "react-dom";
+import { Context } from "./Context/Context";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
+import {
+  createOffer,
+  startCall,
+  sendAnswer,
+  addCandidate,
+  listenToConnectionEvents,
+} from "./View/RTCModule";
+import { doOffer, doAnswer, doLogin, doCandidate } from "./View/FirebaseModule";
+import VideoChat from "./View/VideoChat";
+import config from "./View/config";
+import "webrtc-adapter";
 
 function copyStyles(sourceDoc, targetDoc) {
   Array.from(sourceDoc.styleSheets).forEach((styleSheet) => {
@@ -28,6 +42,115 @@ function copyStyles(sourceDoc, targetDoc) {
 }
 
 function App() {
+  const { setConnectedUser } = useContext(Context);
+
+  const [database, setDatabase] = useState(null);
+  const [localStream, setLocalStream] = useState(null);
+  const [localConnection, setLocalConnection] = useState(null);
+
+  const localStreamRef = useRef();
+  localStreamRef.current = localStream;
+
+  const localVideoRef1 = useRef(null);
+  const localVideoRef2 = useRef(null);
+  const remoteVideoRef1 = useRef(null);
+  const remoteVideoRef2 = useRef(null);
+
+  useEffect(() => {
+    firebase.initializeApp(config);
+    const initiateLocalStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        setLocalStream(stream);
+        if (localVideoRef1.current) {
+          localVideoRef1.current.srcObject = stream.clone();
+        }
+        if (localVideoRef2.current) {
+          localVideoRef2.current.srcObject = stream.clone();
+        }
+      } catch (exception) {
+        console.error(exception);
+      }
+    };
+    initiateLocalStream();
+    const initiateConnection = async () => {
+      try {
+        var configuration = {
+          iceServers: [{ urls: "stun:stun2.1.google.com:19302" }],
+        };
+        const connection = new RTCPeerConnection(configuration);
+        setLocalConnection(connection);
+      } catch (exception) {
+        console.error(exception);
+      }
+    };
+    initiateConnection();
+    setDatabase(firebase.database());
+  }, []);
+
+  const startCallHelper = async (username, userToCall) => {
+    listenToConnectionEvents(
+      localConnection,
+      username,
+      userToCall,
+      database,
+      remoteVideoRef1,
+      remoteVideoRef2,
+      doCandidate
+    );
+    createOffer(
+      localConnection,
+      localStreamRef.current,
+      userToCall,
+      doOffer,
+      database,
+      username
+    );
+  };
+
+  const onLogin = async (username) => {
+    return await doLogin(username, database, handleUpdate);
+  };
+
+  const handleUpdate = (notif, username) => {
+    if (notif) {
+      switch (notif.type) {
+        case "offer":
+          setConnectedUser(notif.from);
+          listenToConnectionEvents(
+            localConnection,
+            username,
+            notif.from,
+            database,
+            remoteVideoRef1,
+            remoteVideoRef2,
+            doCandidate
+          );
+          sendAnswer(
+            localConnection,
+            localStreamRef.current,
+            notif,
+            doAnswer,
+            database,
+            username
+          );
+          break;
+        case "answer":
+          setConnectedUser(notif.from);
+          startCall(localConnection, notif);
+          break;
+        case "candidate":
+          addCandidate(localConnection, notif);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   const [controlView, setControlView] = useState(null);
 
   useEffect(() => {
@@ -43,7 +166,20 @@ function App() {
   const controlViewWindow = useMemo(() => {
     if (controlView?.document?.body) {
       return ReactDOM.createPortal(
-        <Control controlView={controlView} />,
+        <Control
+          controlView={controlView}
+          videoChatContainer={
+            <VideoChat
+              startCall={startCallHelper}
+              onLogin={onLogin}
+              localVideoRef1={localVideoRef1}
+              localVideoRef2={localVideoRef2}
+              remoteVideoRef1={remoteVideoRef1}
+              remoteVideoRef2={remoteVideoRef2}
+              editable={true}
+            />
+          }
+        />,
         controlView.document.body
       );
     } else return null;
@@ -52,7 +188,20 @@ function App() {
 
   return (
     <>
-      <View editable={false} />
+      <View
+        editable={false}
+        videoChatContainer={
+          <VideoChat
+            startCall={startCallHelper}
+            onLogin={onLogin}
+            localVideoRef1={localVideoRef1}
+            localVideoRef2={localVideoRef2}
+            remoteVideoRef1={remoteVideoRef1}
+            remoteVideoRef2={remoteVideoRef2}
+            editable={false}
+          />
+        }
+      />
       {controlViewWindow}
     </>
   );

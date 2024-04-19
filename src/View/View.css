@@ -739,3 +739,9 @@
 .pastContract {
     display: flex;
 }
+
+.callTo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
