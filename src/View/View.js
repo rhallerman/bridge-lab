@@ -11,15 +11,7 @@ import AnalysisTable from "./AnalysisTable";
 import Auction from "./Auction";
 import VideoChatContainer from "./VideoChatContainer";
 
-const View = ({
-  editable,
-  localStream,
-  startCall,
-  onLogin,
-  setLocalVideoRef,
-  setRemoteVideoRef,
-  connectedUser,
-}) => {
+const View = ({ editable }) => {
   let {
     metaEventName,
     setMetaEventName,
@@ -225,7 +217,7 @@ const View = ({
 
   const leftArea = (
     <div className="leftArea">
-      <VideoChatContainer />
+      <VideoChatContainer editable={editable} />
     </div>
   );
 

@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "firebase/database";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CallIcon from "@mui/icons-material/Call";
 import "./View.css";
+import { Context } from "../Context/Context";
 
 const VideoChat = ({
   onLogin,
   startCall,
   localVideoRef,
   remoteVideoRef,
-  connectedUser,
+  editable,
 }) => {
+  const { username, setUsername, connectedUser } = useContext(Context);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userToCall, setUserToCall] = useState(null);
-  const [username, setUsername] = useState(null);
+  const [userToCall, setUserToCall] = useState("");
 
   const onLoginClicked = async () => {
     await onLogin(username);
@@ -30,7 +32,21 @@ const VideoChat = ({
       <div className="commentators">
         <div className="commentator">
           <video ref={localVideoRef} autoPlay playsInline className="webcam" />
-          <div className="name">{username?.toUpperCase()}</div>
+          {editable ? (
+            <TextField
+              value={username}
+              onChange={(e) => setUsername(e.target.value.toUpperCase())}
+              size="small"
+              inputProps={{
+                style: { color: "white", padding: 0 },
+              }}
+              InputLabelProps={{
+                style: { color: "#fff" },
+              }}
+            />
+          ) : (
+            <div className="name">{username}</div>
+          )}
         </div>
         {connectedUser && (
           <div className="commentator">
@@ -40,7 +56,7 @@ const VideoChat = ({
               playsInline
               className="webcam"
             />
-            <div className="name">{connectedUser?.toUpperCase()}</div>
+            <div className="name">{connectedUser}</div>
           </div>
         )}
       </div>
@@ -49,12 +65,17 @@ const VideoChat = ({
 
   const renderForms = () => {
     return isLoggedIn ? (
-      <div key="a">
-        <label>Call to</label>
-        <input
+      <div>
+        <TextField
           value={userToCall}
-          type="text"
-          onChange={(e) => setUserToCall(e.target.value)}
+          onChange={(e) => setUserToCall(e.target.value.toUpperCase())}
+          size="small"
+          inputProps={{
+            style: { color: "white", padding: 0 },
+          }}
+          InputLabelProps={{
+            style: { color: "#fff" },
+          }}
         />
         <IconButton onClick={onStartCallClicked}>
           <CallIcon />
@@ -62,11 +83,6 @@ const VideoChat = ({
       </div>
     ) : (
       <div key="b" className="form">
-        <input
-          value={username}
-          type="text"
-          onChange={(e) => setUsername(e.target.value)}
-        />
         <IconButton onClick={onLoginClicked}>
           <CheckIcon />
         </IconButton>
@@ -77,7 +93,7 @@ const VideoChat = ({
   return (
     <section id="container">
       {renderVideos()}
-      {connectedUser ? null : renderForms()}
+      {connectedUser || !editable ? null : renderForms()}
     </section>
   );
 };

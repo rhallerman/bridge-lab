@@ -446,15 +446,7 @@ const Control = ({
 
   return (
     <div className="viewAndControls">
-      <View
-        editable={true}
-        localStream={localStream}
-        startCall={startCall}
-        onLogin={onLogin}
-        setLocalVideoRef={setLocalVideoRef}
-        setRemoteVideoRef={setRemoteVideoRef}
-        connectedUser={connectedUser}
-      />
+      <View editable={true} />
       {/* {renderHand(
         unassignedCards,
         undefined,

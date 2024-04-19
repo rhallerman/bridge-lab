@@ -57,6 +57,8 @@ export const ContextProvider = ({ children }) => {
   const [nextEventID, setNextEventID] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
   const [commentators, setCommentators] = useState([""]);
+  const [username, setUsername] = useState("");
+  const [connectedUser, setConnectedUser] = useState(null);
 
   const handsRef = useRef();
   handsRef.current = hands;
@@ -939,6 +941,10 @@ export const ContextProvider = ({ children }) => {
         renderHand,
         commentators,
         setCommentators,
+        username,
+        setUsername,
+        connectedUser,
+        setConnectedUser,
       }}
     >
       {children}

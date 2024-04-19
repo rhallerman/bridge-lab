@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   createOffer,
   startCall,
@@ -12,10 +12,12 @@ import config from "./config";
 import { doOffer, doAnswer, doLogin, doCandidate } from "./FirebaseModule";
 import "webrtc-adapter";
 import VideoChat from "./VideoChat";
+import { Context } from "../Context/Context";
 
-const VideoChatContainer = () => {
+const VideoChatContainer = ({ editable }) => {
+  const { connectedUser, setConnectedUser } = useContext(Context);
+
   const [database, setDatabase] = useState(null);
-  const [connectedUser, setConnectedUser] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [localConnection, setLocalConnection] = useState(null);
 
@@ -118,7 +120,7 @@ const VideoChatContainer = () => {
       onLogin={onLogin}
       localVideoRef={localVideoRef}
       remoteVideoRef={remoteVideoRef}
-      connectedUser={connectedUser}
+      editable={editable}
     />
   );
 };
