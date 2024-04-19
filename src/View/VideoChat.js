@@ -33,7 +33,7 @@ const VideoChat = ({
     return (
       <div className="commentators">
         <div className="commentator">
-          {editable && (
+          {!editable && (
             <video
               ref={localVideoRef1}
               autoPlay
@@ -42,7 +42,7 @@ const VideoChat = ({
               muted
             />
           )}
-          {!editable && (
+          {editable && (
             <video
               ref={localVideoRef2}
               autoPlay
@@ -51,8 +51,8 @@ const VideoChat = ({
               muted
             />
           )}
-          {(editable || isLoggedIn) && <div className="name">{username}</div>}
-          {!editable && !isLoggedIn && (
+          {(!editable || isLoggedIn) && <div className="name">{username}</div>}
+          {editable && !isLoggedIn && (
             <TextField
               value={username}
               onChange={(e) => {
@@ -70,7 +70,7 @@ const VideoChat = ({
             />
           )}
         </div>
-        {connectedUser && editable && (
+        {connectedUser && !editable && (
           <div className="commentator">
             <video
               ref={remoteVideoRef1}
@@ -82,7 +82,7 @@ const VideoChat = ({
             <div className="name">{connectedUser}</div>
           </div>
         )}
-        {connectedUser && !editable && (
+        {connectedUser && editable && (
           <div className="commentator">
             <video
               ref={remoteVideoRef2}
@@ -125,7 +125,7 @@ const VideoChat = ({
   return (
     <section id="container">
       {renderVideos()}
-      {!editable && renderForms()}
+      {editable && renderForms()}
     </section>
   );
 };
