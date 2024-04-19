@@ -48,7 +48,7 @@ const VideoChat = ({
             <div className="name">{username}</div>
           )}
         </div>
-        {connectedUser && (
+        {!editable && connectedUser && (
           <div className="commentator">
             <video
               ref={remoteVideoRef}
