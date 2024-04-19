@@ -89,7 +89,6 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
-              muted
             />
             <div className="name">{connectedUser}</div>
           </div>
