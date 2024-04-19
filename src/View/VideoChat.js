@@ -48,6 +48,7 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
+              muted
             />
           )}
           {(editable || isLoggedIn) && <div className="name">{username}</div>}
