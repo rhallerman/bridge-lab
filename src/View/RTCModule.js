@@ -47,8 +47,7 @@ export const listenToConnectionEvents = (
   username,
   remoteUsername,
   database,
-  remoteVideoRef1,
-  remoteVideoRef2,
+  remoteVideoRef,
   doCandidate
 ) => {
   conn.onicecandidate = function (event) {
@@ -57,13 +56,9 @@ export const listenToConnectionEvents = (
     }
   };
   conn.ontrack = function (e) {
-    if (remoteVideoRef1.current.srcObject !== e.streams[0]) {
-      remoteVideoRef1.current.srcObject = e.streams[0];
-      remoteVideoRef1.current.muted = true;
-    }
-    if (remoteVideoRef2.current.srcObject !== e.streams[0]) {
-      remoteVideoRef2.current.srcObject = e.streams[0];
-      remoteVideoRef2.current.muted = true;
+    if (remoteVideoRef.current.srcObject !== e.streams[0]) {
+      remoteVideoRef.current.srcObject = e.streams[0];
+      remoteVideoRef.current.muted = true;
     }
   };
 };

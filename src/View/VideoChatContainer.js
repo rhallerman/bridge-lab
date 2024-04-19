@@ -21,10 +21,8 @@ const VideoChatContainer = ({ editable }) => {
   const [localStream, setLocalStream] = useState(null);
   const [localConnection, setLocalConnection] = useState(null);
 
-  const localVideoRef1 = useRef(null);
-  const localVideoRef2 = useRef(null);
-  const remoteVideoRef1 = useRef(null);
-  const remoteVideoRef2 = useRef(null);
+  const localVideoRef = useRef(null);
+  const remoteVideoRef = useRef(null);
 
   useEffect(() => {
     firebase.initializeApp(config);
@@ -35,11 +33,8 @@ const VideoChatContainer = ({ editable }) => {
           audio: true,
         });
         setLocalStream(stream);
-        if (localVideoRef1.current) {
-          localVideoRef1.current.srcObject = stream;
-        }
-        if (localVideoRef2.current) {
-          localVideoRef2.current.srcObject = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
         }
       } catch (exception) {
         console.error(exception);
@@ -67,8 +62,7 @@ const VideoChatContainer = ({ editable }) => {
       username,
       userToCall,
       database,
-      remoteVideoRef1,
-      remoteVideoRef2,
+      remoteVideoRef,
       doCandidate
     );
     createOffer(
@@ -95,8 +89,7 @@ const VideoChatContainer = ({ editable }) => {
             username,
             notif.from,
             database,
-            remoteVideoRef1,
-            remoteVideoRef2,
+            remoteVideoRef,
             doCandidate
           );
           sendAnswer(
@@ -125,10 +118,8 @@ const VideoChatContainer = ({ editable }) => {
     <VideoChat
       startCall={startCallHelper}
       onLogin={onLogin}
-      localVideoRef1={localVideoRef1}
-      localVideoRef2={localVideoRef2}
-      remoteVideoRef1={remoteVideoRef1}
-      remoteVideoRef2={remoteVideoRef2}
+      localVideoRef={localVideoRef}
+      remoteVideoRef={remoteVideoRef}
       editable={editable}
     />
   );

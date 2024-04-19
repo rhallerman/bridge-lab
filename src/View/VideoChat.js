@@ -9,10 +9,8 @@ import { Context } from "../Context/Context";
 const VideoChat = ({
   onLogin,
   startCall,
-  localVideoRef1,
-  localVideoRef2,
-  remoteVideoRef1,
-  remoteVideoRef2,
+  localVideoRef,
+  remoteVideoRef,
   editable,
 }) => {
   const { username, setUsername, connectedUser } = useContext(Context);
@@ -33,23 +31,8 @@ const VideoChat = ({
     return (
       <div className="commentators">
         <div className="commentator">
-          {editable && (
-            <video
-              ref={localVideoRef2}
-              autoPlay
-              playsInline
-              className="webcam"
-            />
-          )}
-          {!editable && (
-            <video
-              ref={localVideoRef1}
-              autoPlay
-              playsInline
-              className="webcam"
-            />
-          )}
-          {editable && (
+          <video ref={localVideoRef} autoPlay playsInline className="webcam" />
+          {editable ? (
             <TextField
               value={username}
               onChange={(e) => setUsername(e.target.value.toUpperCase())}
@@ -61,24 +44,14 @@ const VideoChat = ({
                 style: { color: "#fff" },
               }}
             />
+          ) : (
+            <div className="name">{username}</div>
           )}
-          {!editable && <div className="name">{username}</div>}
         </div>
-        {connectedUser && editable && (
+        {connectedUser && (
           <div className="commentator">
             <video
-              ref={remoteVideoRef2}
-              autoPlay
-              playsInline
-              className="webcam"
-            />
-            <div className="name">{connectedUser}</div>
-          </div>
-        )}
-        {connectedUser && !editable && (
-          <div className="commentator">
-            <video
-              ref={remoteVideoRef1}
+              ref={remoteVideoRef}
               autoPlay
               playsInline
               className="webcam"

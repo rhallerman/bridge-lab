@@ -19,10 +19,8 @@ const Control = ({
   localStream,
   startCall,
   onLogin,
-  setLocalVideoRef1,
-  setLocalVideoRef2,
-  setRemoteVideoRef1,
-  setRemoteVideoRef2,
+  setLocalVideoRef,
+  setRemoteVideoRef,
   connectedUser,
 }) => {
   let context = useContext(Context);
@@ -448,7 +446,9 @@ const Control = ({
 
   return (
     <div className="viewAndControls">
-      <View editable={true} />
+      <View
+        editable={true}
+      />
       {/* {renderHand(
         unassignedCards,
         undefined,
