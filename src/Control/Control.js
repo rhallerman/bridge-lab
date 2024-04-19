@@ -19,8 +19,10 @@ const Control = ({
   localStream,
   startCall,
   onLogin,
-  setLocalVideoRef,
-  setRemoteVideoRef,
+  setLocalVideoRef1,
+  setLocalVideoRef2,
+  setRemoteVideoRef1,
+  setRemoteVideoRef2,
   connectedUser,
 }) => {
   let context = useContext(Context);
