@@ -48,7 +48,6 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
-              muted
             />
           )}
           {(editable || isLoggedIn) && <div className="name">{username}</div>}
@@ -89,7 +88,6 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
-              muted
             />
             <div className="name">{connectedUser}</div>
           </div>
