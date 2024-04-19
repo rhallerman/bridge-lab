@@ -88,28 +88,40 @@ const AnalysisTable = () => {
     }
   };
 
-  const northHand = (
-    <div key="north analysis">
-      {renderHand(0, "Kalita", "card", false, handleCardClicked, true)}
-    </div>
+  const northHand = renderHand(
+    0,
+    "Kalita",
+    "card",
+    false,
+    handleCardClicked,
+    true
   );
 
-  const southHand = (
-    <div key="south analysis">
-      {renderHand(2, "Klukowski", "card", false, handleCardClicked, true)}
-    </div>
+  const southHand = renderHand(
+    2,
+    "Klukowski",
+    "card",
+    false,
+    handleCardClicked,
+    true
   );
 
-  const eastHand = (
-    <div key="east analysis">
-      {renderHand(1, "Di Franco", "card", false, handleCardClicked, true)}
-    </div>
+  const eastHand = renderHand(
+    1,
+    "Di Franco",
+    "card",
+    false,
+    handleCardClicked,
+    true
   );
 
-  const westHand = (
-    <div key="west analysis">
-      {renderHand(3, "Manno", "card", false, handleCardClicked, true)}
-    </div>
+  const westHand = renderHand(
+    3,
+    "Manno",
+    "card",
+    false,
+    handleCardClicked,
+    true
   );
 
   return (
