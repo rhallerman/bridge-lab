@@ -14,15 +14,7 @@ import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
 
-const Control = ({
-  controlView,
-  localStream,
-  startCall,
-  onLogin,
-  setLocalVideoRef,
-  setRemoteVideoRef,
-  connectedUser,
-}) => {
+const Control = ({ controlView }) => {
   let context = useContext(Context);
   let {
     hands,
@@ -446,9 +438,7 @@ const Control = ({
 
   return (
     <div className="viewAndControls">
-      <View
-        editable={true}
-      />
+      <View editable={true} />
       {/* {renderHand(
         unassignedCards,
         undefined,

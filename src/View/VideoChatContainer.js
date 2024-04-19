@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import {
   createOffer,
   startCall,
@@ -21,8 +27,10 @@ const VideoChatContainer = ({ editable }) => {
   const [localStream, setLocalStream] = useState(null);
   const [localConnection, setLocalConnection] = useState(null);
 
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const localVideoRef1 = useRef(null);
+  const localVideoRef2 = useRef(null);
+  const remoteVideoRef1 = useRef(null);
+  const remoteVideoRef2 = useRef(null);
 
   useEffect(() => {
     firebase.initializeApp(config);
@@ -33,8 +41,11 @@ const VideoChatContainer = ({ editable }) => {
           audio: true,
         });
         setLocalStream(stream);
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
+        if (localVideoRef1.current) {
+          localVideoRef1.current.srcObject = stream;
+        }
+        if (localVideoRef2.current) {
+          localVideoRef2.current.srcObject = stream;
         }
       } catch (exception) {
         console.error(exception);
@@ -62,7 +73,8 @@ const VideoChatContainer = ({ editable }) => {
       username,
       userToCall,
       database,
-      remoteVideoRef,
+      remoteVideoRef1,
+      remoteVideoRef2,
       doCandidate
     );
     createOffer(
@@ -89,7 +101,8 @@ const VideoChatContainer = ({ editable }) => {
             username,
             notif.from,
             database,
-            remoteVideoRef,
+            remoteVideoRef1,
+            remoteVideoRef2,
             doCandidate
           );
           sendAnswer(
@@ -118,8 +131,10 @@ const VideoChatContainer = ({ editable }) => {
     <VideoChat
       startCall={startCallHelper}
       onLogin={onLogin}
-      localVideoRef={localVideoRef}
-      remoteVideoRef={remoteVideoRef}
+      localVideoRef1={localVideoRef1}
+      localVideoRef2={localVideoRef2}
+      remoteVideoRef1={remoteVideoRef1}
+      remoteVideoRef2={remoteVideoRef2}
       editable={editable}
     />
   );

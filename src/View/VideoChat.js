@@ -9,8 +9,10 @@ import { Context } from "../Context/Context";
 const VideoChat = ({
   onLogin,
   startCall,
-  localVideoRef,
-  remoteVideoRef,
+  localVideoRef1,
+  localVideoRef2,
+  remoteVideoRef1,
+  remoteVideoRef2,
   editable,
 }) => {
   const { username, setUsername, connectedUser } = useContext(Context);
@@ -31,7 +33,24 @@ const VideoChat = ({
     return (
       <div className="commentators">
         <div className="commentator">
-          <video ref={localVideoRef} autoPlay playsInline className="webcam" />
+          {!editable && (
+            <video
+              ref={localVideoRef1}
+              autoPlay
+              playsInline
+              className="webcam"
+              muted
+            />
+          )}
+          {editable && (
+            <video
+              ref={localVideoRef2}
+              autoPlay
+              playsInline
+              className="webcam"
+              muted
+            />
+          )}
           {editable ? (
             <TextField
               value={username}
@@ -48,13 +67,26 @@ const VideoChat = ({
             <div className="name">{username}</div>
           )}
         </div>
-        {connectedUser && (
+        {connectedUser && !editable && (
           <div className="commentator">
             <video
-              ref={remoteVideoRef}
+              ref={remoteVideoRef1}
               autoPlay
               playsInline
               className="webcam"
+              muted
+            />
+            <div className="name">{connectedUser}</div>
+          </div>
+        )}
+        {connectedUser && editable && (
+          <div className="commentator">
+            <video
+              ref={remoteVideoRef2}
+              autoPlay
+              playsInline
+              className="webcam"
+              muted
             />
             <div className="name">{connectedUser}</div>
           </div>
