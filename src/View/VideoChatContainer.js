@@ -30,7 +30,7 @@ const VideoChatContainer = ({ editable }) => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
-          audio: false,
+          audio: true,
         });
         setLocalStream(stream);
         if (localVideoRef.current) {

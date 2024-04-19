@@ -22,7 +22,7 @@ export const initiateLocalStream = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
-      audio: false,
+      audio: true,
     });
     return stream;
   } catch (exception) {
