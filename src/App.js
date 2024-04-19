@@ -151,40 +151,40 @@ function App() {
     }
   };
 
-  const [controlView, setControlView] = useState(null);
+  // const [controlView, setControlView] = useState(null);
 
-  useEffect(() => {
-    setControlView(window.open());
-  }, []);
+  // useEffect(() => {
+  //   setControlView(window.open());
+  // }, []);
 
-  useEffect(() => {
-    if (controlView?.document?.body) {
-      copyStyles(document, controlView.document);
-    }
-  }, [controlView?.document]);
+  // useEffect(() => {
+  //   if (controlView?.document?.body) {
+  //     copyStyles(document, controlView.document);
+  //   }
+  // }, [controlView?.document]);
 
-  const controlViewWindow = useMemo(() => {
-    if (controlView?.document?.body) {
-      return ReactDOM.createPortal(
-        <Control
-          controlView={controlView}
-          videoChatContainer={
-            <VideoChat
-              startCall={startCallHelper}
-              onLogin={onLogin}
-              localVideoRef1={localVideoRef1}
-              localVideoRef2={localVideoRef2}
-              remoteVideoRef1={remoteVideoRef1}
-              remoteVideoRef2={remoteVideoRef2}
-              editable={true}
-            />
-          }
-        />,
-        controlView.document.body
-      );
-    } else return null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controlView]);
+  // const controlViewWindow = useMemo(() => {
+  //   if (controlView?.document?.body) {
+  //     return ReactDOM.createPortal(
+  //       <Control
+  //         controlView={controlView}
+  //         videoChatContainer={
+  //           <VideoChat
+  //             startCall={startCallHelper}
+  //             onLogin={onLogin}
+  //             localVideoRef1={localVideoRef1}
+  //             localVideoRef2={localVideoRef2}
+  //             remoteVideoRef1={remoteVideoRef1}
+  //             remoteVideoRef2={remoteVideoRef2}
+  //             editable={true}
+  //           />
+  //         }
+  //       />,
+  //       controlView.document.body
+  //     );
+  //   } else return null;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [controlView]);
 
   return (
     <>
@@ -202,7 +202,7 @@ function App() {
           />
         }
       />
-      {controlViewWindow}
+      {/* {controlViewWindow} */}
     </>
   );
 }
