@@ -27,6 +27,7 @@ const VideoChat = ({
 
   const onStartCallClicked = () => {
     startCall(username, userToCall);
+    setUserToCall("");
   };
 
   const renderVideos = () => {
@@ -97,35 +98,34 @@ const VideoChat = ({
     );
   };
 
-  const renderForms = () => {
-    return isLoggedIn ? (
-      <div className="callTo">
-        <TextField
-          value={userToCall}
-          onChange={(e) => setUserToCall(e.target.value.toUpperCase())}
-          size="small"
-          inputProps={{
-            style: { color: "white", padding: 0 },
-          }}
-          InputLabelProps={{
-            style: { color: "#fff" },
-          }}
-        />
-        <IconButton onClick={onStartCallClicked}>
-          <AddIcon />
-        </IconButton>
-      </div>
-    ) : (
-      <IconButton onClick={onLoginClicked}>
-        <CheckIcon />
-      </IconButton>
-    );
-  };
-
   return (
     <section id="container">
       {renderVideos()}
-      {editable && renderForms()}
+      {editable &&
+        (isLoggedIn ? (
+          <div className="callTo">
+            <TextField
+              value={userToCall}
+              onChange={(e) => setUserToCall(e.target.value.toUpperCase())}
+              size="small"
+              inputProps={{
+                style: { color: "white", padding: 0 },
+              }}
+              InputLabelProps={{
+                style: { color: "#fff" },
+              }}
+            />
+            <IconButton onClick={onStartCallClicked} disabled={!userToCall}>
+              <AddIcon />
+            </IconButton>
+          </div>
+        ) : (
+          <div className="callTo">
+            <IconButton onClick={onLoginClicked} disabled={!username}>
+              <CheckIcon />
+            </IconButton>
+          </div>
+        ))}
     </section>
   );
 };

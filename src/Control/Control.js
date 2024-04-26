@@ -13,9 +13,16 @@ import {
 import { Context } from "../Context/Context";
 import View from "../View/View";
 import input from "../Input/Input.json";
+import {
+  setDBReality,
+  setDBMode,
+  setDBAssignTo,
+  setDBTypedSuit,
+  setDBTypedRank,
+  setDBLockedBy,
+} from "../View/FirebaseModule";
 
-const Control = ({ controlView, videoChatContainer }) => {
-  let context = useContext(Context);
+const Control = ({ controlView, videoChatContainer, database }) => {
   let {
     hands,
     handsDup,
@@ -46,7 +53,11 @@ const Control = ({ controlView, videoChatContainer }) => {
     trade,
     shape,
     setShape,
-  } = context;
+    username,
+    connectedUser,
+    lockedBy,
+    setLockedBy,
+  } = useContext(Context);
 
   const broadcastTypeGroup = (
     <FormControl className="radioGroupHeader">
@@ -93,12 +104,58 @@ const Control = ({ controlView, videoChatContainer }) => {
     </FormControl>
   );
 
+  const lockedBySwitch = (
+    <FormControlLabel
+      control={
+        <Switch
+          checked={!!lockedBy}
+          onChange={(event) => {
+            if (event.target.checked) {
+              if (connectedUser)
+                setDBLockedBy(connectedUser, database, username, username);
+              setLockedBy(username);
+            } else {
+              if (connectedUser)
+                setDBLockedBy(connectedUser, database, username, null);
+              setLockedBy(null);
+            }
+          }}
+        />
+      }
+      label={
+        lockedBy ? (
+          `Locked by ${lockedBy}`
+        ) : (
+          <>
+            <u>L</u>ock
+          </>
+        )
+      }
+      disabled={lockedBy && lockedBy !== username}
+    />
+  );
+
   const analysisSwitch = (
     <FormControlLabel
       control={
         <Switch
           checked={!reality}
-          onChange={() => (reality ? realityOff() : realityOn())}
+          onChange={(event) => {
+            console.log(event.target.checked);
+            if (event.target.checked) {
+              if (connectedUser) {
+                setDBLockedBy(connectedUser, database, username, username);
+                setDBReality(connectedUser, database, username, false);
+              }
+              setLockedBy(username);
+              realityOff();
+            } else {
+              if (connectedUser) {
+                setDBReality(connectedUser, database, username, true);
+              }
+              realityOn();
+            }
+          }}
         />
       }
       label={
@@ -106,6 +163,7 @@ const Control = ({ controlView, videoChatContainer }) => {
           Analysis Mode (<u> </u>)
         </>
       }
+      disabled={lockedBy && lockedBy !== username}
     />
   );
 
@@ -119,15 +177,23 @@ const Control = ({ controlView, videoChatContainer }) => {
         />
       }
       label="Show played cards"
+      disabled={lockedBy && lockedBy !== username}
     />
   );
 
   const modeGroup = (
-    <FormControl disabled={reality} className="radioGroupHeader">
+    <FormControl
+      disabled={reality || (lockedBy && lockedBy !== username)}
+      className="radioGroupHeader"
+    >
       <FormLabel>Mode:</FormLabel>
       <RadioGroup
         value={mode}
-        onChange={(event) => setMode(event.target.value)}
+        onChange={(event) => {
+          if (connectedUser)
+            setDBMode(connectedUser, database, username, event.target.value);
+          setMode(event.target.value);
+        }}
       >
         <FormControlLabel
           value="play"
@@ -184,11 +250,23 @@ const Control = ({ controlView, videoChatContainer }) => {
   );
 
   const assignToGroup = (
-    <FormControl disabled={reality} className="radioGroupHeader">
+    <FormControl
+      disabled={reality || (lockedBy && lockedBy !== username)}
+      className="radioGroupHeader"
+    >
       <FormLabel>Player:</FormLabel>
       <RadioGroup
         value={assignTo}
-        onChange={(event) => setAssignTo(event.target.value)}
+        onChange={(event) => {
+          if (connectedUser)
+            setDBAssignTo(
+              connectedUser,
+              database,
+              username,
+              event.target.value
+            );
+          setAssignTo(event.target.value);
+        }}
       >
         <FormControlLabel
           value={0}
@@ -235,11 +313,23 @@ const Control = ({ controlView, videoChatContainer }) => {
   );
 
   const suitGroup = (
-    <FormControl disabled={reality} className="radioGroupHeader">
+    <FormControl
+      disabled={reality || (lockedBy && lockedBy !== username)}
+      className="radioGroupHeader"
+    >
       <FormLabel>Suit:</FormLabel>
       <RadioGroup
         value={typedSuit}
-        onChange={(event) => setTypedSuit(event.target.value)}
+        onChange={(event) => {
+          if (connectedUser)
+            setDBTypedSuit(
+              connectedUser,
+              database,
+              username,
+              event.target.value
+            );
+          setTypedSuit(event.target.value);
+        }}
       >
         <FormControlLabel
           value={0}
@@ -309,31 +399,75 @@ const Control = ({ controlView, videoChatContainer }) => {
         } else if (e.key === "x") {
           if (!reality) setMode("shape");
         } else if (e.key === "N") {
-          if (["assign", "shape"].includes(mode)) setAssignTo(0);
+          if (["assign", "shape"].includes(mode)) {
+            setAssignTo(0);
+            if (connectedUser)
+              setDBAssignTo(connectedUser, database, username, 0);
+          }
         } else if (e.key === "S") {
-          if (["assign", "shape"].includes(mode)) setAssignTo(2);
+          if (["assign", "shape"].includes(mode)) {
+            setAssignTo(2);
+            if (connectedUser)
+              setDBAssignTo(connectedUser, database, username, 2);
+          }
         } else if (e.key === "W") {
-          if (["assign", "shape"].includes(mode)) setAssignTo(3);
+          if (["assign", "shape"].includes(mode)) {
+            setAssignTo(3);
+            if (connectedUser)
+              setDBAssignTo(connectedUser, database, username, 3);
+          }
         } else if (e.key === "E") {
-          if (["assign", "shape"].includes(mode)) setAssignTo(1);
+          if (["assign", "shape"].includes(mode)) {
+            setAssignTo(1);
+            if (connectedUser)
+              setDBAssignTo(connectedUser, database, username, 1);
+          }
         } else if (e.key === "s") {
           setTypedSuit(0);
+          if (connectedUser)
+            setDBTypedSuit(connectedUser, database, username, 0);
         } else if (e.key === "h") {
           setTypedSuit(1);
+          if (connectedUser)
+            setDBTypedSuit(connectedUser, database, username, 1);
         } else if (e.key === "d") {
           setTypedSuit(2);
+          if (connectedUser)
+            setDBTypedSuit(connectedUser, database, username, 2);
         } else if (e.key === "c") {
           setTypedSuit(3);
+          if (connectedUser)
+            setDBTypedSuit(connectedUser, database, username, 3);
         } else if (e.key === "a") {
-          if (typedSuit !== null) setTypedRank(0);
+          if (typedSuit !== null) {
+            setTypedRank(0);
+            if (connectedUser)
+              setDBTypedRank(connectedUser, database, username, 0);
+          }
         } else if (e.key === "k") {
-          if (typedSuit !== null) setTypedRank(1);
+          if (typedSuit !== null) {
+            setTypedRank(1);
+            if (connectedUser)
+              setDBTypedRank(connectedUser, database, username, 1);
+          }
         } else if (e.key === "q") {
-          if (typedSuit !== null) setTypedRank(2);
+          if (typedSuit !== null) {
+            setTypedRank(2);
+            if (connectedUser)
+              setDBTypedRank(connectedUser, database, username, 2);
+          }
         } else if (e.key === "j") {
-          if (typedSuit !== null) setTypedRank(3);
+          if (typedSuit !== null) {
+            setTypedRank(3);
+            if (connectedUser)
+              setDBTypedRank(connectedUser, database, username, 3);
+          }
         } else if (e.key === "t") {
-          if (typedSuit !== null) setTypedRank(4);
+          if (typedSuit !== null) {
+            setTypedRank(4);
+            if (connectedUser)
+              setDBTypedRank(connectedUser, database, username, 4);
+          }
         } else if (e.keyCode >= 48 && e.keyCode <= 57) {
           if (
             ["play", "assign", "unassign", "trade"].includes(mode) &&
@@ -341,7 +475,16 @@ const Control = ({ controlView, videoChatContainer }) => {
             e.keyCode <= 57
           ) {
             // 2 - 9
-            if (typedSuit !== null) setTypedRank(62 - e.keyCode);
+            if (typedSuit !== null) {
+              setTypedRank(62 - e.keyCode);
+              if (connectedUser)
+                setDBTypedRank(
+                  connectedUser,
+                  database,
+                  username,
+                  62 - e.keyCode
+                );
+            }
           } else if (mode === "shape") {
             setShape([...shape, parseInt(e.key)]);
           }
@@ -452,6 +595,7 @@ const Control = ({ controlView, videoChatContainer }) => {
       )} */}
       <div className="controls">
         {broadcastTypeGroup}
+        {lockedBySwitch}
         {analysisSwitch}
         {showPlayedCardsSwitch}
         <div className="row">{modeGroup}</div>

@@ -545,8 +545,8 @@ const View = ({ editable, videoChatContainer }) => {
       <div className="belowHeader">
         <div className="areas">
           {leftArea}
-          <AnalysisTable />
-          <LiveTable />
+          <AnalysisTable editable={editable} />
+          <LiveTable editable={editable} />
           {rightArea}
         </div>
       </div>

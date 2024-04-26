@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../Context/Context";
 
-const LiveTable = () => {
+const LiveTable = ({ editable }) => {
   const context = useContext(Context);
   const {
     vul,
@@ -15,6 +15,14 @@ const LiveTable = () => {
     renderCard,
     renderHand,
     directionToStr,
+    northName,
+    setNorthName,
+    eastName,
+    setEastName,
+    southName,
+    setSouthName,
+    westName,
+    setWestName,
   } = context;
 
   const liveStatus = (
@@ -74,13 +82,49 @@ const LiveTable = () => {
     </div>
   );
 
-  const northHand = renderHand(0, "Kalita", "card", true, () => {}, false);
+  const northHand = renderHand(
+    0,
+    northName,
+    setNorthName,
+    "card",
+    true,
+    () => {},
+    false,
+    editable && reality
+  );
 
-  const southHand = renderHand(2, "Klukowski", "card", true, () => {}, false);
+  const southHand = renderHand(
+    2,
+    southName,
+    setSouthName,
+    "card",
+    true,
+    () => {},
+    false,
+    editable && reality
+  );
 
-  const eastHand = renderHand(1, "Di Franco", "card", true, () => {}, false);
+  const eastHand = renderHand(
+    1,
+    eastName,
+    setEastName,
+    "card",
+    true,
+    () => {},
+    false,
+    editable && reality
+  );
 
-  const westHand = renderHand(3, "Manno", "card", true, () => {}, false);
+  const westHand = renderHand(
+    3,
+    westName,
+    setWestName,
+    "card",
+    true,
+    () => {},
+    false,
+    editable && reality
+  );
 
   const playArea = (
     <div

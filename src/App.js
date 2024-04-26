@@ -42,7 +42,17 @@ function copyStyles(sourceDoc, targetDoc) {
 }
 
 function App() {
-  const { setConnectedUser } = useContext(Context);
+  const {
+    setLockedBy,
+    realityOn,
+    realityOff,
+    setMode,
+    setAssignTo,
+    setTypedSuit,
+    setTypedRank,
+    setConnectedUser,
+    setHost,
+  } = useContext(Context);
 
   const [database, setDatabase] = useState(null);
   const [localStream, setLocalStream] = useState(null);
@@ -120,6 +130,7 @@ function App() {
       switch (notif.type) {
         case "offer":
           setConnectedUser(notif.from);
+          setHost(notif.from);
           listenToConnectionEvents(
             localConnection,
             username,
@@ -140,10 +151,30 @@ function App() {
           break;
         case "answer":
           setConnectedUser(notif.from);
+          setHost(username);
           startCall(localConnection, notif);
           break;
         case "candidate":
           addCandidate(localConnection, notif);
+          break;
+        case "lockedBy":
+          setLockedBy(notif.lockedBy);
+          break;
+        case "reality":
+          console.log(notif);
+          notif.reality ? realityOn() : realityOff();
+          break;
+        case "mode":
+          setMode(notif.mode);
+          break;
+        case "assignTo":
+          setAssignTo(notif.assignTo);
+          break;
+        case "typedSuit":
+          setTypedSuit(notif.typedSuit);
+          break;
+        case "typedRank":
+          setTypedRank(notif.typedRank);
           break;
         default:
           break;
@@ -179,6 +210,7 @@ function App() {
               editable={true}
             />
           }
+          database={database}
         />,
         controlView.document.body
       );

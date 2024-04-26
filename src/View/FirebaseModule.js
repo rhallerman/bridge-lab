@@ -28,3 +28,51 @@ export const doCandidate = async (to, candidate, database, username) => {
     candidate: JSON.stringify(candidate),
   });
 };
+
+export const setDBLockedBy = async (to, database, username, lockedBy) => {
+  await database.ref("/notifs/" + to).update({
+    type: "lockedBy",
+    from: username,
+    lockedBy: lockedBy,
+  });
+};
+
+export const setDBReality = async (to, database, username, reality) => {
+  await database.ref("/notifs/" + to).update({
+    type: "reality",
+    from: username,
+    reality: reality,
+  });
+};
+
+export const setDBMode = async (to, database, username, mode) => {
+  await database.ref("/notifs/" + to).update({
+    type: "mode",
+    from: username,
+    mode: mode,
+  });
+};
+
+export const setDBAssignTo = async (to, database, username, assignTo) => {
+  await database.ref("/notifs/" + to).update({
+    type: "assignTo",
+    from: username,
+    assignTo: assignTo,
+  });
+};
+
+export const setDBTypedSuit = async (to, database, username, typedSuit) => {
+  await database.ref("/notifs/" + to).update({
+    type: "typedSuit",
+    from: username,
+    typedSuit: typedSuit,
+  });
+};
+
+export const setDBTypedRank = async (to, database, username, typedRank) => {
+  await database.ref("/notifs/" + to).update({
+    type: "typedRank",
+    from: username,
+    typedRank: typedRank,
+  });
+};

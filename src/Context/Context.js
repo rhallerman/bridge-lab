@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect, useRef, useCallback } from "react";
 import input from "../Input/Input.json";
 import _ from "lodash";
+import { TextField } from "@mui/material";
 
 export const Context = createContext();
 export const ContextProvider = ({ children }) => {
@@ -34,6 +35,7 @@ export const ContextProvider = ({ children }) => {
   const [currentWinningCard, setCurrentWinningCard] = useState(null);
   const [currentWinningPlayer, setCurrentWinningPlayer] = useState(null);
   const [storedStates, setStoredStates] = useState(null);
+  const [lockedBy, setLockedBy] = useState(null);
   const [reality, setReality] = useState(true);
   const [mode, setMode] = useState("play");
   const [assignTo, setAssignTo] = useState(0);
@@ -59,6 +61,11 @@ export const ContextProvider = ({ children }) => {
   const [commentators, setCommentators] = useState([""]);
   const [username, setUsername] = useState("");
   const [connectedUser, setConnectedUser] = useState(null);
+  const [host, setHost] = useState(null);
+  const [northName, setNorthName] = useState("");
+  const [eastName, setEastName] = useState("");
+  const [southName, setSouthName] = useState("");
+  const [westName, setWestName] = useState("");
 
   const handsRef = useRef();
   handsRef.current = hands;
@@ -730,10 +737,12 @@ export const ContextProvider = ({ children }) => {
   const renderHand = (
     player,
     playerName,
+    setPlayerName,
     cardClassName,
     disableAllCards,
     onClickCard,
-    showAnalysis
+    showAnalysis,
+    editable
   ) => {
     const isHandConstructed = handsDup[player].some((card) => card.rank === 13);
     const hand = showAnalysis
@@ -813,7 +822,26 @@ export const ContextProvider = ({ children }) => {
           >
             {buttonGroups}
           </div>
-          <div className="playerTableName">{playerName}</div>
+          {!editable && <div className="playerTableName">{playerName}</div>}
+          {editable && (
+            <TextField
+              value={playerName}
+              onChange={(event) => setPlayerName(event.target.value)}
+              variant="outlined"
+              size="small"
+              fullWidth
+              className="playerTableNameInput"
+              sx={{ "& fieldset": { border: "none" } }}
+              inputProps={{
+                style: {
+                  color: "white",
+                  textAlign: "center",
+                  padding: "0px",
+                },
+              }}
+              InputLabelProps={{ style: { color: "#fff" } }}
+            />
+          )}
         </div>
       </div>
     );
@@ -878,6 +906,8 @@ export const ContextProvider = ({ children }) => {
         setCurrentWinningPlayer,
         storedStates,
         setStoredStates,
+        lockedBy,
+        setLockedBy,
         reality,
         setReality,
         mode,
@@ -945,6 +975,16 @@ export const ContextProvider = ({ children }) => {
         setUsername,
         connectedUser,
         setConnectedUser,
+        host,
+        setHost,
+        northName,
+        setNorthName,
+        eastName,
+        setEastName,
+        southName,
+        setSouthName,
+        westName,
+        setWestName,
       }}
     >
       {children}

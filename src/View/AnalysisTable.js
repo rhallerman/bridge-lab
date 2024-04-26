@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../Context/Context";
 
-const AnalysisTable = () => {
+const AnalysisTable = ({ editable }) => {
   const {
     handsDup,
     setHandsDup,
@@ -14,6 +14,14 @@ const AnalysisTable = () => {
     unassign,
     trade,
     vul,
+    northName,
+    setNorthName,
+    eastName,
+    setEastName,
+    southName,
+    setSouthName,
+    westName,
+    setWestName,
   } = useContext(Context);
 
   const contract = (
@@ -90,38 +98,46 @@ const AnalysisTable = () => {
 
   const northHand = renderHand(
     0,
-    "Kalita",
+    northName,
+    setNorthName,
     "card",
     false,
     handleCardClicked,
-    true
+    true,
+    editable
   );
 
   const southHand = renderHand(
     2,
-    "Klukowski",
+    southName,
+    setSouthName,
     "card",
     false,
     handleCardClicked,
-    true
+    true,
+    editable
   );
 
   const eastHand = renderHand(
     1,
-    "Di Franco",
+    eastName,
+    setEastName,
     "card",
     false,
     handleCardClicked,
-    true
+    true,
+    editable
   );
 
   const westHand = renderHand(
     3,
-    "Manno",
+    westName,
+    setWestName,
     "card",
     false,
     handleCardClicked,
-    true
+    true,
+    editable
   );
 
   return (

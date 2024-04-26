@@ -357,6 +357,7 @@
         width: fit-content;
         flex-direction: column;
         border-radius: 1cqw;
+        background-color: rgba(0, 0, 0, 0.4);
     }
 }
 
@@ -468,18 +469,20 @@
 @container playArea (min-width: 20px) {
     .playerTableName {
         width: 100%;
-        height: fit-content;
-        padding: 0.5cqw;
+        flex: 1;
+        padding: 1cqw;
         box-sizing: border-box;
         color: white;
         font-size: 3cqw;
         text-align: center;
-        background-color: rgba(0, 0, 0, 0.4);
         border-bottom-left-radius: 1cqw;
         border-bottom-right-radius: 1cqw;
     }
+    .playerTableNameInput {
+        border: none;
+        width: 100%;
+    }
 }
-
 
 @container playArea (min-width: 20px) {
     .trickOnTable {
