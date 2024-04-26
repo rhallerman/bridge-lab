@@ -46,6 +46,7 @@ const View = ({ editable, videoChatContainer }) => {
       }}
       InputLabelProps={{
         style: { color: "#fff", textAlign: textAlign },
+        shrink: true,
       }}
     />
   );
@@ -241,156 +242,7 @@ const View = ({ editable, videoChatContainer }) => {
   // };
 
   const results = () => {
-    // const rawResultsNew = [
-    //   ["4", 1, "3", "-1", "100", "4", 1, "3", "-2", "-200", "", "1"],
-    // ];
-    const rawResultsOld = [
-      [
-        "4",
-        "HEARTS",
-        "W",
-        "-1",
-        "100",
-        "4",
-        "HEARTS",
-        "W",
-        "-2",
-        "-200",
-        "",
-        "1",
-      ],
-      ["2", "HEARTS", "N", "=", "110", "3", "CLUBS", "E", "-1", "-50", "2", ""],
-      [
-        "3",
-        "DIAMONDS",
-        "N",
-        "=",
-        "110",
-        "4",
-        "CLUBS",
-        "W",
-        "-3",
-        "-150",
-        "",
-        "1",
-      ],
-      [
-        "3",
-        "DIAMONDS",
-        "N",
-        "-1",
-        "-50",
-        "2",
-        "SPADES",
-        "E",
-        "-1",
-        "-100",
-        "",
-        "4",
-      ],
-      [
-        "2",
-        "SPADES",
-        "W",
-        "-1",
-        "100",
-        "2",
-        "HEARTS",
-        "W",
-        "-2",
-        "-200",
-        "",
-        "3",
-      ],
-      [
-        "4",
-        "SPADES",
-        "W",
-        "+1",
-        "-450",
-        "4",
-        "SPADES",
-        "W",
-        "+1",
-        "450",
-        "",
-        "",
-      ],
-      [
-        "3",
-        "SPADES",
-        "N",
-        "-3",
-        "-150",
-        "2",
-        "DIAMONDSX",
-        "S",
-        "-2",
-        "300",
-        "4",
-        "",
-      ],
-      [
-        "4",
-        "SPADES",
-        "W",
-        "+1",
-        "-650",
-        "4",
-        "SPADES",
-        "W",
-        "+1",
-        "650",
-        "",
-        "",
-      ],
-      [
-        "4",
-        "HEARTS",
-        "S",
-        "=",
-        "420",
-        "3",
-        "HEARTS",
-        "S",
-        "+1",
-        "-170",
-        "6",
-        "",
-      ],
-      ["3", "N", "N", "=", "400", "2", "N", "N", "+1", "-150", "6", ""],
-      ["3", "N", "S", "-3", "-300", "3", "N", "S", "-4", "400", "3", ""],
-      [
-        "3",
-        "HEARTS",
-        "E",
-        "+1",
-        "-170",
-        // "4",
-        // "HEARTS",
-        // "W",
-        // "-1",
-        // "-50",
-        // "",
-        // "6",
-      ],
-      [
-        "4",
-        "SPADESX",
-        "S",
-        "-1",
-        "-200",
-        // "4",
-        // "HEARTS",
-        // "E",
-        // "=",
-        // "420",
-        // "6",
-        // "",
-      ],
-      // ["3", "N", "W", "+1", "-630", "3", "N", "W", "-2", "-200", "", "13"],
-      // ["4", "CLUBS", "N", "+1", "150", "4", "CLUBS", "N", "=", "-130", "1", ""],
-    ];
+    const rawResultsOld = [];
     const allResults = rawResultsOld.map((result, resultIdx) => {
       const thisSuit = strToSuit(result[1] ?? "");
       const otherSuit = strToSuit(result[6] ?? "");
@@ -483,24 +335,7 @@ const View = ({ editable, videoChatContainer }) => {
         </div>
       );
     };
-    const rawResults = [
-      ["Lebowitz (1)", 147, "Roche (32)", 123],
-      ["Knottenbelt (2)", 99, "Rippey (31)", 90],
-      ["Wademark (3)", 214, "Rodrigues (30)", 99],
-      ["Levine (4)", 129, "Zhang (29)", 123],
-      ["Zimmermann (5)", 149, "Kolesnik (28)", 105],
-      ["Bailey (6)", 114, "Juster (27)", 137],
-      ["Street (7)", 139, "Texan Aces (26)", 116],
-      ["Goodman (8)", 112, "Hoskins (25)", 66],
-      ["McAllister (9)", 103, "Han (24)", 147],
-      ["Bernal (10)", 149, "Lall (23)", 92],
-      ["Amoils (11)", 148, "Dyson (22)", 116],
-      ["Goldberg (12)", 178, "Dinkin (21)", 136],
-      ["Far Hoftaniska (13)", 114, "Hans (20)", 221],
-      ["Nickell (14)", 86, "Fleisher (19)", 117],
-      ["Bremark (15)", 152, "Van Oosten (18)", 96],
-      ["Freeman (16)", 177, "Thompson (17)", 123],
-    ];
+    const rawResults = [];
     const matchResults = rawResults.map((result) => matchResult(result));
     let matchResultRows = [];
     while (matchResults.length > 1) {

@@ -30,78 +30,70 @@ const VideoChat = ({
     setUserToCall("");
   };
 
-  const renderVideos = () => {
-    return (
-      <div className="commentators">
-        <div className="commentator">
-          {!editable && (
-            <video
-              ref={localVideoRef1}
-              autoPlay
-              playsInline
-              className="webcam"
-              muted
-            />
-          )}
-          {editable && (
-            <video
-              ref={localVideoRef2}
-              autoPlay
-              playsInline
-              className="webcam"
-              muted
-            />
-          )}
-          {(!editable || isLoggedIn) && <div className="name">{username}</div>}
-          {editable && !isLoggedIn && (
-            <TextField
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value.toUpperCase());
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-              size="small"
-              inputProps={{
-                style: { color: "white", padding: 0 },
-              }}
-              InputLabelProps={{
-                style: { color: "#fff" },
-              }}
-            />
-          )}
-        </div>
-        {connectedUser && !editable && (
-          <div className="commentator">
-            <video
-              ref={remoteVideoRef1}
-              autoPlay
-              playsInline
-              className="webcam"
-              id="remoteVideo"
-            />
-            <div className="name">{connectedUser}</div>
-          </div>
+  return (
+    <div className="commentators">
+      <div className="commentator">
+        {!editable && (
+          <video
+            ref={localVideoRef1}
+            autoPlay
+            playsInline
+            className="webcam"
+            muted
+          />
         )}
-        {connectedUser && editable && (
-          <div className="commentator">
-            <video
-              ref={remoteVideoRef2}
-              autoPlay
-              playsInline
-              className="webcam"
-              muted
-            />
-            <div className="name">{connectedUser}</div>
-          </div>
+        {editable && (
+          <video
+            ref={localVideoRef2}
+            autoPlay
+            playsInline
+            className="webcam"
+            muted
+          />
+        )}
+        {(!editable || isLoggedIn) && <div className="name">{username}</div>}
+        {editable && !isLoggedIn && (
+          <TextField
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value.toUpperCase());
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+            size="small"
+            inputProps={{
+              style: { color: "white", padding: 0 },
+            }}
+            InputLabelProps={{
+              style: { color: "#fff" },
+            }}
+          />
         )}
       </div>
-    );
-  };
-
-  return (
-    <section id="container">
-      {renderVideos()}
+      {connectedUser && !editable && (
+        <div className="commentator">
+          <video
+            ref={remoteVideoRef1}
+            autoPlay
+            playsInline
+            className="webcam"
+            id="remoteVideo"
+          />
+          <div className="name">{connectedUser}</div>
+        </div>
+      )}
+      {connectedUser && editable && (
+        <div className="commentator">
+          <video
+            ref={remoteVideoRef2}
+            autoPlay
+            playsInline
+            className="webcam"
+            muted
+          />
+          <div className="name">{connectedUser}</div>
+        </div>
+      )}
       {editable &&
         (isLoggedIn ? (
           <div className="callTo">
@@ -116,18 +108,28 @@ const VideoChat = ({
                 style: { color: "#fff" },
               }}
             />
-            <IconButton onClick={onStartCallClicked} disabled={!userToCall}>
-              <AddIcon />
-            </IconButton>
+            <div className="iconWrapper">
+              <IconButton
+                onClick={onStartCallClicked}
+                disabled={!userToCall}
+                className="icon"
+              >
+                <AddIcon />
+              </IconButton>
+            </div>
           </div>
         ) : (
-          <div className="callTo">
-            <IconButton onClick={onLoginClicked} disabled={!username}>
+          <div className="iconWrapper">
+            <IconButton
+              onClick={onLoginClicked}
+              disabled={!username}
+              className="icon"
+            >
               <CheckIcon />
             </IconButton>
           </div>
         ))}
-    </section>
+    </div>
   );
 };
 

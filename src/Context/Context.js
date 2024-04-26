@@ -8,13 +8,13 @@ export const ContextProvider = ({ children }) => {
   const [metaEventName, setMetaEventName] = useState(
     "2024 US BRIDGE CHAMPIONSHIPS"
   );
-  const [eventName, setEventName] = useState("OPEN TEAMS");
-  const [roundInfo, setRoundInfo] = useState("ROUND OF 8");
-  const [roomInfo, setRoomInfo] = useState("OPEN ROOM");
+  const [eventName, setEventName] = useState("");
+  const [roundInfo, setRoundInfo] = useState("");
+  const [roomInfo, setRoomInfo] = useState("");
   const [segmentNum, setSegmentNum] = useState("");
-  const [numSegments, setNumSegments] = useState("4");
+  const [numSegments, setNumSegments] = useState("");
   const [boardNum, setBoardNum] = useState("");
-  const [numBoards, setNumBoards] = useState("30");
+  const [numBoards, setNumBoards] = useState("");
   const [vul, setVul] = useState(null);
   const [deck, setDeck] = useState(null);
   const [fromSrc, setFromSrc] = useState(true);
