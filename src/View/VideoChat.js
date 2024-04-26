@@ -78,7 +78,7 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
-              muted
+              id="remoteVideo"
             />
             <div className="name">{connectedUser}</div>
           </div>
@@ -90,6 +90,7 @@ const VideoChat = ({
               autoPlay
               playsInline
               className="webcam"
+              muted
             />
             <div className="name">{connectedUser}</div>
           </div>
