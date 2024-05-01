@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Divider, Grid, TextField } from "@mui/material";
+import { Button, Divider, Grid, TextField } from "@mui/material";
 import { Context } from "../Context/Context";
 import "./View.css";
 // import Webcam from "react-webcam";
@@ -31,6 +31,7 @@ const View = ({ editable, videoChatContainer }) => {
     reality,
     suitChars,
     strToSuit,
+    setOcrHands,
   } = useContext(Context);
 
   const headerInputField = (label, value, onChange, textAlign) => (
@@ -374,17 +375,92 @@ const View = ({ editable, videoChatContainer }) => {
     </div>
   );
 
+  const capture = async () => {
+    const canvas = document.createElement("canvas");
+    const video = document.createElement("video");
+    const captureStream = await navigator.mediaDevices.getDisplayMedia();
+    video.srcObject = captureStream;
+    await video.play();
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const crops = [
+      [0.542, 0.14],
+      [0.715, 0.45],
+      [0.542, 0.715],
+      [0.37, 0.45],
+    ];
+    const tempOcrHands = [];
+    for (const crop of crops) {
+      canvas
+        .getContext("2d")
+        .drawImage(
+          video,
+          video.videoWidth * crop[0],
+          video.videoHeight * crop[1],
+          video.videoHeight * 0.25,
+          video.videoHeight * 0.19,
+          0,
+          0,
+          video.videoHeight * 0.25,
+          video.videoHeight * 0.19
+        );
+      const frame = canvas.toDataURL();
+      const response = await fetch(
+        "https://vision.googleapis.com/v1/images:annotate",
+        {
+          method: "POST",
+          headers: {
+            Authorization:
+              "Bearer ya29.a0Ad52N3-3AFbZGyOylDjmAQlbgy5j4pS_JMJEWliuS1-mXe4ShI1-ktQH0jBpQ4kNlpeThr4tb5nt9Ac0AQUUxErL7WkUbgGGDszLa9qLS02wNARa2hdzDP_paI50FDTRvkyDcA4NN9rIS6jRsRLIPCviiltxEQO9LmU5lMXohQaCgYKAWESARMSFQHGX2MiJPcnKI18sciTPVJKE8DzCg0177",
+            "x-goog-user-project": "expanded-symbol-422006-g2",
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            requests: [
+              {
+                image: { content: frame.substring(22) },
+                features: [{ type: "TEXT_DETECTION" }],
+              },
+            ],
+          }),
+        }
+      );
+      await response.json().then((response) => {
+        console.log(response.responses[0].fullTextAnnotation.text);
+        tempOcrHands.push(response.responses[0].fullTextAnnotation.text);
+      });
+    }
+    setOcrHands(tempOcrHands);
+    captureStream.getTracks().forEach((track) => track.stop());
+  };
+
+  const captureButton = <Button onClick={capture}>Select Capture</Button>;
+
   return (
-    <div className="background">
-      {header}
-      <div className="belowHeader">
-        <div className="areas">
-          {leftArea}
-          <AnalysisTable editable={editable} />
-          <LiveTable editable={editable} />
-          {rightArea}
+    <div style={{ display: "flex" }}>
+      <div className="background">
+        {header}
+        <div className="belowHeader">
+          <div className="areas">
+            {leftArea}
+            <AnalysisTable editable={editable} />
+            <LiveTable editable={editable} />
+            {rightArea}
+          </div>
         </div>
       </div>
+      {!editable && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          {captureButton}
+        </div>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
+  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
