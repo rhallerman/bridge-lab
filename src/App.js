@@ -160,6 +160,7 @@ function App() {
     };
     initiateConnection();
     setDatabase(firebase.database());
+    capture();
   }, []);
 
   const startCallHelper = async (username, userToCall) => {
@@ -294,7 +295,6 @@ function App() {
           />
         }
       />
-      <Button onClick={capture}>Capture</Button>
       {controlViewWindow}
     </>
   );
