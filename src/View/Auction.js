@@ -8,17 +8,17 @@ const Auction = () => {
   const { auction } = useContext(Context);
   const bidText = (bid) => {
     const suitChars = { 0: "\u2660", 1: "\u2665", 2: "\u2666", 3: "\u2663" };
-    const text =
-      bid.action === "BID"
-        ? `${bid.level}${suitChars[bid.strain] ?? "NT"}`
-        : bid.action === "DBL"
-        ? "X"
-        : bid.action === "RDBL"
-        ? "XX"
-        : bid.action;
+    const bidLevel = bid.action === "BID" ? bid.level : undefined;
+    const bidStrain =
+      bid.action === "BID" ? suitChars[bid.strain] ?? "NT" : undefined;
+    const otherBid = bid.action === "BID" ? undefined : bid.action;
     return (
-      <div className={`bid ${bid.strain >= 0 ? `suit${bid.strain}` : ""}`}>
-        {text}
+      <div className="bidGroup">
+        {bidLevel && <div>{bidLevel}</div>}
+        {bidStrain && <div className={`suit${bid.strain}`}>{bidStrain}</div>}
+        {otherBid && (
+          <div className={`${otherBid.toLowerCase()}`}>{otherBid}</div>
+        )}
       </div>
     );
   };

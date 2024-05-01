@@ -61,7 +61,6 @@ export const listenToConnectionEvents = (
     if (remoteVideoRef1.current) {
       remoteVideoRef1.current.srcObject = stream.clone();
       const remoteVideoElem = document.getElementById("remoteVideo");
-      console.log(remoteVideoElem);
       remoteVideoElem.play().catch((err) => console.log(err));
     }
     if (remoteVideoRef2.current) {

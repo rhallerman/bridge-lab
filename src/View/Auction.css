@@ -12,9 +12,27 @@
     }
 }
 
+.bidGroup {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    background-color: white;
+}
+
 .bid {
     text-align: center;
-    background-color: white;
+}
+
+.pass {
+    color: #208650;
+}
+
+.dbl {
+    color: #eb3323;
+}
+
+.rdbl {
+    color: #1578f9;
 }
 
 @container areas (min-width: 20px) {

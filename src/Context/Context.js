@@ -18,6 +18,7 @@ export const ContextProvider = ({ children }) => {
   const [vul, setVul] = useState(null);
   const [deck, setDeck] = useState(null);
   const [fromSrc, setFromSrc] = useState(true);
+  const [ocrHands, setOcrHands] = useState(null);
   const [hands, setHands] = useState([[], [], [], []]);
   const [handsDup, setHandsDup] = useState([[], [], [], []]);
   const [playedHands, setPlayedHands] = useState([[], [], [], []]);
@@ -112,41 +113,78 @@ export const ContextProvider = ({ children }) => {
 
   const suitChars = { 0: "\u2660", 1: "\u2665", 2: "\u2666", 3: "\u2663" };
 
-  const inputToDeck = (event) => {
-    const deal = event.handData;
-    let tempDeck = [];
-    for (const hand of ["north", "east", "south", "west"]) {
-      for (let suit = 0; suit < 4; suit++) {
-        const cards = deal[hand].split(", ")[suit];
-        for (let card of cards.split("")) {
-          const rank =
-            card === "A"
-              ? 0
-              : card === "K"
-              ? 1
-              : card === "Q"
-              ? 2
-              : card === "J"
-              ? 3
-              : card === "T"
-              ? 4
-              : 14 - parseInt(card);
-          tempDeck.push({ suit, rank });
+  useEffect(() => {
+    if (ocrHands) {
+      let tempDeck = [];
+      for (let hand = 0; hand < 4; hand++) {
+        for (let suit = 0; suit < 4; suit++) {
+          const cards = ocrHands[hand].split("\n")[suit];
+          for (let card of cards.split("")) {
+            const rank =
+              card === "A"
+                ? 0
+                : card === "K"
+                ? 1
+                : card === "Q"
+                ? 2
+                : card === "J" || card === "]"
+                ? 3
+                : card === "T"
+                ? 4
+                : 14 - parseInt(card);
+            tempDeck.push({ suit, rank });
+          }
         }
       }
+      setDeck(tempDeck);
+      setHands([
+        tempDeck.slice(0, 13).map((card) => ({ ...card, hand: 0 })),
+        tempDeck.slice(13, 26).map((card) => ({ ...card, hand: 1 })),
+        tempDeck.slice(26, 39).map((card) => ({ ...card, hand: 2 })),
+        tempDeck.slice(39, 52).map((card) => ({ ...card, hand: 3 })),
+      ]);
+      // const zeroIndexedBoardNum = event.boardNumber - 1;
+      // setVul((zeroIndexedBoardNum + Math.floor(zeroIndexedBoardNum / 4)) % 4);
+      // setBoardNum(event.boardNumber);
+      // setSegmentNum(event.round);
     }
-    setDeck(tempDeck);
-    setHands([
-      tempDeck.slice(0, 13).map((card) => ({ ...card, hand: 0 })),
-      tempDeck.slice(13, 26).map((card) => ({ ...card, hand: 1 })),
-      tempDeck.slice(26, 39).map((card) => ({ ...card, hand: 2 })),
-      tempDeck.slice(39, 52).map((card) => ({ ...card, hand: 3 })),
-    ]);
-    const zeroIndexedBoardNum = event.boardNumber - 1;
-    setVul((zeroIndexedBoardNum + Math.floor(zeroIndexedBoardNum / 4)) % 4);
-    setBoardNum(event.boardNumber);
-    setSegmentNum(event.round);
-  };
+  }, [ocrHands]);
+
+  // const inputToDeckFromStream = (event) => {
+  //   const deal = event.handData;
+  //   let tempDeck = [];
+  //   for (const hand of ["north", "east", "south", "west"]) {
+  //     for (let suit = 0; suit < 4; suit++) {
+  //       const cards = deal[hand].split(", ")[suit];
+  //       for (let card of cards.split("")) {
+  //         const rank =
+  //           card === "A"
+  //             ? 0
+  //             : card === "K"
+  //             ? 1
+  //             : card === "Q"
+  //             ? 2
+  //             : card === "J"
+  //             ? 3
+  //             : card === "T"
+  //             ? 4
+  //             : 14 - parseInt(card);
+  //         tempDeck.push({ suit, rank });
+  //       }
+  //     }
+  //   }
+  //   setDeck(tempDeck);
+  //   setHands([
+  //     tempDeck.slice(0, 13).map((card) => ({ ...card, hand: 0 })),
+  //     tempDeck.slice(13, 26).map((card) => ({ ...card, hand: 1 })),
+  //     tempDeck.slice(26, 39).map((card) => ({ ...card, hand: 2 })),
+  //     tempDeck.slice(39, 52).map((card) => ({ ...card, hand: 3 })),
+  //   ]);
+  //   const zeroIndexedBoardNum = event.boardNumber - 1;
+  //   setVul((zeroIndexedBoardNum + Math.floor(zeroIndexedBoardNum / 4)) % 4);
+  //   setBoardNum(event.boardNumber);
+  //   setSegmentNum(event.round);
+  // };
 
   // const createShuffledDeck = () => {
   //   const freshDeck = [...Array(52).keys()].map((card) => ({
@@ -404,72 +442,72 @@ export const ContextProvider = ({ children }) => {
     play(card, true);
   }, [play]);
 
-  const takeNextActionAndSchedule = useCallback(
-    (interval) => {
-      setNextEventID(
-        setTimeout(() => {
-          setLastEventTime(Date.now());
-          if (input.events[liveEventsRef.current.length + 1]) {
-            const nextInterval =
-              new Date(
-                input.events[liveEventsRef.current.length + 1].createdAt
-              ).getTime() -
-              new Date(
-                input.events[liveEventsRef.current.length].createdAt
-              ).getTime();
-            if (broadcastType === "stream" || realityRef.current) {
-              setTimeUntilNextEvent(nextInterval);
-              takeNextActionAndSchedule(nextInterval);
-            }
-          }
-          const event = input.events[liveEventsRef.current.length].message;
-          const eventClass = event["@class"];
-          if (eventClass === "HandDataMessage") {
-            // const startTime = new Date(input.start.createdAt).getTime();
-            // const currentTime = Date.now();
-            // const bid0Time = new Date(input.events[0].createdAt).getTime();
-            // const interval0 = bid0Time - startTime;
-            // setLastEventTime(currentTime);
-            // setTimeUntilNextEvent(interval0);
-            // if (realityRef.current && interval0) {
-            //   takeNextActionAndSchedule(interval0);
-            // }
-            inputToDeck(event);
-          } else if (eventClass === "BidMessage") {
-            bidFromInput();
-          } else if (eventClass === "EndAuctionMessage") {
-            const split =
-              input.events[
-                liveEventsRef.current.length
-              ].message.contract.bid.split("_");
-            setContractLevel(strToLevel(split[0]));
-            setContractSuit(strToSuit(split[1]));
-            const tempDeclarer =
-              input.events[liveEventsRef.current.length].message.contract
-                .declarer;
-            setDeclarer(strToDirection(tempDeclarer));
-            setWhoseTurn((strToDirection(tempDeclarer) + 1) % 4);
-            setAuctionEnded(true);
-          } else if (eventClass === "PlayCardMessage") {
-            playFromInput();
-          }
-          setLiveEvents([
-            ...liveEventsRef.current,
-            input.events[liveEventsRef.current.length],
-          ]);
-        }, interval)
-      );
-    },
-    [bidFromInput, broadcastType, playFromInput]
-  );
+  // const takeNextActionAndSchedule = useCallback(
+  //   (interval) => {
+  //     setNextEventID(
+  //       setTimeout(() => {
+  //         setLastEventTime(Date.now());
+  //         if (input.events[liveEventsRef.current.length + 1]) {
+  //           const nextInterval =
+  //             new Date(
+  //               input.events[liveEventsRef.current.length + 1].createdAt
+  //             ).getTime() -
+  //             new Date(
+  //               input.events[liveEventsRef.current.length].createdAt
+  //             ).getTime();
+  //           if (broadcastType === "stream" || realityRef.current) {
+  //             setTimeUntilNextEvent(nextInterval);
+  //             takeNextActionAndSchedule(nextInterval);
+  //           }
+  //         }
+  //         const event = input.events[liveEventsRef.current.length].message;
+  //         const eventClass = event["@class"];
+  //         if (eventClass === "HandDataMessage") {
+  //           // const startTime = new Date(input.start.createdAt).getTime();
+  //           // const currentTime = Date.now();
+  //           // const bid0Time = new Date(input.events[0].createdAt).getTime();
+  //           // const interval0 = bid0Time - startTime;
+  //           // setLastEventTime(currentTime);
+  //           // setTimeUntilNextEvent(interval0);
+  //           // if (realityRef.current && interval0) {
+  //           //   takeNextActionAndSchedule(interval0);
+  //           // }
+  //           inputToDeckFromStream(event);
+  //         } else if (eventClass === "BidMessage") {
+  //           bidFromInput();
+  //         } else if (eventClass === "EndAuctionMessage") {
+  //           const split =
+  //             input.events[
+  //               liveEventsRef.current.length
+  //             ].message.contract.bid.split("_");
+  //           setContractLevel(strToLevel(split[0]));
+  //           setContractSuit(strToSuit(split[1]));
+  //           const tempDeclarer =
+  //             input.events[liveEventsRef.current.length].message.contract
+  //               .declarer;
+  //           setDeclarer(strToDirection(tempDeclarer));
+  //           setWhoseTurn((strToDirection(tempDeclarer) + 1) % 4);
+  //           setAuctionEnded(true);
+  //         } else if (eventClass === "PlayCardMessage") {
+  //           playFromInput();
+  //         }
+  //         setLiveEvents([
+  //           ...liveEventsRef.current,
+  //           input.events[liveEventsRef.current.length],
+  //         ]);
+  //       }, interval)
+  //     );
+  //   },
+  //   [bidFromInput, broadcastType, playFromInput]
+  // );
 
   const realityOn = () => {
     setReality(true);
-    if (broadcastType === "video") {
-      const currentTime = Date.now();
-      takeNextActionAndSchedule(timeUntilNextEventRef.current);
-      setLastEventTime(currentTime);
-    }
+    // if (broadcastType === "video") {
+    //   const currentTime = Date.now();
+    //   takeNextActionAndSchedule(timeUntilNextEventRef.current);
+    //   setLastEventTime(currentTime);
+    // }
   };
 
   const realityOff = () => {
@@ -847,9 +885,9 @@ export const ContextProvider = ({ children }) => {
     );
   };
 
-  useEffect(() => {
-    takeNextActionAndSchedule(0);
-  }, [takeNextActionAndSchedule]);
+  // useEffect(() => {
+  //   takeNextActionAndSchedule(0);
+  // }, [takeNextActionAndSchedule]);
 
   return (
     <Context.Provider
@@ -875,6 +913,8 @@ export const ContextProvider = ({ children }) => {
         setDeck,
         fromSrc,
         setFromSrc,
+        ocrHands,
+        setOcrHands,
         hands,
         setHands,
         handsDup,
@@ -951,7 +991,7 @@ export const ContextProvider = ({ children }) => {
         nextEventID,
         setNextEventID,
         auctionEnded,
-        takeNextActionAndSchedule,
+        // takeNextActionAndSchedule,
         realityOn,
         realityOff,
         bid,

@@ -561,25 +561,15 @@ const Control = ({ controlView, videoChatContainer, database }) => {
 
   // const [file, setFile] = useState(null);
 
-  // useEffect(() => {
-  //   if (file)
-  //     fetch("https://content.dropboxapi.com/2/files/upload", {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization:
-  //           "Bearer sl.BzfwH5pceWZeKGn1dSpTWOKEc0FWT72cz1PjKd-SkVMzcqO8DfGsm3ZtKQVssUk1DxVwjFY1bhwWQvX7ox59PO_Zv7kxaMXCyNp0S8VjiHc4yyGYXQxMyPOcqhRxK4_v4MZAXWZjp9cU",
-  //         "Dropbox-API-Arg": `{"autorename":false,"mode":"add","mute":false,"path":"/${file.name}","strict_conflict":false}`,
-  //         "Content-Type": "application/octet-stream",
-  //       },
-  //       body: file,
-  //     });
-  // }, [file]);
-
-  // const handleFile = (event) => {
-  //   setFile(event.target.files[0]);
-  // };
-
-  // const uploadButton = <input type="file" onChange={handleFile} />;
+  // const uploadButton = (
+  //   <input
+  //     type="file"
+  //     onChange={(event) => {
+  //       console.log(event.target.files);
+  //       loadFile(event.target.files[0]);
+  //     }}
+  //   />
+  // );
 
   return (
     <div className="viewAndControls">
