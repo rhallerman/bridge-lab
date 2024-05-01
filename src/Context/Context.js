@@ -125,7 +125,7 @@ export const ContextProvider = ({ children }) => {
                 ? 0
                 : card === "K"
                 ? 1
-                : card === "Q" || card === "0"
+                : card === "Q" || card === "O"
                 ? 2
                 : card === "J" || card === "]"
                 ? 3
