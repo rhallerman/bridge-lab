@@ -867,7 +867,6 @@ export const ContextProvider = ({ children }) => {
               onChange={(event) => setPlayerName(event.target.value)}
               variant="outlined"
               size="small"
-              fullWidth
               className="playerTableNameInput"
               sx={{ "& fieldset": { border: "none" } }}
               inputProps={{
