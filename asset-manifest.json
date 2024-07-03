@@ -1,17 +1,16 @@
 {
   "files": {
-    "main.css": "/kib-sync/static/css/main.6ef45459.css",
-    "main.js": "/kib-sync/static/js/main.542be09e.js",
+    "main.css": "/kib-sync/static/css/main.e2c7bf49.css",
+    "main.js": "/kib-sync/static/js/main.68545069.js",
     "static/js/453.85f2d220.chunk.js": "/kib-sync/static/js/453.85f2d220.chunk.js",
-    "static/media/lovebridge.png": "/kib-sync/static/media/lovebridge.15082832658c86a43da4.png",
-    "static/media/usbf.png": "/kib-sync/static/media/usbf.48e910a577ba5a7361d2.png",
+    "static/media/Bridge_Base_Online_logo.png": "/kib-sync/static/media/Bridge_Base_Online_logo.775f6ed6a9c983e50b7b.png",
     "index.html": "/kib-sync/index.html",
-    "main.6ef45459.css.map": "/kib-sync/static/css/main.6ef45459.css.map",
-    "main.542be09e.js.map": "/kib-sync/static/js/main.542be09e.js.map",
+    "main.e2c7bf49.css.map": "/kib-sync/static/css/main.e2c7bf49.css.map",
+    "main.68545069.js.map": "/kib-sync/static/js/main.68545069.js.map",
     "453.85f2d220.chunk.js.map": "/kib-sync/static/js/453.85f2d220.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6ef45459.css",
-    "static/js/main.542be09e.js"
+    "static/css/main.e2c7bf49.css",
+    "static/js/main.68545069.js"
   ]
 }
