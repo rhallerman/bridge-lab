@@ -10,7 +10,6 @@ const LiveTable = ({ editable }) => {
     declarer,
     trickCards,
     reality,
-    auctionEnded,
     suitChars,
     renderCard,
     renderHand,
@@ -35,7 +34,9 @@ const LiveTable = ({ editable }) => {
   const contract = (
     <div className="contractAndDirection">
       <div className="contract">{contractLevel}</div>
-      <div className="suit3">{suitChars[contractSuit]}</div>
+      <div className={`${contractSuit >= 0 ? `suit${contractSuit}` : ""}`}>
+        {suitChars[contractSuit]}
+      </div>
       <div className="direction">
         {directionToStr(declarer)?.substring(0, 1) ?? ""}
       </div>
@@ -133,7 +134,7 @@ const LiveTable = ({ editable }) => {
       } disabledCursor`}
     >
       {liveStatus}
-      {auctionEnded ? contract : null}
+      {contractLevel ? contract : null}
       <div className="board">
         {table}
         {northHand}

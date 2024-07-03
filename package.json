@@ -4,29 +4,23 @@
   "private": false,
   "homepage": "https://rhallerman.github.io/kib-sync",
   "dependencies": {
-    "@cloudinary/react": "^1.13.0",
-    "@cloudinary/url-gen": "^1.19.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@google-cloud/vision": "^4.2.1",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.14.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "buffer": "^6.0.3",
-    "classnames": "^2.5.1",
-    "cors": "^2.8.5",
-    "cropperjs": "^1.6.2",
+    "colorthief": "^2.4.0",
     "firebase": "^10.11.0",
     "gh-pages": "^6.1.1",
-    "google-auth-library": "^9.9.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
-    "react-base64-downloader": "^2.1.7",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.0",
     "react-webcam": "^7.2.0",
-    "tesseract.js": "^5.0.5",
+    "save-dev": "^0.0.1-security",
     "web-vitals": "^2.1.4",
     "webrtc-adapter": "^9.0.1"
   },
@@ -55,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser": {
+    "child_process": false
   }
 }

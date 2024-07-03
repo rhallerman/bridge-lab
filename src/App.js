@@ -23,17 +23,14 @@ function copyStyles(sourceDoc, targetDoc) {
     if (styleSheet.cssRules) {
       // for <style> elements
       const newStyleEl = sourceDoc.createElement("style");
-
       Array.from(styleSheet.cssRules).forEach((cssRule) => {
         // write the text of each rule into the body of the style element
         newStyleEl.appendChild(sourceDoc.createTextNode(cssRule.cssText));
       });
-
       targetDoc.head.appendChild(newStyleEl);
     } else if (styleSheet.href) {
       // for <link> elements loading CSS from a URL
       const newLinkEl = sourceDoc.createElement("link");
-
       newLinkEl.rel = "stylesheet";
       newLinkEl.href = styleSheet.href;
       targetDoc.head.appendChild(newLinkEl);
@@ -57,6 +54,8 @@ function App() {
   const [database, setDatabase] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [localConnection, setLocalConnection] = useState(null);
+  const [kibView, setKibView] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   const localStreamRef = useRef();
   localStreamRef.current = localStream;
@@ -66,7 +65,63 @@ function App() {
   const remoteVideoRef1 = useRef(null);
   const remoteVideoRef2 = useRef(null);
 
+  /*
+   * Create form to request access token from Google's OAuth 2.0 server.
+   */
+  const oauthSignIn = () => {
+    // Google's OAuth 2.0 endpoint for requesting an access token
+    var oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+
+    // Create <form> element to submit parameters to OAuth 2.0 endpoint.
+    var form = document.createElement("form");
+    form.setAttribute("method", "GET"); // Send as a GET request.
+    form.setAttribute("action", oauth2Endpoint);
+
+    // Parameters to pass to OAuth 2.0 endpoint.
+    var params = {
+      client_id:
+        "69484809608-tes2e82m3ebcmehh8f5m1dm0cklv0n1l.apps.googleusercontent.com",
+      redirect_uri: "http://localhost:3000",
+      response_type: "token",
+      scope: "https://www.googleapis.com/auth/cloud-vision",
+      state: "pass-through value",
+    };
+
+    // Add form parameters as hidden input values.
+    for (var p in params) {
+      var input = document.createElement("input");
+      input.setAttribute("type", "hidden");
+      input.setAttribute("name", p);
+      input.setAttribute("value", params[p]);
+      form.appendChild(input);
+    }
+
+    // Add form to page and submit it to open the OAuth 2.0 endpoint.
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  const getUrlParameter = (sParam) => {
+    const sPageURL = window.location.href.substring(1);
+    const sURLVariables = sPageURL.split("&");
+    for (let i = 0; i < sURLVariables.length; i++) {
+      const sParameterName = sURLVariables[i].split("=");
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined
+          ? true
+          : decodeURIComponent(sParameterName[1]);
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
+    if (window.location.href.length === 22) {
+      oauthSignIn();
+    } else {
+      setAccessToken(getUrlParameter("access_token"));
+      setKibView(window.open());
+    }
     firebase.initializeApp(config);
     const initiateLocalStream = async () => {
       try {
@@ -181,23 +236,17 @@ function App() {
     }
   };
 
-  const [controlView, setControlView] = useState(null);
-
   useEffect(() => {
-    setControlView(window.open());
-  }, []);
-
-  useEffect(() => {
-    if (controlView?.document?.body) {
-      copyStyles(document, controlView.document);
+    if (kibView?.document?.body) {
+      copyStyles(document, kibView.document);
     }
-  }, [controlView?.document]);
+  }, [kibView?.document]);
 
-  const controlViewWindow = useMemo(() => {
-    if (controlView?.document?.body) {
+  const kibViewWindow = useMemo(() => {
+    if (kibView?.document?.body) {
       return ReactDOM.createPortal(
-        <Control
-          controlView={controlView}
+        <View
+          editable={false}
           videoChatContainer={
             <VideoChat
               startCall={startCallHelper}
@@ -206,21 +255,20 @@ function App() {
               localVideoRef2={localVideoRef2}
               remoteVideoRef1={remoteVideoRef1}
               remoteVideoRef2={remoteVideoRef2}
-              editable={true}
+              editable={false}
             />
           }
-          database={database}
         />,
-        controlView.document.body
+        kibView.document.body
       );
     } else return null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controlView]);
+  }, [kibView]);
 
   return (
     <>
-      <View
-        editable={false}
+      <Control
+        kibView={kibView}
         videoChatContainer={
           <VideoChat
             startCall={startCallHelper}
@@ -229,11 +277,13 @@ function App() {
             localVideoRef2={localVideoRef2}
             remoteVideoRef1={remoteVideoRef1}
             remoteVideoRef2={remoteVideoRef2}
-            editable={false}
+            editable={true}
           />
         }
+        database={database}
+        accessToken={accessToken}
       />
-      {controlViewWindow}
+      {kibViewWindow}
     </>
   );
 }

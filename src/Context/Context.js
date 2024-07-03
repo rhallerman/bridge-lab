@@ -5,9 +5,7 @@ import { TextField } from "@mui/material";
 
 export const Context = createContext();
 export const ContextProvider = ({ children }) => {
-  const [metaEventName, setMetaEventName] = useState(
-    "2024 US BRIDGE CHAMPIONSHIPS"
-  );
+  const [metaEventName, setMetaEventName] = useState("");
   const [eventName, setEventName] = useState("");
   const [roundInfo, setRoundInfo] = useState("");
   const [roomInfo, setRoomInfo] = useState("");
@@ -30,7 +28,7 @@ export const ContextProvider = ({ children }) => {
   const [declarer, setDeclarer] = useState(null);
   const [leader, setLeader] = useState(0);
   const [suitLed, setSuitLed] = useState(null);
-  const [whoseTurn, setWhoseTurn] = useState(0);
+  const [whoseTurn, setWhoseTurn] = useState(null);
   const [trickCards, setTrickCards] = useState(new Set());
   const [trickCardsDup, setTrickCardsDup] = useState(new Set());
   const [currentWinningCard, setCurrentWinningCard] = useState(null);
@@ -47,9 +45,10 @@ export const ContextProvider = ({ children }) => {
   const [kibitzPlayer, setKibitzPlayer] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyDup, setHistoryDup] = useState([]);
-  const [trump, setTrump] = useState(3);
+  const [trump, setTrump] = useState(null);
   const [typedSuit, setTypedSuit] = useState(0);
   const [typedRank, setTypedRank] = useState(null);
+  const [site, setSite] = useState("BBO");
   const [broadcastType, setBroadcastType] = useState("stream");
   const [showPlayedCards, setShowPlayedCards] = useState(false);
   const [auction, setAuction] = useState([]);
@@ -58,7 +57,6 @@ export const ContextProvider = ({ children }) => {
   const [lastEventTime, setLastEventTime] = useState(null);
   const [timeUntilNextEvent, setTimeUntilNextEvent] = useState(null);
   const [nextEventID, setNextEventID] = useState(null);
-  const [auctionEnded, setAuctionEnded] = useState(false);
   const [commentators, setCommentators] = useState([""]);
   const [username, setUsername] = useState("");
   const [connectedUser, setConnectedUser] = useState(null);
@@ -67,7 +65,62 @@ export const ContextProvider = ({ children }) => {
   const [eastName, setEastName] = useState("");
   const [southName, setSouthName] = useState("");
   const [westName, setWestName] = useState("");
+  const [canvas, setCanvas] = useState(null);
+  const [video, setVideo] = useState(null);
+  const [calibrationImage, setCalibrationImage] = useState(null);
+  const [captureStream, setCaptureStream] = useState(null);
+  const [capturedCards0, setCapturedCards0] = useState([]);
+  const [capturedCards1, setCapturedCards1] = useState([]);
+  const [capturedCards2, setCapturedCards2] = useState([]);
+  const [capturedCards3, setCapturedCards3] = useState([]);
+  const [calibrationOpen, setCalibrationOpen] = useState(false);
+  const [startHand00, setStartHand00] = useState(null);
+  const [endHand00, setEndHand00] = useState(null);
+  const [startHand01, setStartHand01] = useState(null);
+  const [endHand01, setEndHand01] = useState(null);
+  const [startHand02, setStartHand02] = useState(null);
+  const [endHand02, setEndHand02] = useState(null);
+  const [startHand03, setStartHand03] = useState(null);
+  const [endHand03, setEndHand03] = useState(null);
+  const [startName0, setStartName0] = useState(null);
+  const [endName0, setEndName0] = useState(null);
+  const [startHand10, setStartHand10] = useState(null);
+  const [endHand10, setEndHand10] = useState(null);
+  const [startHand11, setStartHand11] = useState(null);
+  const [endHand11, setEndHand11] = useState(null);
+  const [startHand12, setStartHand12] = useState(null);
+  const [endHand12, setEndHand12] = useState(null);
+  const [startHand13, setStartHand13] = useState(null);
+  const [endHand13, setEndHand13] = useState(null);
+  const [startName1, setStartName1] = useState(null);
+  const [endName1, setEndName1] = useState(null);
+  const [startHand20, setStartHand20] = useState(null);
+  const [endHand20, setEndHand20] = useState(null);
+  const [startHand21, setStartHand21] = useState(null);
+  const [endHand21, setEndHand21] = useState(null);
+  const [startHand22, setStartHand22] = useState(null);
+  const [endHand22, setEndHand22] = useState(null);
+  const [startHand23, setStartHand23] = useState(null);
+  const [endHand23, setEndHand23] = useState(null);
+  const [startName2, setStartName2] = useState(null);
+  const [endName2, setEndName2] = useState(null);
+  const [startHand30, setStartHand30] = useState(null);
+  const [endHand30, setEndHand30] = useState(null);
+  const [startHand31, setStartHand31] = useState(null);
+  const [endHand31, setEndHand31] = useState(null);
+  const [startHand32, setStartHand32] = useState(null);
+  const [endHand32, setEndHand32] = useState(null);
+  const [startHand33, setStartHand33] = useState(null);
+  const [endHand33, setEndHand33] = useState(null);
+  const [startName3, setStartName3] = useState(null);
+  const [endName3, setEndName3] = useState(null);
+  const [startContractDirection, setStartContractDirection] = useState(null);
+  const [endContractDirection, setEndContractDirection] = useState(null);
+  const [startBoardNum, setStartBoardNum] = useState(null);
+  const [endBoardNum, setEndBoardNum] = useState(null);
 
+  const boardNumRef = useRef();
+  boardNumRef.current = boardNum;
   const handsRef = useRef();
   handsRef.current = hands;
   const handsDupRef = useRef();
@@ -110,31 +163,157 @@ export const ContextProvider = ({ children }) => {
   lastEventTimeRef.current = lastEventTime;
   const unassignedCardsRef = useRef();
   unassignedCardsRef.current = unassignedCards;
+  const videoRef = useRef();
+  videoRef.current = video;
+  const contractLevelRef = useRef();
+  contractLevelRef.current = contractLevel;
+  const capturedCards0Ref = useRef();
+  capturedCards0Ref.current = capturedCards0;
+  const capturedCards1Ref = useRef();
+  capturedCards1Ref.current = capturedCards1;
+  const capturedCards2Ref = useRef();
+  capturedCards2Ref.current = capturedCards2;
+  const capturedCards3Ref = useRef();
+  capturedCards3Ref.current = capturedCards3;
+  const northNameRef = useRef();
+  northNameRef.current = northName;
+  const eastNameRef = useRef();
+  eastNameRef.current = eastName;
+  const southNameRef = useRef();
+  southNameRef.current = southName;
+  const westNameRef = useRef();
+  westNameRef.current = westName;
+  const startHand00Ref = useRef();
+  startHand00Ref.current = startHand00;
+  const endHand00Ref = useRef();
+  endHand00Ref.current = endHand00;
+  const startHand01Ref = useRef();
+  startHand01Ref.current = startHand01;
+  const endHand01Ref = useRef();
+  endHand01Ref.current = endHand01;
+  const startHand02Ref = useRef();
+  startHand02Ref.current = startHand02;
+  const endHand02Ref = useRef();
+  endHand02Ref.current = endHand02;
+  const startHand03Ref = useRef();
+  startHand03Ref.current = startHand03;
+  const endHand03Ref = useRef();
+  endHand03Ref.current = endHand03;
+  const startName0Ref = useRef();
+  startName0Ref.current = startName0;
+  const endName0Ref = useRef();
+  endName0Ref.current = endName0;
+  const startHand10Ref = useRef();
+  startHand10Ref.current = startHand10;
+  const endHand10Ref = useRef();
+  endHand10Ref.current = endHand10;
+  const startHand11Ref = useRef();
+  startHand11Ref.current = startHand11;
+  const endHand11Ref = useRef();
+  endHand11Ref.current = endHand11;
+  const startHand12Ref = useRef();
+  startHand12Ref.current = startHand12;
+  const endHand12Ref = useRef();
+  endHand12Ref.current = endHand12;
+  const startHand13Ref = useRef();
+  startHand13Ref.current = startHand13;
+  const endHand13Ref = useRef();
+  endHand13Ref.current = endHand13;
+  const startName1Ref = useRef();
+  startName1Ref.current = startName1;
+  const endName1Ref = useRef();
+  endName1Ref.current = endName1;
+  const startHand20Ref = useRef();
+  startHand20Ref.current = startHand20;
+  const endHand20Ref = useRef();
+  endHand20Ref.current = endHand20;
+  const startHand21Ref = useRef();
+  startHand21Ref.current = startHand21;
+  const endHand21Ref = useRef();
+  endHand21Ref.current = endHand21;
+  const startHand22Ref = useRef();
+  startHand22Ref.current = startHand22;
+  const endHand22Ref = useRef();
+  endHand22Ref.current = endHand22;
+  const startHand23Ref = useRef();
+  startHand23Ref.current = startHand23;
+  const endHand23Ref = useRef();
+  endHand23Ref.current = endHand23;
+  const startName2Ref = useRef();
+  startName2Ref.current = startName2;
+  const endName2Ref = useRef();
+  endName2Ref.current = endName2;
+  const startHand30Ref = useRef();
+  startHand30Ref.current = startHand30;
+  const endHand30Ref = useRef();
+  endHand30Ref.current = endHand30;
+  const startHand31Ref = useRef();
+  startHand31Ref.current = startHand31;
+  const endHand31Ref = useRef();
+  endHand31Ref.current = endHand31;
+  const startHand32Ref = useRef();
+  startHand32Ref.current = startHand32;
+  const endHand32Ref = useRef();
+  endHand32Ref.current = endHand32;
+  const startHand33Ref = useRef();
+  startHand33Ref.current = startHand33;
+  const endHand33Ref = useRef();
+  endHand33Ref.current = endHand33;
+  const startName3Ref = useRef();
+  startName3Ref.current = startName3;
+  const endName3Ref = useRef();
+  endName3Ref.current = endName3;
+  const startContractDirectionRef = useRef();
+  startContractDirectionRef.current = startContractDirection;
+  const endContractDirectionRef = useRef();
+  endContractDirectionRef.current = endContractDirection;
+  const startBoardNumRef = useRef();
+  startBoardNumRef.current = startBoardNum;
+  const endBoardNumRef = useRef();
+  endBoardNumRef.current = endBoardNum;
 
-  const suitChars = { 0: "\u2660", 1: "\u2665", 2: "\u2666", 3: "\u2663" };
+  const suitChars = {
+    0: "\u2660",
+    1: "\u2665",
+    2: "\u2666",
+    3: "\u2663",
+    4: "NT",
+  };
+
+  const visionToRank = (vision) => {
+    return vision === "A"
+      ? 0
+      : vision === "K"
+      ? 1
+      : vision === "Q" || vision === "O" || vision === "0"
+      ? 2
+      : vision === "J" || vision === "]" || vision === "f"
+      ? 3
+      : vision === "T"
+      ? 4
+      : vision === "M"
+      ? 11
+      : 14 - parseInt(vision);
+  };
 
   useEffect(() => {
     if (ocrHands) {
       let tempDeck = [];
       for (let hand = 0; hand < 4; hand++) {
         for (let suit = 0; suit < 4; suit++) {
-          const cards = ocrHands[hand].split("\n")[suit];
+          const cards = ocrHands[hand].split("\n")[suit].replaceAll(" ", "");
           for (let card of cards.split("")) {
-            const rank =
-              card === "A"
-                ? 0
-                : card === "K"
-                ? 1
-                : card === "Q" || card === "O" || card === "0"
-                ? 2
-                : card === "J" || card === "]"
-                ? 3
-                : card === "T"
-                ? 4
-                : 14 - parseInt(card);
+            const rank = visionToRank(card);
             tempDeck.push({ suit, rank });
           }
         }
+      }
+      for (let hand = 0; hand < 4; hand++) {
+        const name = ocrHands[hand].split("\n")[4].substring(1);
+        if (hand === 0) setNorthName(name);
+        else if (hand === 1) setEastName(name);
+        else if (hand === 2) setSouthName(name);
+        else if (hand === 3) setWestName(name);
       }
       setDeck(tempDeck);
       setHands([
@@ -143,12 +322,14 @@ export const ContextProvider = ({ children }) => {
         tempDeck.slice(26, 39).map((card) => ({ ...card, hand: 2 })),
         tempDeck.slice(39, 52).map((card) => ({ ...card, hand: 3 })),
       ]);
-      // const zeroIndexedBoardNum = event.boardNumber - 1;
-      // setVul((zeroIndexedBoardNum + Math.floor(zeroIndexedBoardNum / 4)) % 4);
-      // setBoardNum(event.boardNumber);
       // setSegmentNum(event.round);
     }
   }, [ocrHands]);
+
+  useEffect(() => {
+    const zeroIndexedBoardNum = boardNum - 1;
+    setVul((zeroIndexedBoardNum + Math.floor(zeroIndexedBoardNum / 4)) % 4);
+  }, [boardNum]);
 
   // const inputToDeckFromStream = (event) => {
   //   const deal = event.handData;
@@ -305,6 +486,7 @@ export const ContextProvider = ({ children }) => {
             (currentWinningCardRef.current.suit !== trump ||
               card.rank < currentWinningCardRef.current.rank)) ||
           (card.suit === suitLedRef.current &&
+            currentWinningCardRef.current.suit !== trump &&
             card.rank < currentWinningCardRef.current.rank);
         const newCurrentWinningCard = isCardWinning
           ? card
@@ -354,7 +536,16 @@ export const ContextProvider = ({ children }) => {
   };
 
   const strToDirection = (str) => {
-    const lookup = { NORTH: 0, EAST: 1, SOUTH: 2, WEST: 3 };
+    const lookup = {
+      NORTH: 0,
+      North: 0,
+      EAST: 1,
+      East: 1,
+      SOUTH: 2,
+      South: 2,
+      WEST: 3,
+      West: 3,
+    };
     return lookup[str];
   };
 
@@ -904,6 +1095,7 @@ export const ContextProvider = ({ children }) => {
         numSegments,
         setNumSegments,
         boardNum,
+        boardNumRef,
         setBoardNum,
         numBoards,
         setNumBoards,
@@ -915,6 +1107,7 @@ export const ContextProvider = ({ children }) => {
         ocrHands,
         setOcrHands,
         hands,
+        handsRef,
         setHands,
         handsDup,
         setHandsDup,
@@ -923,19 +1116,26 @@ export const ContextProvider = ({ children }) => {
         playedHandsDup,
         setPlayedHandsDup,
         playedCards,
+        playedCardsRef,
         setPlayedCards,
         playedCardsDup,
         setPlayedCardsDup,
         contractLevel,
+        contractLevelRef,
+        setContractLevel,
         contractSuit,
+        setContractSuit,
         declarer,
+        setDeclarer,
         leader,
         setLeader,
         suitLed,
         setSuitLed,
         whoseTurn,
+        whoseTurnRef,
         setWhoseTurn,
         trickCards,
+        trickCardsRef,
         setTrickCards,
         trickCardsDup,
         setTrickCardsDup,
@@ -973,6 +1173,8 @@ export const ContextProvider = ({ children }) => {
         setTypedSuit,
         typedRank,
         setTypedRank,
+        site,
+        setSite,
         broadcastType,
         setBroadcastType,
         showPlayedCards,
@@ -989,7 +1191,6 @@ export const ContextProvider = ({ children }) => {
         setTimeUntilNextEvent,
         nextEventID,
         setNextEventID,
-        auctionEnded,
         // takeNextActionAndSchedule,
         realityOn,
         realityOff,
@@ -1018,12 +1219,172 @@ export const ContextProvider = ({ children }) => {
         setHost,
         northName,
         setNorthName,
+        northNameRef,
         eastName,
         setEastName,
+        eastNameRef,
         southName,
         setSouthName,
+        southNameRef,
         westName,
         setWestName,
+        westNameRef,
+        canvas,
+        setCanvas,
+        video,
+        videoRef,
+        setVideo,
+        calibrationImage,
+        setCalibrationImage,
+        captureStream,
+        setCaptureStream,
+        visionToRank,
+        capturedCards0,
+        capturedCards0Ref,
+        setCapturedCards0,
+        capturedCards1,
+        capturedCards1Ref,
+        setCapturedCards1,
+        capturedCards2,
+        capturedCards2Ref,
+        setCapturedCards2,
+        capturedCards3,
+        capturedCards3Ref,
+        setCapturedCards3,
+        calibrationOpen,
+        setCalibrationOpen,
+        startHand00,
+        setStartHand00,
+        startHand00Ref,
+        endHand00,
+        setEndHand00,
+        endHand00Ref,
+        startHand01,
+        setStartHand01,
+        startHand01Ref,
+        endHand01,
+        setEndHand01,
+        endHand01Ref,
+        startHand02,
+        setStartHand02,
+        startHand02Ref,
+        endHand02,
+        setEndHand02,
+        endHand02Ref,
+        startHand03,
+        setStartHand03,
+        startHand03Ref,
+        endHand03,
+        setEndHand03,
+        endHand03Ref,
+        startName0,
+        setStartName0,
+        startName0Ref,
+        endName0,
+        setEndName0,
+        endName0Ref,
+        startHand10,
+        setStartHand10,
+        startHand10Ref,
+        endHand10,
+        setEndHand10,
+        endHand10Ref,
+        startHand11,
+        setStartHand11,
+        startHand11Ref,
+        endHand11,
+        setEndHand11,
+        endHand11Ref,
+        startHand12,
+        setStartHand12,
+        startHand12Ref,
+        endHand12,
+        setEndHand12,
+        endHand12Ref,
+        startHand13,
+        setStartHand13,
+        startHand13Ref,
+        endHand13,
+        setEndHand13,
+        endHand13Ref,
+        startName1,
+        setStartName1,
+        startName1Ref,
+        endName1,
+        setEndName1,
+        endName1Ref,
+        startHand20,
+        setStartHand20,
+        startHand20Ref,
+        endHand20,
+        setEndHand20,
+        endHand20Ref,
+        startHand21,
+        setStartHand21,
+        startHand21Ref,
+        endHand21,
+        setEndHand21,
+        endHand21Ref,
+        startHand22,
+        setStartHand22,
+        startHand22Ref,
+        endHand22,
+        setEndHand22,
+        endHand22Ref,
+        startHand23,
+        setStartHand23,
+        startHand23Ref,
+        endHand23,
+        setEndHand23,
+        endHand23Ref,
+        startName2,
+        setStartName2,
+        startName2Ref,
+        endName2,
+        setEndName2,
+        endName2Ref,
+        startHand30,
+        setStartHand30,
+        startHand30Ref,
+        endHand30,
+        setEndHand30,
+        endHand30Ref,
+        startHand31,
+        setStartHand31,
+        startHand31Ref,
+        endHand31,
+        setEndHand31,
+        endHand31Ref,
+        startHand32,
+        setStartHand32,
+        startHand32Ref,
+        endHand32,
+        setEndHand32,
+        endHand32Ref,
+        startHand33,
+        setStartHand33,
+        startHand33Ref,
+        endHand33,
+        setEndHand33,
+        endHand33Ref,
+        startName3,
+        setStartName3,
+        startName3Ref,
+        endName3,
+        setEndName3,
+        endName3Ref,
+        startContractDirection,
+        setStartContractDirection,
+        startContractDirectionRef,
+        endContractDirection,
+        setEndContractDirection,
+        endContractDirectionRef,
+        startBoardNum,
+        setStartBoardNum,
+        startBoardNumRef,
+        endBoardNum,
+        setEndBoardNum,
+        endBoardNumRef,
       }}
     >
       {children}

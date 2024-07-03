@@ -434,7 +434,7 @@
 }
 
 .suit0 {
-    color: #1578f9;
+    color: #061e3e;
 }
 
 .suit1 {
@@ -609,7 +609,7 @@
 }
 
 .bottomRight {
-    background-color: rgba(0, 0, 0, 0.4);
+    /* background-color: rgba(0, 0, 0, 0.4); */
     height: 65%;
     display: flex;
     padding: min(1vw, 1vh);

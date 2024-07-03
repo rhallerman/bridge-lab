@@ -1,14 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Button, Divider, Grid, TextField } from "@mui/material";
+import React, { useContext } from "react";
+import { Grid, TextField } from "@mui/material";
 import { Context } from "../Context/Context";
 import "./View.css";
 // import Webcam from "react-webcam";
-import usbfLogo from "../Images/usbf.png";
-import lovebridgeLogo from "../Images/lovebridge.png";
-import kibsyncLogo from "../Images/kibsync.png";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
-import Auction from "./Auction";
+// import Auction from "./Auction";
+// import usbfLogo from "../Images/usbf.png";
+// import lovebridgeLogo from "../Images/lovebridge.png";
+// import kibsyncLogo from "../Images/kibsync.png";
 
 const View = ({ editable, videoChatContainer }) => {
   let {
@@ -29,9 +29,8 @@ const View = ({ editable, videoChatContainer }) => {
     numBoards,
     setNumBoards,
     reality,
-    suitChars,
-    strToSuit,
-    setOcrHands,
+    // suitChars,
+    // strToSuit,
   } = useContext(Context);
 
   const headerInputField = (label, value, onChange, textAlign) => (
@@ -57,7 +56,9 @@ const View = ({ editable, videoChatContainer }) => {
       <Grid container alignItems="center">
         <Grid item xs={2.5}>
           <div className="headerInfoItem">
-            <div className="headerTextKey">SEGMENT: </div>
+            {editable || segmentNum ? (
+              <div className="headerTextKey">SEGMENT: </div>
+            ) : null}
             {editable ? (
               headerInputField(
                 "",
@@ -65,12 +66,12 @@ const View = ({ editable, videoChatContainer }) => {
                 (event) => setSegmentNum(event.target.value.toUpperCase()),
                 "center"
               )
-            ) : (
+            ) : segmentNum ? (
               <div className="headerTextVal">{segmentNum}</div>
-            )}
-            <div className="headerTextVal">
-              {editable || numSegments ? "OF" : ""}
-            </div>
+            ) : null}
+            {editable || numSegments ? (
+              <div className="headerTextVal">{"OF"}</div>
+            ) : null}
             {editable ? (
               headerInputField(
                 "",
@@ -78,9 +79,9 @@ const View = ({ editable, videoChatContainer }) => {
                 (event) => setNumSegments(event.target.value.toUpperCase()),
                 "center"
               )
-            ) : (
+            ) : numSegments ? (
               <div className="headerTextVal">{numSegments}</div>
-            )}
+            ) : null}
           </div>
           <div className="headerInfoItem">
             <div className="headerTextKey">BOARD: </div>
@@ -111,9 +112,29 @@ const View = ({ editable, videoChatContainer }) => {
         </Grid>
         <Grid item xs={7}>
           <div className="logoAndTitle">
-            {!editable && <img src={usbfLogo} className="logo" alt="USBF" />}
+            {/* {!editable && (
+              <img
+                src={require("../Images/usbflogo.png")}
+                type="image/png"
+                className="logo"
+                alt="USBF"
+              />
+            )} */}
+            {/* {!editable && (
+              <img
+                src={require("../Images/lovebridge_logo_red_black.png")}
+                type="image/png"
+                className="logo"
+                alt="LoveBridge"
+              />
+            )} */}
             {!editable && (
-              <img src={lovebridgeLogo} className="logo" alt="lovebridge" />
+              <img
+                src={require("../Images/Bridge_Base_Online_logo.png")}
+                type="image/png"
+                className="logo"
+                alt="LoveBridge"
+              />
             )}
             <div className={editable ? "title titleInput" : "title"}>
               {editable ? (
@@ -138,7 +159,12 @@ const View = ({ editable, videoChatContainer }) => {
               )}
             </div>
             {!editable && (
-              <img src={kibsyncLogo} className="logo" alt="kibsync" />
+              <img
+                src={require("../Images/kibsync.png")}
+                type="image/png"
+                className="logo"
+                alt="kibsync"
+              />
             )}
           </div>
         </Grid>
@@ -216,14 +242,14 @@ const View = ({ editable, videoChatContainer }) => {
 
   const leftArea = <div className="leftArea">{videoChatContainer}</div>;
 
-  const [thisMatchResults, setThisMatchResults] = useState(true);
+  // const [thisMatchResults, setThisMatchResults] = useState(true);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setThisMatchResults(!thisMatchResults);
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [thisMatchResults]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setThisMatchResults(!thisMatchResults);
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, [thisMatchResults]);
 
   // const resultsArrToStr = (arr) => {
   //   let table1Result = arr[0];
@@ -242,225 +268,150 @@ const View = ({ editable, videoChatContainer }) => {
   //   const table2IMPs = arr[11];
   // };
 
-  const results = () => {
-    const rawResultsOld = [];
-    const allResults = rawResultsOld.map((result, resultIdx) => {
-      const thisSuit = strToSuit(result[1] ?? "");
-      const otherSuit = strToSuit(result[6] ?? "");
-      return [
-        <div key={`board${resultIdx}`} className="centerCell rightBorder">
-          {resultIdx + 1}
-        </div>,
-        <div key={`thisContract${resultIdx}`} className="pastContract">
-          {result[0]}
-          <div className={`suit${thisSuit}`}>{suitChars[thisSuit]}</div>
-          {result[2]}
-          {result[3]}
-        </div>,
-        <div key={`thisResult${resultIdx}`} className="rightCell rightBorder">
-          {result[4]}
-        </div>,
-        <div key={`otherContract${resultIdx}`} className="pastContract">
-          {result[5]}
-          <div className={`suit${otherSuit}`}>{suitChars[otherSuit]}</div>
-          {result[7]}
-          {result[8]}
-        </div>,
-        <div key={`otherResult${resultIdx}`} className="rightCell rightBorder">
-          {result[9]}
-        </div>,
-        ...(result[10] !== "" || result[11] !== ""
-          ? [
-              <div key={`nsScore${resultIdx}`} className="centerCell">
-                {result[10]}
-              </div>,
-              <div key={`ewScore${resultIdx}`} className="centerCell">
-                {result[11]}
-              </div>,
-            ]
-          : [
-              <div key={`nsScore${resultIdx}`} className="pushCell">
-                <Divider variant="middle" className="pushScore" />
-              </div>,
-              <div key={`ewScore${resultIdx}`} className="pushCell">
-                <Divider variant="middle" className="pushScore" />
-              </div>,
-            ]),
-      ];
-    });
-    return (
-      <div className="results">
-        <div className="resultsTitle">SCORECARD</div>
-        <div className="resultsGrid">
-          <div></div>
-          <div className="twoColumnTitle centerCell">This Room</div>
-          <div className="twoColumnTitle centerCell">Other Room</div>
-          <div className="twoColumnTitle centerCell">Score</div>
-          {allResults}
-        </div>
-      </div>
-    );
-  };
+  // const results = () => {
+  //   const rawResultsOld = [];
+  //   const allResults = rawResultsOld.map((result, resultIdx) => {
+  //     const thisSuit = strToSuit(result[1] ?? "");
+  //     const otherSuit = strToSuit(result[6] ?? "");
+  //     return [
+  //       <div key={`board${resultIdx}`} className="centerCell rightBorder">
+  //         {resultIdx + 1}
+  //       </div>,
+  //       <div key={`thisContract${resultIdx}`} className="pastContract">
+  //         {result[0]}
+  //         <div className={`suit${thisSuit}`}>{suitChars[thisSuit]}</div>
+  //         {result[2]}
+  //         {result[3]}
+  //       </div>,
+  //       <div key={`thisResult${resultIdx}`} className="rightCell rightBorder">
+  //         {result[4]}
+  //       </div>,
+  //       <div key={`otherContract${resultIdx}`} className="pastContract">
+  //         {result[5]}
+  //         <div className={`suit${otherSuit}`}>{suitChars[otherSuit]}</div>
+  //         {result[7]}
+  //         {result[8]}
+  //       </div>,
+  //       <div key={`otherResult${resultIdx}`} className="rightCell rightBorder">
+  //         {result[9]}
+  //       </div>,
+  //       ...(result[10] !== "" || result[11] !== ""
+  //         ? [
+  //             <div key={`nsScore${resultIdx}`} className="centerCell">
+  //               {result[10]}
+  //             </div>,
+  //             <div key={`ewScore${resultIdx}`} className="centerCell">
+  //               {result[11]}
+  //             </div>,
+  //           ]
+  //         : [
+  //             <div key={`nsScore${resultIdx}`} className="pushCell">
+  //               <Divider variant="middle" className="pushScore" />
+  //             </div>,
+  //             <div key={`ewScore${resultIdx}`} className="pushCell">
+  //               <Divider variant="middle" className="pushScore" />
+  //             </div>,
+  //           ]),
+  //     ];
+  //   });
+  //   return (
+  //     <div className="results">
+  //       <div className="resultsTitle">SCORECARD</div>
+  //       <div className="resultsGrid">
+  //         <div></div>
+  //         <div className="twoColumnTitle centerCell">This Room</div>
+  //         <div className="twoColumnTitle centerCell">Other Room</div>
+  //         <div className="twoColumnTitle centerCell">Score</div>
+  //         {allResults}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
-  const otherResults = () => {
-    const matchResult = ([teamName1, score1, teamName2, score2]) => {
-      return (
-        <div key={`${teamName1}:${teamName2}`} className="matchResult">
-          <div className="matchResultColumn">
-            <div key={`${teamName1}Name`} className="matchResultItem home">
-              {teamName1}
-            </div>
-            <div key={`${teamName2}Name`} className="matchResultItem away">
-              {teamName2}
-            </div>
-          </div>
-          <div className="matchResultColumn">
-            <div key={`${teamName1}Score`} className="matchResultItem home">
-              {score1}
-            </div>
-            <div key={`${teamName2}Score`} className="matchResultItem away">
-              {score2}
-            </div>
-          </div>
-        </div>
-      );
-    };
-    const matchResultRow = (matchResult1, matchResult2) => {
-      return (
-        <div
-          key={`${matchResult1.key}/${matchResult2.key}`}
-          className="matchResultRow"
-        >
-          {matchResult1}
-          {matchResult2}
-        </div>
-      );
-    };
-    const rawResults = [];
-    const matchResults = rawResults.map((result) => matchResult(result));
-    let matchResultRows = [];
-    while (matchResults.length > 1) {
-      const [matchResult1, matchResult2] = matchResults.splice(0, 2);
-      matchResultRows.push(matchResultRow(matchResult1, matchResult2));
-    }
-    return (
-      <div className="results">
-        <div className="resultsTitle">MATCH RESULTS</div>
-        {matchResultRows}
-      </div>
-    );
-  };
+  // const otherResults = () => {
+  //   const matchResult = ([teamName1, score1, teamName2, score2]) => {
+  //     return (
+  //       <div key={`${teamName1}:${teamName2}`} className="matchResult">
+  //         <div className="matchResultColumn">
+  //           <div key={`${teamName1}Name`} className="matchResultItem home">
+  //             {teamName1}
+  //           </div>
+  //           <div key={`${teamName2}Name`} className="matchResultItem away">
+  //             {teamName2}
+  //           </div>
+  //         </div>
+  //         <div className="matchResultColumn">
+  //           <div key={`${teamName1}Score`} className="matchResultItem home">
+  //             {score1}
+  //           </div>
+  //           <div key={`${teamName2}Score`} className="matchResultItem away">
+  //             {score2}
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   };
+  //   const matchResultRow = (matchResult1, matchResult2) => {
+  //     return (
+  //       <div
+  //         key={`${matchResult1.key}/${matchResult2.key}`}
+  //         className="matchResultRow"
+  //       >
+  //         {matchResult1}
+  //         {matchResult2}
+  //       </div>
+  //     );
+  //   };
+  //   const rawResults = [];
+  //   const matchResults = rawResults.map((result) => matchResult(result));
+  //   let matchResultRows = [];
+  //   while (matchResults.length > 1) {
+  //     const [matchResult1, matchResult2] = matchResults.splice(0, 2);
+  //     matchResultRows.push(matchResultRow(matchResult1, matchResult2));
+  //   }
+  //   return (
+  //     <div className="results">
+  //       <div className="resultsTitle">MATCH RESULTS</div>
+  //       {matchResultRows}
+  //     </div>
+  //   );
+  // };
 
   const rightArea = (
     <div className="rightArea">
-      <Auction />
+      {/* <Auction /> */}
       <div
         className={`bottomRight animate ${reality ? "visible" : "invisible"}`}
       >
-        <div
+        {/* <div
           className={`resultsOption animate ${
             thisMatchResults ? "visible" : "invisible"
           }`}
         >
           {results()}
-        </div>
-        <div
+        </div> */}
+        {/* <div
           className={`resultsOption animate ${
             thisMatchResults ? "invisible" : "visible"
           }`}
         >
           {otherResults()}
-        </div>
+        </div> */}
       </div>
     </div>
   );
 
-  const capture = async () => {
-    const canvas = document.createElement("canvas");
-    const video = document.createElement("video");
-    const captureStream = await navigator.mediaDevices.getDisplayMedia();
-    video.srcObject = captureStream;
-    await video.play();
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const crops = [
-      [0.542, 0.14],
-      [0.715, 0.45],
-      [0.542, 0.715],
-      [0.37, 0.45],
-    ];
-    const tempOcrHands = [];
-    for (const crop of crops) {
-      canvas
-        .getContext("2d")
-        .drawImage(
-          video,
-          video.videoWidth * crop[0],
-          video.videoHeight * crop[1],
-          video.videoHeight * 0.25,
-          video.videoHeight * 0.19,
-          0,
-          0,
-          video.videoHeight * 0.25,
-          video.videoHeight * 0.19
-        );
-      const frame = canvas.toDataURL();
-      const response = await fetch(
-        "https://vision.googleapis.com/v1/images:annotate",
-        {
-          method: "POST",
-          headers: {
-            Authorization:
-              "Bearer ya29.a0Ad52N3-3AFbZGyOylDjmAQlbgy5j4pS_JMJEWliuS1-mXe4ShI1-ktQH0jBpQ4kNlpeThr4tb5nt9Ac0AQUUxErL7WkUbgGGDszLa9qLS02wNARa2hdzDP_paI50FDTRvkyDcA4NN9rIS6jRsRLIPCviiltxEQO9LmU5lMXohQaCgYKAWESARMSFQHGX2MiJPcnKI18sciTPVJKE8DzCg0177",
-            "x-goog-user-project": "expanded-symbol-422006-g2",
-            "Content-Type": "application/json; charset=utf-8",
-          },
-          body: JSON.stringify({
-            requests: [
-              {
-                image: { content: frame.substring(22) },
-                features: [{ type: "TEXT_DETECTION" }],
-              },
-            ],
-          }),
-        }
-      );
-      await response.json().then((response) => {
-        console.log(response.responses[0].fullTextAnnotation.text);
-        tempOcrHands.push(response.responses[0].fullTextAnnotation.text);
-      });
-    }
-    setOcrHands(tempOcrHands);
-    captureStream.getTracks().forEach((track) => track.stop());
-  };
-
-  const captureButton = <Button onClick={capture}>Select Capture</Button>;
-
   return (
-    <div style={{ display: "flex" }}>
-      <div className="background">
-        {header}
-        <div className="belowHeader">
-          <div className="areas">
-            {leftArea}
-            <AnalysisTable editable={editable} />
-            <LiveTable editable={editable} />
-            {rightArea}
-          </div>
+    <div className="background">
+      {header}
+      <div className="belowHeader">
+        <div className="areas">
+          {leftArea}
+          <AnalysisTable editable={editable} />
+          <LiveTable editable={editable} />
+          {rightArea}
         </div>
       </div>
-      {!editable && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          {captureButton}
-        </div>
-      )}
     </div>
   );
 };

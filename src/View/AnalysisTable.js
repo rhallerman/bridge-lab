@@ -3,8 +3,6 @@ import { Context } from "../Context/Context";
 
 const AnalysisTable = ({ editable }) => {
   const {
-    handsDup,
-    setHandsDup,
     trickCardsDup,
     reality,
     mode,
@@ -22,13 +20,22 @@ const AnalysisTable = ({ editable }) => {
     setSouthName,
     westName,
     setWestName,
+    contractLevel,
+    contractSuit,
+    declarer,
+    suitChars,
+    directionToStr,
   } = useContext(Context);
 
   const contract = (
-    <div className="contractAndDirection" key="contract">
-      <div className="contract">6</div>
-      <div className="suit3">{"\u2663"}</div>
-      <div className="direction">W</div>
+    <div className="contractAndDirection">
+      <div className="contract">{contractLevel}</div>
+      <div className={`${contractSuit >= 0 ? `suit${contractSuit}` : ""}`}>
+        {suitChars[contractSuit]}
+      </div>
+      <div className="direction">
+        {directionToStr(declarer)?.substring(0, 1) ?? ""}
+      </div>
     </div>
   );
 
@@ -79,16 +86,7 @@ const AnalysisTable = ({ editable }) => {
       play(card, false);
     } else if (mode === "assign") {
       // TODO
-      if (card.hand !== mode) {
-        let tempHands = [...handsDup];
-        const deleteIdx = handsDup[card.hand].findIndex(
-          (assignedCard) =>
-            assignedCard.suit === card.suit && assignedCard.rank === card.rank
-        );
-        tempHands[card.hand].splice(deleteIdx, 1);
-        tempHands[mode].push({ ...card, hand: mode });
-        setHandsDup(tempHands);
-      }
+      console.log("Clicking a card has no effect when in Assign mode.");
     } else if (mode === "unassign") {
       unassign(card);
     } else if (mode === "trade") {
