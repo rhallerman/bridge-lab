@@ -1549,6 +1549,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     const boardNumText = boardNumTextObj.vision
       .replaceAll("\n", "")
       .replaceAll("D", "")
+      .replaceAll("P", "")
       .replaceAll("13\n", "");
     console.log(`boardNumText: ${boardNumText}`);
     if (boardNumText) {
