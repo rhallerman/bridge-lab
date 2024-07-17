@@ -561,7 +561,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     if (["♦", "◆", "+", ".", "->"].includes(vision)) return 2;
     if (["%", "0", "0%", "of"].includes(vision)) return 3;
     if (["N", "NT"].includes(vision)) return -1;
-    if (["4", "A", ""].includes(vision)) {
+    if (["4", "A", "1", ""].includes(vision)) {
       if (
         palette?.some(
           (color) => color[0] > 150 && color[1] < 50 && color[2] < 50
