@@ -10,7 +10,6 @@ const Canvas = ({
   const canvasRef = useRef();
 
   const clearCanvas = (canvas, context) => {
-    console.log("clear 1");
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
@@ -19,7 +18,6 @@ const Canvas = ({
     context.strokeStyle = "rgba(0, 0, 255, 0.4)";
     context.strokeWidth = 1;
     if (clearCanvasOnChange) {
-      console.log("clear 2");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
     context.fillRect(
@@ -36,18 +34,16 @@ const Canvas = ({
     );
   };
 
-  // useEffect(() => {
-  //   console.log("pastSelections useEffect");
-  //   console.log(pastSelections);
-  //   if (pastSelections.length > 0) {
-  //     const canvas = canvasRef.current;
-  //     const context = canvas.getContext("2d");
-  //     clearCanvas(canvas, context);
-  //     for (const selection of pastSelections) {
-  //       drawSelection(canvas, context, selection[0], selection[1]);
-  //     }
-  //   }
-  // }, [pastSelections]);
+  useEffect(() => {
+    if (pastSelections.length > 0) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      clearCanvas(canvas, context);
+      for (const selection of pastSelections) {
+        drawSelection(canvas, context, selection[0], selection[1]);
+      }
+    }
+  }, [pastSelections]);
 
   useEffect(() => {
     if (start && end) {

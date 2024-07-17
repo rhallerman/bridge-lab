@@ -275,7 +275,6 @@ export const ContextProvider = ({ children }) => {
   endAuctionRef.current = endAuction;
 
   const resetAll = () => {
-    console.log("------- RESET -------");
     setBoardNum("");
     setVul(null);
     setDeck(null);
