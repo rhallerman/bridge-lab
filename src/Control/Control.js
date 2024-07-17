@@ -454,7 +454,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       height,
       "TEXT_DETECTION",
       false,
-      true,
+      false,
       lastImg,
       setLastImg,
       true
@@ -470,7 +470,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         height + 4,
         "TEXT_DETECTION",
         false,
-        true,
+        false,
         lastImg,
         setLastImg,
         true
@@ -1548,7 +1548,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     console.log(`boardNumTextObj: ${JSON.stringify(boardNumTextObj)}`);
     const boardNumText = boardNumTextObj.vision
       .replaceAll("\n", "")
-      .replaceAll("D", "");
+      .replaceAll("D", "")
+      .replaceAll("13\n", "");
     console.log(`boardNumText: ${boardNumText}`);
     if (boardNumText) {
       setBoardNum(boardNumText);
