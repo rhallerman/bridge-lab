@@ -261,7 +261,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         width,
         height
       );
-    if (render) document.body.appendChild(canvas);
+    // if (render) document.body.appendChild(canvas);
     const frame = canvas.toDataURL();
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -301,9 +301,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       orientationImage.src = orientate;
       canvas.getContext("2d").drawImage(orientationImage, width, 0);
     }
-    if (render) {
-      document.body.appendChild(canvas);
-    }
+    // if (render) {
+    //   document.body.appendChild(canvas);
+    // }
     const frame = canvas.toDataURL();
     if (returnOCR) {
       if (frame !== lastImg) {
@@ -385,9 +385,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         width,
         height
       );
-    if (render) {
-      document.body.appendChild(canvas);
-    }
+    // if (render) {
+    //   document.body.appendChild(canvas);
+    // }
     const frame = canvas.toDataURL().split(",")[1];
     // const request = await fetch(
     //   `https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/endpoints/${ENDPOINT_ID}:predict`,
