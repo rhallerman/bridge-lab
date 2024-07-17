@@ -1589,7 +1589,10 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       setBidLastImg,
       true
     );
-    const nextBid = nextBidVisionAndPalette.vision;
+    const nextBid = nextBidVisionAndPalette.vision
+      .replaceAll("\nN", "")
+      .replaceAll("N\n", "")
+      .replaceAll(" ", "");
     const nextBidPalette = nextBidVisionAndPalette.palette;
     let bidObj = { hand: whoseTurnRef.current };
     if (nextBid) {
