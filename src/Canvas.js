@@ -10,18 +10,16 @@ const Canvas = ({
   const canvasRef = useRef();
 
   const clearCanvas = (canvas, context) => {
-    console.log("clear");
+    console.log("clear 1");
     context.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("clear done");
   };
 
   const drawSelection = (canvas, context, start, end) => {
-    console.log("draw");
     context.fillStyle = "rgba(0, 0, 255, 0.3)";
     context.strokeStyle = "rgba(0, 0, 255, 0.4)";
     context.strokeWidth = 1;
     if (clearCanvasOnChange) {
-      console.log("draw includes clear");
+      console.log("clear 2");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
     context.fillRect(
@@ -38,24 +36,21 @@ const Canvas = ({
     );
   };
 
-  useEffect(() => {
-    if (pastSelections.length > 0) {
-      console.log("past selections updated");
-      console.log(pastSelections);
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      clearCanvas(canvas, context);
-      for (const selection of pastSelections) {
-        drawSelection(canvas, context, selection[0], selection[1]);
-      }
-      console.log("draw done");
-    }
-  }, [pastSelections]);
+  // useEffect(() => {
+  //   console.log("pastSelections useEffect");
+  //   console.log(pastSelections);
+  //   if (pastSelections.length > 0) {
+  //     const canvas = canvasRef.current;
+  //     const context = canvas.getContext("2d");
+  //     clearCanvas(canvas, context);
+  //     for (const selection of pastSelections) {
+  //       drawSelection(canvas, context, selection[0], selection[1]);
+  //     }
+  //   }
+  // }, [pastSelections]);
 
   useEffect(() => {
     if (start && end) {
-      console.log("wrong useEffect");
-      console.log(start);
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
       drawSelection(canvas, context, start, end);

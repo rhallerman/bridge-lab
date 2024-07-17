@@ -16,7 +16,6 @@ export const ContextProvider = ({ children }) => {
   const [vul, setVul] = useState(null);
   const [deck, setDeck] = useState(null);
   const [fromSrc, setFromSrc] = useState(true);
-  const [ocrHands, setOcrHands] = useState(null);
   const [hands, setHands] = useState([[], [], [], []]);
   const [handsDup, setHandsDup] = useState([[], [], [], []]);
   const [playedHands, setPlayedHands] = useState([[], [], [], []]);
@@ -25,6 +24,7 @@ export const ContextProvider = ({ children }) => {
   const [playedCardsDup, setPlayedCardsDup] = useState(new Set());
   const [contractLevel, setContractLevel] = useState(null);
   const [contractSuit, setContractSuit] = useState(null);
+  const [contractDbl, setContractDbl] = useState(0);
   const [declarer, setDeclarer] = useState(null);
   const [leader, setLeader] = useState(0);
   const [suitLed, setSuitLed] = useState(null);
@@ -54,8 +54,6 @@ export const ContextProvider = ({ children }) => {
   const [auction, setAuction] = useState([]);
   const [explanations, setExplanations] = useState([]);
   const [liveEvents, setLiveEvents] = useState([]);
-  const [lastEventTime, setLastEventTime] = useState(null);
-  const [timeUntilNextEvent, setTimeUntilNextEvent] = useState(null);
   const [nextEventID, setNextEventID] = useState(null);
   const [commentators, setCommentators] = useState([""]);
   const [username, setUsername] = useState("");
@@ -118,6 +116,8 @@ export const ContextProvider = ({ children }) => {
   const [endContractDirection, setEndContractDirection] = useState(null);
   const [startBoardNum, setStartBoardNum] = useState(null);
   const [endBoardNum, setEndBoardNum] = useState(null);
+  const [startAuction, setStartAuction] = useState(null);
+  const [endAuction, setEndAuction] = useState(null);
 
   const boardNumRef = useRef();
   boardNumRef.current = boardNum;
@@ -133,6 +133,8 @@ export const ContextProvider = ({ children }) => {
   playedCardsRef.current = playedCards;
   const playedCardsDupRef = useRef();
   playedCardsDupRef.current = playedCardsDup;
+  const auctionRef = useRef();
+  auctionRef.current = auction;
   const leaderRef = useRef();
   leaderRef.current = leader;
   const suitLedRef = useRef();
@@ -151,22 +153,18 @@ export const ContextProvider = ({ children }) => {
   realityRef.current = reality;
   const liveEventsRef = useRef();
   liveEventsRef.current = liveEvents;
-  const auctionRef = useRef();
-  auctionRef.current = auction;
   const historyRef = useRef();
   historyRef.current = history;
   const historyDupRef = useRef();
   historyDupRef.current = historyDup;
-  const timeUntilNextEventRef = useRef();
-  timeUntilNextEventRef.current = timeUntilNextEvent;
-  const lastEventTimeRef = useRef();
-  lastEventTimeRef.current = lastEventTime;
   const unassignedCardsRef = useRef();
   unassignedCardsRef.current = unassignedCards;
   const videoRef = useRef();
   videoRef.current = video;
   const contractLevelRef = useRef();
   contractLevelRef.current = contractLevel;
+  const trumpRef = useRef();
+  trumpRef.current = trump;
   const capturedCards0Ref = useRef();
   capturedCards0Ref.current = capturedCards0;
   const capturedCards1Ref = useRef();
@@ -271,13 +269,47 @@ export const ContextProvider = ({ children }) => {
   startBoardNumRef.current = startBoardNum;
   const endBoardNumRef = useRef();
   endBoardNumRef.current = endBoardNum;
+  const startAuctionRef = useRef();
+  startAuctionRef.current = startAuction;
+  const endAuctionRef = useRef();
+  endAuctionRef.current = endAuction;
+
+  const resetAll = () => {
+    console.log("------- RESET -------");
+    setBoardNum("");
+    setVul(null);
+    setDeck(null);
+    setHands([[], [], [], []]);
+    setHandsDup([[], [], [], []]);
+    setPlayedHands([[], [], [], []]);
+    setPlayedHandsDup([[], [], [], []]);
+    setPlayedCards(new Set());
+    setPlayedCardsDup(new Set());
+    setContractLevel(null);
+    setContractSuit(null);
+    setContractDbl(0);
+    setDeclarer(null);
+    setLeader(0);
+    setSuitLed(null);
+    setWhoseTurn(null);
+    setTrickCards(new Set());
+    setTrickCardsDup(new Set());
+    setCurrentWinningCard(null);
+    setCurrentWinningPlayer(null);
+    setStoredStates(null);
+    setTrump(null);
+    setAuction([]);
+    setExplanations([]);
+    setLiveEvents([]);
+    setNextEventID(null);
+  };
 
   const suitChars = {
     0: "\u2660",
     1: "\u2665",
     2: "\u2666",
     3: "\u2663",
-    4: "NT",
+    "-1": "NT",
   };
 
   const visionToRank = (vision) => {
@@ -295,36 +327,6 @@ export const ContextProvider = ({ children }) => {
       ? 11
       : 14 - parseInt(vision);
   };
-
-  useEffect(() => {
-    if (ocrHands) {
-      let tempDeck = [];
-      for (let hand = 0; hand < 4; hand++) {
-        for (let suit = 0; suit < 4; suit++) {
-          const cards = ocrHands[hand].split("\n")[suit].replaceAll(" ", "");
-          for (let card of cards.split("")) {
-            const rank = visionToRank(card);
-            tempDeck.push({ suit, rank });
-          }
-        }
-      }
-      for (let hand = 0; hand < 4; hand++) {
-        const name = ocrHands[hand].split("\n")[4].substring(1);
-        if (hand === 0) setNorthName(name);
-        else if (hand === 1) setEastName(name);
-        else if (hand === 2) setSouthName(name);
-        else if (hand === 3) setWestName(name);
-      }
-      setDeck(tempDeck);
-      setHands([
-        tempDeck.slice(0, 13).map((card) => ({ ...card, hand: 0 })),
-        tempDeck.slice(13, 26).map((card) => ({ ...card, hand: 1 })),
-        tempDeck.slice(26, 39).map((card) => ({ ...card, hand: 2 })),
-        tempDeck.slice(39, 52).map((card) => ({ ...card, hand: 3 })),
-      ]);
-      // setSegmentNum(event.round);
-    }
-  }, [ocrHands]);
 
   useEffect(() => {
     const zeroIndexedBoardNum = boardNum - 1;
@@ -409,110 +411,99 @@ export const ContextProvider = ({ children }) => {
     let tempAuction = [...auctionRef.current];
     tempAuction.push(bid);
     setAuction(tempAuction);
-    const auctionLength = tempAuction.length;
-    if (
-      auctionLength < 4 ||
-      tempAuction[auctionLength - 1].action !== "PASS" ||
-      tempAuction[auctionLength - 2].action !== "PASS" ||
-      tempAuction[auctionLength - 3].action !== "PASS"
-    )
-      setWhoseTurn((whoseTurnRef.current + 1) % 4);
   };
 
-  const play = useCallback(
-    (card, playedInReality) => {
-      (playedInReality ? setHistory : setHistoryDup)([
-        {
-          action: "play",
-          hands: playedInReality ? handsRef.current : handsDupRef.current,
-          playedHands: playedInReality
-            ? playedHandsRef.current
-            : playedHandsDupRef.current,
-          playedCards: playedInReality
-            ? playedCardsRef.current
-            : playedCardsDupRef.current,
-          suitLed: playedInReality ? suitLedRef.current : null,
-          currentWinningCard: currentWinningCardRef.current,
-          currentWinningPlayer: currentWinningPlayerRef.current,
-          leader: playedInReality ? leaderRef.current : null,
-          whoseTurn: playedInReality ? whoseTurnRef.current : null,
-          trickCards: playedInReality
-            ? trickCardsRef.current
-            : trickCardsDupRef.current,
-        },
-        ...(playedInReality ? historyRef.current : historyDupRef.current),
-      ]);
-      const cardIdx = (
-        playedInReality ? handsRef.current : handsDupRef.current
-      )[card.hand].findIndex(
-        (cardInHand) =>
-          cardInHand.suit === card.suit &&
-          cardInHand.rank === card.rank &&
-          cardInHand.xIdx === card.xIdx
+  const play = (card, playedInReality) => {
+    (playedInReality ? setHistory : setHistoryDup)([
+      {
+        action: "play",
+        hands: playedInReality ? handsRef.current : handsDupRef.current,
+        playedHands: playedInReality
+          ? playedHandsRef.current
+          : playedHandsDupRef.current,
+        playedCards: playedInReality
+          ? playedCardsRef.current
+          : playedCardsDupRef.current,
+        suitLed: playedInReality ? suitLedRef.current : null,
+        currentWinningCard: currentWinningCardRef.current,
+        currentWinningPlayer: currentWinningPlayerRef.current,
+        leader: playedInReality ? leaderRef.current : null,
+        whoseTurn: playedInReality ? whoseTurnRef.current : null,
+        trickCards: playedInReality
+          ? trickCardsRef.current
+          : trickCardsDupRef.current,
+      },
+      ...(playedInReality ? historyRef.current : historyDupRef.current),
+    ]);
+    const cardIdx = (playedInReality ? handsRef.current : handsDupRef.current)[
+      card.hand
+    ].findIndex(
+      (cardInHand) =>
+        cardInHand.suit === card.suit &&
+        cardInHand.rank === card.rank &&
+        cardInHand.xIdx === card.xIdx
+    );
+    let tempHands = _.cloneDeep(
+      playedInReality ? handsRef.current : handsDupRef.current
+    );
+    tempHands[card.hand].splice(cardIdx, 1);
+    (playedInReality ? setHands : setHandsDup)(tempHands);
+    let tempPlayedHands = _.cloneDeep(
+      playedInReality ? playedHandsRef.current : playedHandsDupRef.current
+    );
+    tempPlayedHands[card.hand].push(card);
+    (playedInReality ? setPlayedHands : setPlayedHandsDup)(tempPlayedHands);
+    if (
+      (playedInReality ? trickCardsRef.current : trickCardsDupRef.current)
+        .size === 4
+    ) {
+      let tempTrickCards = new Set();
+      tempTrickCards.add({ ...card, hand: card.hand });
+      (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
+    } else {
+      let tempTrickCards = new Set(
+        playedInReality ? trickCardsRef.current : trickCardsDupRef.current
       );
-      let tempHands = _.cloneDeep(
-        playedInReality ? handsRef.current : handsDupRef.current
-      );
-      tempHands[card.hand].splice(cardIdx, 1);
-      (playedInReality ? setHands : setHandsDup)(tempHands);
-      let tempPlayedHands = _.cloneDeep(
-        playedInReality ? playedHandsRef.current : playedHandsDupRef.current
-      );
-      tempPlayedHands[card.hand].push(card);
-      (playedInReality ? setPlayedHands : setPlayedHandsDup)(tempPlayedHands);
-      if (
-        (playedInReality ? trickCardsRef.current : trickCardsDupRef.current)
-          .size === 4
-      ) {
-        let tempTrickCards = new Set();
-        tempTrickCards.add({ ...card, hand: card.hand });
-        (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
+      tempTrickCards.add({ ...card, hand: card.hand });
+      (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
+    }
+    let tempPlayedCards = new Set(
+      playedInReality ? playedCardsRef.current : playedCardsDupRef.current
+    );
+    tempPlayedCards.add(`${card.suit},${card.rank},${card.xIdx ?? ""}`);
+    (playedInReality ? setPlayedCards : setPlayedCardsDup)(tempPlayedCards);
+    if (playedInReality) {
+      const isCardWinning =
+        card.hand === leaderRef.current ||
+        (card.suit === trumpRef.current &&
+          (currentWinningCardRef.current.suit !== trumpRef.current ||
+            card.rank < currentWinningCardRef.current.rank)) ||
+        (card.suit === suitLedRef.current &&
+          currentWinningCardRef.current.suit !== trumpRef.current &&
+          card.rank < currentWinningCardRef.current.rank);
+      const newCurrentWinningCard = isCardWinning
+        ? card
+        : currentWinningCardRef.current;
+      const newCurrentWinningPlayer = isCardWinning
+        ? card.hand
+        : currentWinningPlayerRef.current;
+      if (card.hand === leaderRef.current) {
+        setSuitLed(card.suit);
+      }
+      setCurrentWinningCard(newCurrentWinningCard);
+      setCurrentWinningPlayer(newCurrentWinningPlayer);
+      const nextTurn = (card.hand + 1) % 4;
+      if (nextTurn === leaderRef.current) {
+        setLeader(newCurrentWinningPlayer);
+        setSuitLed(null);
+        setCurrentWinningCard(null);
+        setCurrentWinningPlayer(null);
+        setWhoseTurn(newCurrentWinningPlayer);
       } else {
-        let tempTrickCards = new Set(
-          playedInReality ? trickCardsRef.current : trickCardsDupRef.current
-        );
-        tempTrickCards.add({ ...card, hand: card.hand });
-        (playedInReality ? setTrickCards : setTrickCardsDup)(tempTrickCards);
+        setWhoseTurn(nextTurn);
       }
-      let tempPlayedCards = new Set(
-        playedInReality ? playedCardsRef.current : playedCardsDupRef.current
-      );
-      tempPlayedCards.add(`${card.suit},${card.rank},${card.xIdx ?? ""}`);
-      (playedInReality ? setPlayedCards : setPlayedCardsDup)(tempPlayedCards);
-      if (playedInReality) {
-        const isCardWinning =
-          card.hand === leaderRef.current ||
-          (card.suit === trump &&
-            (currentWinningCardRef.current.suit !== trump ||
-              card.rank < currentWinningCardRef.current.rank)) ||
-          (card.suit === suitLedRef.current &&
-            currentWinningCardRef.current.suit !== trump &&
-            card.rank < currentWinningCardRef.current.rank);
-        const newCurrentWinningCard = isCardWinning
-          ? card
-          : currentWinningCardRef.current;
-        const newCurrentWinningPlayer = isCardWinning
-          ? card.hand
-          : currentWinningPlayerRef.current;
-        if (card.hand === leaderRef.current) {
-          setSuitLed(card.suit);
-        }
-        setCurrentWinningCard(newCurrentWinningCard);
-        setCurrentWinningPlayer(newCurrentWinningPlayer);
-        const nextTurn = (card.hand + 1) % 4;
-        if (nextTurn === leaderRef.current) {
-          setLeader(newCurrentWinningPlayer);
-          setSuitLed(null);
-          setCurrentWinningCard(null);
-          setCurrentWinningPlayer(null);
-          setWhoseTurn(newCurrentWinningPlayer);
-        } else {
-          setWhoseTurn(nextTurn);
-        }
-      }
-    },
-    [trump]
-  );
+    }
+  };
 
   const strToLevel = (str) => {
     const lookup = {
@@ -633,72 +624,8 @@ export const ContextProvider = ({ children }) => {
     play(card, true);
   }, [play]);
 
-  // const takeNextActionAndSchedule = useCallback(
-  //   (interval) => {
-  //     setNextEventID(
-  //       setTimeout(() => {
-  //         setLastEventTime(Date.now());
-  //         if (input.events[liveEventsRef.current.length + 1]) {
-  //           const nextInterval =
-  //             new Date(
-  //               input.events[liveEventsRef.current.length + 1].createdAt
-  //             ).getTime() -
-  //             new Date(
-  //               input.events[liveEventsRef.current.length].createdAt
-  //             ).getTime();
-  //           if (broadcastType === "stream" || realityRef.current) {
-  //             setTimeUntilNextEvent(nextInterval);
-  //             takeNextActionAndSchedule(nextInterval);
-  //           }
-  //         }
-  //         const event = input.events[liveEventsRef.current.length].message;
-  //         const eventClass = event["@class"];
-  //         if (eventClass === "HandDataMessage") {
-  //           // const startTime = new Date(input.start.createdAt).getTime();
-  //           // const currentTime = Date.now();
-  //           // const bid0Time = new Date(input.events[0].createdAt).getTime();
-  //           // const interval0 = bid0Time - startTime;
-  //           // setLastEventTime(currentTime);
-  //           // setTimeUntilNextEvent(interval0);
-  //           // if (realityRef.current && interval0) {
-  //           //   takeNextActionAndSchedule(interval0);
-  //           // }
-  //           inputToDeckFromStream(event);
-  //         } else if (eventClass === "BidMessage") {
-  //           bidFromInput();
-  //         } else if (eventClass === "EndAuctionMessage") {
-  //           const split =
-  //             input.events[
-  //               liveEventsRef.current.length
-  //             ].message.contract.bid.split("_");
-  //           setContractLevel(strToLevel(split[0]));
-  //           setContractSuit(strToSuit(split[1]));
-  //           const tempDeclarer =
-  //             input.events[liveEventsRef.current.length].message.contract
-  //               .declarer;
-  //           setDeclarer(strToDirection(tempDeclarer));
-  //           setWhoseTurn((strToDirection(tempDeclarer) + 1) % 4);
-  //           setAuctionEnded(true);
-  //         } else if (eventClass === "PlayCardMessage") {
-  //           playFromInput();
-  //         }
-  //         setLiveEvents([
-  //           ...liveEventsRef.current,
-  //           input.events[liveEventsRef.current.length],
-  //         ]);
-  //       }, interval)
-  //     );
-  //   },
-  //   [bidFromInput, broadcastType, playFromInput]
-  // );
-
   const realityOn = () => {
     setReality(true);
-    // if (broadcastType === "video") {
-    //   const currentTime = Date.now();
-    //   takeNextActionAndSchedule(timeUntilNextEventRef.current);
-    //   setLastEventTime(currentTime);
-    // }
   };
 
   const realityOff = () => {
@@ -708,14 +635,6 @@ export const ContextProvider = ({ children }) => {
     setTrickCardsDup(trickCardsRef.current);
     setUnassignedCardsDup(unassignedCardsRef.current);
     setHistoryDup(historyRef.current);
-    if (broadcastType === "video") {
-      const currentTime = Date.now();
-      clearTimeout(nextEventID);
-      setTimeUntilNextEvent(
-        timeUntilNextEventRef.current - (currentTime - lastEventTimeRef.current)
-      );
-      setLastEventTime(currentTime);
-    }
     setReality(false);
   };
 
@@ -1104,8 +1023,6 @@ export const ContextProvider = ({ children }) => {
         setDeck,
         fromSrc,
         setFromSrc,
-        ocrHands,
-        setOcrHands,
         hands,
         handsRef,
         setHands,
@@ -1125,6 +1042,8 @@ export const ContextProvider = ({ children }) => {
         setContractLevel,
         contractSuit,
         setContractSuit,
+        contractDbl,
+        setContractDbl,
         declarer,
         setDeclarer,
         leader,
@@ -1181,14 +1100,11 @@ export const ContextProvider = ({ children }) => {
         setShowPlayedCards,
         auction,
         setAuction,
+        auctionRef,
         explanations,
         setExplanations,
         liveEvents,
         setLiveEvents,
-        lastEventTime,
-        setLastEventTime,
-        timeUntilNextEvent,
-        setTimeUntilNextEvent,
         nextEventID,
         setNextEventID,
         // takeNextActionAndSchedule,
@@ -1385,6 +1301,13 @@ export const ContextProvider = ({ children }) => {
         endBoardNum,
         setEndBoardNum,
         endBoardNumRef,
+        startAuction,
+        setStartAuction,
+        startAuctionRef,
+        endAuction,
+        setEndAuction,
+        endAuctionRef,
+        resetAll,
       }}
     >
       {children}

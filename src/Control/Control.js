@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./Control.css";
 import "../View/View.css";
 import {
@@ -10,8 +10,10 @@ import {
   Radio,
   RadioGroup,
   Switch,
+  ThemeProvider,
   Tooltip,
   Zoom,
+  createTheme,
 } from "@mui/material";
 import { Context } from "../Context/Context";
 import View from "../View/View";
@@ -24,7 +26,7 @@ import {
   setDBTypedRank,
   setDBLockedBy,
 } from "../View/FirebaseModule";
-// import ColorThief from "colorthief";
+import ColorThief from "colorthief";
 // import _ from "lodash";
 import orientate from "../Images/orientate.png";
 import RenderedVideo from "../RenderedVideo";
@@ -32,6 +34,13 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import Canvas from "../Canvas";
+import _ from "lodash";
+
+const theme = createTheme({
+  typography: {
+    fontSize: 10,
+  },
+});
 
 const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   let {
@@ -57,11 +66,14 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     showPlayedCards,
     setShowPlayedCards,
     auction,
+    setAuction,
+    auctionRef,
     liveEvents,
     realityOn,
     realityOff,
     back,
     forward,
+    bid,
     play,
     assign,
     unassign,
@@ -85,6 +97,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     setLeader,
     contractLevelRef,
     setContractLevel,
+    setContractDbl,
     setDeclarer,
     strToDirection,
     setContractSuit,
@@ -208,40 +221,106 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     endBoardNum,
     setEndBoardNum,
     endBoardNumRef,
+    startAuction,
+    setStartAuction,
+    startAuctionRef,
+    endAuction,
+    setEndAuction,
+    endAuctionRef,
     setTrump,
+    resetAll,
   } = useContext(Context);
 
-  // const colorThief = new ColorThief();
+  const colorThief = new ColorThief();
 
-  const createCanvas = () => {
+  const [boardNumLastImg, setBoardNumLastImg] = useState(null);
+  const [bidLastImg, setBidLastImg] = useState(null);
+  const [hand00LastImg, setHand00LastImg] = useState(null);
+  const [hand01LastImg, setHand01LastImg] = useState(null);
+  const [hand02LastImg, setHand02LastImg] = useState(null);
+  const [hand03LastImg, setHand03LastImg] = useState(null);
+  const [hand10LastImg, setHand10LastImg] = useState(null);
+  const [hand11LastImg, setHand11LastImg] = useState(null);
+  const [hand12LastImg, setHand12LastImg] = useState(null);
+  const [hand13LastImg, setHand13LastImg] = useState(null);
+  const [hand20LastImg, setHand20LastImg] = useState(null);
+  const [hand21LastImg, setHand21LastImg] = useState(null);
+  const [hand22LastImg, setHand22LastImg] = useState(null);
+  const [hand23LastImg, setHand23LastImg] = useState(null);
+  const [hand30LastImg, setHand30LastImg] = useState(null);
+  const [hand31LastImg, setHand31LastImg] = useState(null);
+  const [hand32LastImg, setHand32LastImg] = useState(null);
+  const [hand33LastImg, setHand33LastImg] = useState(null);
+
+  const boardNumLastImgRef = useRef();
+  const bidLastImgRef = useRef();
+  const hand00LastImgRef = useRef();
+  const hand01LastImgRef = useRef();
+  const hand02LastImgRef = useRef();
+  const hand03LastImgRef = useRef();
+  const hand10LastImgRef = useRef();
+  const hand11LastImgRef = useRef();
+  const hand12LastImgRef = useRef();
+  const hand13LastImgRef = useRef();
+  const hand20LastImgRef = useRef();
+  const hand21LastImgRef = useRef();
+  const hand22LastImgRef = useRef();
+  const hand23LastImgRef = useRef();
+  const hand30LastImgRef = useRef();
+  const hand31LastImgRef = useRef();
+  const hand32LastImgRef = useRef();
+  const hand33LastImgRef = useRef();
+
+  boardNumLastImgRef.current = boardNumLastImg;
+  bidLastImgRef.current = bidLastImg;
+  hand00LastImgRef.current = hand00LastImg;
+  hand01LastImgRef.current = hand01LastImg;
+  hand02LastImgRef.current = hand02LastImg;
+  hand03LastImgRef.current = hand03LastImg;
+  hand10LastImgRef.current = hand10LastImg;
+  hand11LastImgRef.current = hand11LastImg;
+  hand12LastImgRef.current = hand12LastImg;
+  hand13LastImgRef.current = hand13LastImg;
+  hand20LastImgRef.current = hand20LastImg;
+  hand21LastImgRef.current = hand21LastImg;
+  hand22LastImgRef.current = hand22LastImg;
+  hand23LastImgRef.current = hand23LastImg;
+  hand30LastImgRef.current = hand30LastImg;
+  hand31LastImgRef.current = hand31LastImg;
+  hand32LastImgRef.current = hand32LastImg;
+  hand33LastImgRef.current = hand33LastImg;
+
+  const createCanvas = (width, height) => {
     const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
+    canvas.width = width;
+    canvas.height = height;
+    // canvas.width = videoRef.current.videoWidth;
+    // canvas.height = videoRef.current.videoHeight;
     return canvas;
   };
 
-  // const getPalette = (canvas, leftCrop, topCrop, width, height, render) => {
-  //   canvas
-  //     .getContext("2d")
-  //     .drawImage(
-  //       videoRef.current,
-  //       leftCrop,
-  //       topCrop,
-  //       width,
-  //       height,
-  //       0,
-  //       0,
-  //       width,
-  //       height
-  //     );
-  //   if (render) document.body.appendChild(canvas);
-  //   const frame = canvas.toDataURL();
-  //   return new Promise((resolve, reject) => {
-  //     const img = new Image();
-  //     img.src = frame;
-  //     img.onload = () => resolve(colorThief.getPalette(img, 5));
-  //   });
-  // };
+  const getPalette = (canvas, leftCrop, topCrop, width, height, render) => {
+    canvas
+      .getContext("2d")
+      .drawImage(
+        videoRef.current,
+        leftCrop,
+        topCrop,
+        width,
+        height,
+        0,
+        0,
+        width,
+        height
+      );
+    if (render) document.body.appendChild(canvas);
+    const frame = canvas.toDataURL();
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = frame;
+      img.onload = () => resolve(colorThief.getPalette(img, 5));
+    });
+  };
 
   const getVision = async (
     canvas,
@@ -251,7 +330,10 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     height,
     type,
     singleCard,
-    render
+    render,
+    lastImg,
+    setLastImg,
+    returnOCR
   ) => {
     canvas
       .getContext("2d")
@@ -275,44 +357,142 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       document.body.appendChild(canvas);
     }
     const frame = canvas.toDataURL();
-    const ocr = await fetch(
-      "https://vision.googleapis.com/v1/images:annotate",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "x-goog-user-project": "kibsync-bfc9f",
-          "Content-Type": "application/json; charset=utf-8",
-        },
-        body: JSON.stringify({
-          requests: [
-            {
-              image: { content: frame.substring(22) },
-              features: [{ maxResults: 50, type: type }],
-              imageContext: {
-                languageHints: ["en-t-i0-handwrit"],
-              },
+    if (returnOCR) {
+      if (frame !== lastImg) {
+        if (setLastImg !== undefined) {
+          setLastImg(frame);
+        }
+        const ocr = await fetch(
+          "https://vision.googleapis.com/v1/images:annotate",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "x-goog-user-project": "kibsync-bfc9f",
+              "Content-Type": "application/json; charset=utf-8",
             },
-          ],
-        }),
+            body: JSON.stringify({
+              requests: [
+                {
+                  image: { content: frame.substring(22) },
+                  features: [{ maxResults: 50, type: type }],
+                  imageContext: {
+                    languageHints: ["en-t-i0-handwrit"],
+                  },
+                },
+              ],
+            }),
+          }
+        );
+        return ocr
+          .json()
+          .then(
+            (response) => response.responses[0].fullTextAnnotation?.text ?? ""
+          );
+      } else {
+        return undefined;
       }
-    );
-    return ocr
-      .json()
-      .then((response) => response.responses[0].fullTextAnnotation?.text);
+    } else {
+      if (frame !== lastImg && setLastImg !== undefined) {
+        setLastImg(frame);
+      }
+      return frame !== lastImg;
+    }
+  };
+
+  const PROJECT_ID = "69484809608";
+  const ENDPOINT_ID = "3163723762646384640";
+  const INPUT_DATA_FILE = {
+    instances: [
+      {
+        content: "YOUR_IMAGE_BYTES",
+      },
+    ],
+    parameters: {
+      confidenceThreshold: 0.5,
+      maxPredictions: 5,
+    },
+  };
+
+  const getPrediction = async (
+    canvas,
+    leftCrop,
+    topCrop,
+    width,
+    height,
+    type,
+    singleCard,
+    render
+  ) => {
+    canvas
+      .getContext("2d")
+      .drawImage(
+        videoRef.current,
+        leftCrop,
+        topCrop,
+        width,
+        height,
+        0,
+        0,
+        width,
+        height
+      );
+    if (render) {
+      document.body.appendChild(canvas);
+    }
+    const frame = canvas.toDataURL().split(",")[1];
+    // const request = await fetch(
+    //   `https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/endpoints/${ENDPOINT_ID}:predict`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Authorization: `Bearer ${accessToken}`,
+    //       // "x-goog-user-project": "kibsync-bfc9f",
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       instances: [
+    //         {
+    //           content: frame,
+    //         },
+    //       ],
+    //     }),
+    //   }
+    // );
+    // return request.json().then((parsedResponse) => {
+    //   const predictions = parsedResponse.predictions[0];
+    //   let highestConfidence = 0;
+    //   let highestConfidenceIdx = 0;
+    //   for (let i = 0; i < predictions.confidences.length; i++) {
+    //     if (predictions.confidences[i] > highestConfidence) {
+    //       highestConfidence = predictions.confidences[i];
+    //       highestConfidenceIdx = i;
+    //     }
+    //   }
+    //   const predictedSuit = predictions.displayNames[highestConfidenceIdx];
+    //   return predictedSuit === "s"
+    //     ? 0
+    //     : predictedSuit === "h"
+    //     ? 1
+    //     : predictedSuit === "d"
+    //     ? 2
+    //     : predictedSuit === "c"
+    //     ? 3
+    //     : -1;
+    // });
   };
 
   // const closeCaptureStream = (captureStream) => {
   //   captureStream.getTracks().forEach((track) => track.stop());
   // };
 
-  const calibrateArea = async (start, end) => {
+  const calibrateArea = async (start, end, lastImg, setLastImg) => {
     const left = start[0] * videoRef.current.videoWidth;
     const width = (end[0] - start[0]) * videoRef.current.videoWidth;
     const top = start[1] * videoRef.current.videoHeight;
     const height = (end[1] - start[1]) * videoRef.current.videoHeight;
-    const canvas = createCanvas();
-    return getVision(
+    const canvas = createCanvas(width, height);
+    const vision = await getVision(
       canvas,
       left,
       top,
@@ -320,8 +500,26 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       height,
       "TEXT_DETECTION",
       false,
-      false
+      false,
+      lastImg,
+      setLastImg,
+      true
     );
+    console.log(vision);
+    const palette = await getPalette(canvas, left, top, width, height, false);
+    return { vision, palette };
+    // else {
+    //   return getPrediction(
+    //     canvas,
+    //     left,
+    //     top,
+    //     width,
+    //     height,
+    //     "TEXT_DETECTION",
+    //     false,
+    //     true
+    //   );
+    // }
   };
 
   // for LoveBridge
@@ -357,13 +555,24 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   //   }
   // };
 
-  const bboVisionToSuit = (vision) => {
-    if (vision === "♦" || vision === "◆" || vision === "+") return 2;
-    if (vision === "♥") return 1;
-    if (vision === "%") return 3;
-    if (vision === "4" || vision === "A") return 0;
-    if (vision === "N") return 4;
-    return 0;
+  const bboVisionToSuit = (vision, palette) => {
+    vision = vision.replaceAll(" ", "");
+    if (["N", "NT"].includes(vision)) return -1;
+    if (["♦", "◆", "+", ".", "->"].includes(vision)) return 2;
+    if (["♥"].includes(vision)) return 1;
+    if (["%", "0", "0%", "of"].includes(vision)) return 3;
+    if (["4", "A", ""].includes(vision)) {
+      if (
+        palette?.some(
+          (color) => color[0] > 150 && color[1] < 50 && color[2] < 50
+        )
+      ) {
+        return 2;
+      } else {
+        return 0;
+      }
+    }
+    return "Error";
   };
 
   const initializeVision = async () => {
@@ -433,79 +642,72 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       setEndContractDirection(getStoredMouseLocation("endContractDirection"));
       setStartBoardNum(getStoredMouseLocation("startBoardNum"));
       setEndBoardNum(getStoredMouseLocation("endBoardNum"));
+      setStartAuction(getStoredMouseLocation("startAuction"));
+      setEndAuction(getStoredMouseLocation("endAuction"));
     }
     setCalibrationOpen(true);
   };
 
+  const getHandInfo = () => {
+    setHandsFromCalibration();
+    setNamesFromCalibration();
+    setBoardNumFromCalibration();
+  };
+
   // let counter = 0;
-  const timer = () => {
+  const bidPlayTimer = () => {
     setTimeout(async () => {
-      if (
-        handsRef.current[0].length +
-          handsRef.current[1].length +
-          handsRef.current[2].length +
-          handsRef.current[3].length ===
-          0 &&
-        endHand00Ref.current &&
-        endHand01Ref.current &&
-        endHand02Ref.current &&
-        endHand03Ref.current &&
-        endHand10Ref.current &&
-        endHand11Ref.current &&
-        endHand12Ref.current &&
-        endHand13Ref.current &&
-        endHand20Ref.current &&
-        endHand21Ref.current &&
-        endHand22Ref.current &&
-        endHand23Ref.current &&
-        endHand30Ref.current &&
-        endHand31Ref.current &&
-        endHand32Ref.current &&
-        endHand33Ref.current
-      ) {
-        setHandsFromCalibration();
-      }
-      if (
-        northNameRef.current.length +
-          eastNameRef.current.length +
-          southNameRef.current.length +
-          westNameRef.current.length ===
-          0 &&
-        endName0Ref.current &&
-        endName1Ref.current &&
-        endName2Ref.current &&
-        endName3Ref.current
-      ) {
-        setNamesFromCalibration();
-      }
-      if (
-        contractLevelRef.current === null &&
-        endContractDirectionRef.current
-      ) {
-        setContractDirectionFromCalibration();
-      }
-      if (boardNumRef.current === null && endBoardNumRef.current) {
-        setBoardNumFromCalibration();
-      }
       if (
         handsRef.current[0].length +
           handsRef.current[1].length +
           handsRef.current[2].length +
           handsRef.current[3].length >
           0 &&
-        whoseTurnRef.current !== null &&
-        !isNaN(whoseTurnRef.current)
+        whoseTurnRef.current !== null
       ) {
-        setCardFromCalibration();
+        if (contractLevelRef.current === null) {
+          setBidFromCalibration();
+        } else {
+          setCardFromCalibration();
+        }
       }
-      timer();
-    }, 1000);
+      const left = startBoardNum[0] * videoRef.current.videoWidth;
+      const width =
+        (endBoardNum[0] - startBoardNum[0]) * videoRef.current.videoWidth;
+      const top = startBoardNum[1] * videoRef.current.videoHeight;
+      const height =
+        (endBoardNum[1] - startBoardNum[1]) * videoRef.current.videoHeight;
+      const canvas = createCanvas(width, height);
+      if (boardNumRef.current !== "") {
+        const isNextBoardNum = await getVision(
+          canvas,
+          left,
+          top,
+          width,
+          height,
+          "TEXT_DETECTION",
+          false,
+          false,
+          boardNumLastImgRef.current,
+          setBoardNumLastImg,
+          false
+        );
+        if (isNextBoardNum) {
+          resetAll();
+          getHandInfo();
+        }
+      }
+      bidPlayTimer();
+    }, 500);
   };
 
   useEffect(() => {
-    if (accessToken && endBoardNumRef.current) timer();
+    if (accessToken && endAuctionRef.current) {
+      getHandInfo();
+      bidPlayTimer();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken, endBoardNumRef.current]);
+  }, [accessToken, endAuctionRef.current]);
 
   const captureButton = (
     <Button onClick={async () => await initializeVision()}>
@@ -1125,6 +1327,10 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         tempPastSelections.push(
           getSavedSelection(["startBoardNum", "endBoardNum"])
         );
+      if (startAuction && endAuction)
+        tempPastSelections.push(
+          getSavedSelection(["startAuction", "endAuction"])
+        );
       setPastSelections(tempPastSelections);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1206,6 +1412,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     } else if (!startBoardNum) {
       setStartBoardNum(mouseLocation);
       window.localStorage.setItem("startBoardNum", mouseLocation);
+    } else if (!startAuction) {
+      setStartAuction(mouseLocation);
+      window.localStorage.setItem("startAuction", mouseLocation);
     }
   };
 
@@ -1302,6 +1511,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     } else if (!endBoardNum) {
       setEndBoardNum(mouseLocation);
       window.localStorage.setItem("endBoardNum", mouseLocation);
+    } else if (!endAuction) {
+      setEndAuction(mouseLocation);
+      window.localStorage.setItem("endAuction", mouseLocation);
       window.localStorage.setItem("KibSync settings", true);
       setCalibrationOpen(false);
     }
@@ -1339,20 +1551,73 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     const tempDeck = [];
     for (let hand = 0; hand < handsBorders.length; hand++) {
       const handBorders = handsBorders[hand];
+      const handsLastImgs = [
+        [
+          [hand00LastImgRef.current, setHand00LastImg],
+          [hand01LastImgRef.current, setHand01LastImg],
+          [hand02LastImgRef.current, setHand02LastImg],
+          [hand03LastImgRef.current, setHand03LastImg],
+        ],
+        [
+          [hand10LastImgRef.current, setHand10LastImg],
+          [hand11LastImgRef.current, setHand11LastImg],
+          [hand12LastImgRef.current, setHand12LastImg],
+          [hand13LastImgRef.current, setHand13LastImg],
+        ],
+        [
+          [hand20LastImgRef.current, setHand20LastImg],
+          [hand21LastImgRef.current, setHand21LastImg],
+          [hand22LastImgRef.current, setHand22LastImg],
+          [hand23LastImgRef.current, setHand23LastImg],
+        ],
+        [
+          [hand30LastImgRef.current, setHand30LastImg],
+          [hand31LastImgRef.current, setHand31LastImg],
+          [hand32LastImgRef.current, setHand32LastImg],
+          [hand33LastImgRef.current, setHand33LastImg],
+        ],
+      ];
+      const handLastImgs = handsLastImgs[hand];
       const tempHand = [];
       await Promise.all([
-        calibrateArea(handBorders[0][0], handBorders[0][1]),
-        calibrateArea(handBorders[1][0], handBorders[1][1]),
-        calibrateArea(handBorders[2][0], handBorders[2][1]),
-        calibrateArea(handBorders[3][0], handBorders[3][1]),
+        calibrateArea(
+          handBorders[0][0],
+          handBorders[0][1],
+          handLastImgs[0][0],
+          handLastImgs[0][1]
+        ),
+        calibrateArea(
+          handBorders[1][0],
+          handBorders[1][1],
+          handLastImgs[1][0],
+          handLastImgs[1][1]
+        ),
+        calibrateArea(
+          handBorders[2][0],
+          handBorders[2][1],
+          handLastImgs[2][0],
+          handLastImgs[2][1]
+        ),
+        calibrateArea(
+          handBorders[3][0],
+          handBorders[3][1],
+          handLastImgs[3][0],
+          handLastImgs[3][1]
+        ),
       ]).then((values) => {
         values.forEach((suitText, suitIdx) => {
           const suitCards =
-            suitText?.replaceAll(" ", "").replaceAll("10", "T").split("") ?? [];
+            suitText.vision
+              ?.replaceAll(" ", "")
+              .replaceAll(".", "")
+              .replaceAll("10", "T")
+              .split("") ?? [];
           for (let card of suitCards) {
             const rank = visionToRank(card);
-            tempHand.push({ suit: suitIdx, rank, hand });
-            tempDeck.push({ suit: suitIdx, rank });
+            if (!isNaN(rank)) {
+              tempHand.push({ suit: suitIdx, rank, hand });
+              tempDeck.push({ suit: suitIdx, rank });
+            }
           }
         });
       });
@@ -1371,7 +1636,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     ];
     let i = 0;
     for (let nameBorders of namesBorders) {
-      const nameText = await calibrateArea(nameBorders[0], nameBorders[1]);
+      const nameText = (await calibrateArea(nameBorders[0], nameBorders[1]))
+        .vision;
       if (nameText) {
         if (i === 0) setNorthName(nameText);
         else if (i === 1) setEastName(nameText);
@@ -1383,10 +1649,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   };
 
   const setContractDirectionFromCalibration = async () => {
-    const contractDirectionText = await calibrateArea(
-      startContractDirection,
-      endContractDirection
-    );
+    const contractDirectionText = (
+      await calibrateArea(startContractDirection, endContractDirection)
+    ).vision;
     if (contractDirectionText) {
       const splitByLine = contractDirectionText.split("\n");
       const contract = splitByLine[0];
@@ -1396,7 +1661,10 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       const tempDeclarer = strToDirection(splitByLine[1]);
       setContractLevel(tempContractLevel);
       setContractSuit(tempContractSuit);
-      setTrump(tempContractSuit !== 4 ? tempContractSuit : null);
+      setContractDbl(
+        (splitContract[2] !== undefined) + (splitContract[3] !== undefined)
+      );
+      setTrump(tempContractSuit !== -1 ? tempContractSuit : null);
       setDeclarer(tempDeclarer);
       setLeader((tempDeclarer + 1) % 4);
       setWhoseTurn((tempDeclarer + 1) % 4);
@@ -1404,40 +1672,179 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   };
 
   const setBoardNumFromCalibration = async () => {
-    const boardNumText = await calibrateArea(startBoardNum, endBoardNum);
+    const boardNumText = (
+      await calibrateArea(
+        startBoardNum,
+        endBoardNum,
+        boardNumLastImgRef.current,
+        setBoardNumLastImg
+      )
+    ).vision;
     if (boardNumText) {
       setBoardNum(boardNumText);
+      setWhoseTurn((parseInt(boardNumText) - 1) % 4);
     }
   };
+
+  const setBidFromCalibration = async () => {
+    // based on the bids being displayed in WNES order in each row
+    const effectiveAuctionLength =
+      auctionRef.current.length + (boardNumRef.current % 4);
+    const numRows = Math.floor(effectiveAuctionLength / 4);
+    // assuming that 4 rows of bidding are displayed at a time
+    const currentRow = Math.min(numRows, 4);
+    const bidCellWidth =
+      (endAuctionRef.current[0] - startAuctionRef.current[0]) / 4;
+    const bidCellHeight =
+      (endAuctionRef.current[1] - startAuctionRef.current[1]) / 4;
+    const startBidCellLeft = ((whoseTurnRef.current + 1) % 4) * bidCellWidth;
+    const startBidCellTop = currentRow * bidCellHeight;
+    const endBidCellLeft = ((whoseTurnRef.current + 2) % 4 || 4) * bidCellWidth;
+    const endBidCellTop = (currentRow + 1) * bidCellHeight;
+    let nextBidVisionAndPalette = await calibrateArea(
+      [
+        startAuctionRef.current[0] + startBidCellLeft,
+        startAuctionRef.current[1] + startBidCellTop,
+      ],
+      [
+        startAuctionRef.current[0] + endBidCellLeft,
+        startAuctionRef.current[1] + endBidCellTop,
+      ],
+      bidLastImgRef.current,
+      setBidLastImg
+    );
+    const nextBid = nextBidVisionAndPalette.vision;
+    const nextBidPalette = nextBidVisionAndPalette.palette;
+    let bidObj = { hand: whoseTurnRef.current };
+    if (nextBid) {
+      if (["Pass", "Dbl", "Rdbl"].includes(nextBid)) {
+        bidObj.action = nextBid;
+        bid(bidObj);
+      } else if (!isNaN(parseInt(nextBid[0]))) {
+        // const nextBidSuitPrediction = await calibrateArea(
+        //   [
+        //     startAuctionRef.current[0] + startBidCellLeft,
+        //     startAuctionRef.current[1] + startBidCellTop,
+        //   ],
+        //   [
+        //     startAuctionRef.current[0] + endBidCellLeft,
+        //     startAuctionRef.current[1] + endBidCellTop,
+        //   ],
+        //   true
+        // );
+        bidObj.action = "BID";
+        bidObj.level = parseInt(nextBid.substring(0, 1));
+        bidObj.strain = bboVisionToSuit(nextBid.substring(1), nextBidPalette);
+        // bidObj.level = parseInt(nextBid.substring(0, 1));
+        // bidObj.strain = nextBidSuitPrediction;
+        bid(bidObj);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const auctionLength = auction.length;
+    if (auctionLength > 0) {
+      if (
+        auctionLength < 4 ||
+        auction[auctionLength - 1].action !== "Pass" ||
+        auction[auctionLength - 2].action !== "Pass" ||
+        auction[auctionLength - 3].action !== "Pass"
+      ) {
+        setWhoseTurn((whoseTurnRef.current + 1) % 4);
+      } else if (
+        auctionLength === 4 &&
+        auction.every((call) => call.action === "Pass")
+      ) {
+        console.log("hand passed out");
+      } else {
+        setContractDirectionFromCalibration();
+      }
+    }
+  }, [auction]);
 
   const setCardFromCalibration = async () => {
     const hand = whoseTurnRef.current;
     const handBorders = handsBorders[hand];
+    const handsLastImgs = [
+      [
+        [hand00LastImgRef.current, setHand00LastImg],
+        [hand01LastImgRef.current, setHand01LastImg],
+        [hand02LastImgRef.current, setHand02LastImg],
+        [hand03LastImgRef.current, setHand03LastImg],
+      ],
+      [
+        [hand10LastImgRef.current, setHand10LastImg],
+        [hand11LastImgRef.current, setHand11LastImg],
+        [hand12LastImgRef.current, setHand12LastImg],
+        [hand13LastImgRef.current, setHand13LastImg],
+      ],
+      [
+        [hand20LastImgRef.current, setHand20LastImg],
+        [hand21LastImgRef.current, setHand21LastImg],
+        [hand22LastImgRef.current, setHand22LastImg],
+        [hand23LastImgRef.current, setHand23LastImg],
+      ],
+      [
+        [hand30LastImgRef.current, setHand30LastImg],
+        [hand31LastImgRef.current, setHand31LastImg],
+        [hand32LastImgRef.current, setHand32LastImg],
+        [hand33LastImgRef.current, setHand33LastImg],
+      ],
+    ];
+    const handLastImgs = handsLastImgs[hand];
     const pastHandSet = new Set(
       handsRef.current[hand].map((card) => `${card.suit},${card.rank}`)
     );
     await Promise.all([
-      calibrateArea(handBorders[0][0], handBorders[0][1]),
-      calibrateArea(handBorders[1][0], handBorders[1][1]),
-      calibrateArea(handBorders[2][0], handBorders[2][1]),
-      calibrateArea(handBorders[3][0], handBorders[3][1]),
+      calibrateArea(
+        handBorders[0][0],
+        handBorders[0][1],
+        handLastImgs[0][0],
+        handLastImgs[0][1]
+      ),
+      calibrateArea(
+        handBorders[1][0],
+        handBorders[1][1],
+        handLastImgs[1][0],
+        handLastImgs[1][1]
+      ),
+      calibrateArea(
+        handBorders[2][0],
+        handBorders[2][1],
+        handLastImgs[2][0],
+        handLastImgs[2][1]
+      ),
+      calibrateArea(
+        handBorders[3][0],
+        handBorders[3][1],
+        handLastImgs[3][0],
+        handLastImgs[3][1]
+      ),
     ]).then((values) => {
-      const remainingCards = [];
+      let remainingCardsSet = new Set();
       values.forEach((suitText, suitIdx) => {
-        const suitCards =
-          suitText?.replaceAll(" ", "").replaceAll("10", "T").split("") ?? [];
-        for (let card of suitCards) {
-          const rank = visionToRank(card);
-          remainingCards.push({
-            suit: suitIdx,
-            rank,
-            hand,
-          });
+        if (suitText.vision !== undefined) {
+          const suitCards =
+            suitText.vision
+              ?.replaceAll(" ", "")
+              .replaceAll("10", "T")
+              .split("") ?? [];
+          for (let card of suitCards) {
+            const rank = visionToRank(card);
+            remainingCardsSet.add(`${suitIdx},${rank}`);
+          }
+        } else {
+          const remainingSuitCards = handsRef.current[hand].filter(
+            (card) => card.suit === suitIdx
+          );
+          for (const remainingSuitCard of remainingSuitCards) {
+            remainingCardsSet.add(
+              `${remainingSuitCard.suit},${remainingSuitCard.rank}`
+            );
+          }
         }
       });
-      const remainingCardsSet = new Set(
-        remainingCards.map((card) => `${card.suit},${card.rank}`)
-      );
       const difference = pastHandSet.difference(remainingCardsSet);
       if (difference.size > 0) {
         const missingCard = Array.from(difference)[0];
@@ -1495,7 +1902,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   );
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <div className="viewAndControls">
         <View editable={true} videoChatContainer={videoChatContainer} />
         {/* {renderHand(
@@ -1587,6 +1994,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
               setEndContractDirection(null);
               setStartBoardNum(null);
               setEndBoardNum(null);
+              setStartAuction(null);
+              setEndAuction(null);
             }}
           >
             <DeleteIcon />
@@ -1600,7 +2009,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         </div>
       )}
       {calibrationOpen && calibration}
-    </>
+    </ThemeProvider>
   );
 };
 

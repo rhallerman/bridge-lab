@@ -7,6 +7,7 @@ const LiveTable = ({ editable }) => {
     vul,
     contractLevel,
     contractSuit,
+    contractDbl,
     declarer,
     trickCards,
     reality,
@@ -33,12 +34,17 @@ const LiveTable = ({ editable }) => {
 
   const contract = (
     <div className="contractAndDirection">
-      <div className="contract">{contractLevel}</div>
-      <div className={`${contractSuit >= 0 ? `suit${contractSuit}` : ""}`}>
-        {suitChars[contractSuit]}
-      </div>
-      <div className="direction">
-        {directionToStr(declarer)?.substring(0, 1) ?? ""}
+      <div className="contractBorder">
+        <div className="contract">{contractLevel}</div>
+        <div className={`${contractSuit >= 0 ? `suit${contractSuit}` : ""}`}>
+          {suitChars[contractSuit]}
+        </div>
+        <div>
+          {"X".repeat(contractDbl)}
+        </div>
+        <div>
+          {directionToStr(declarer)?.substring(0, 1) ?? ""}
+        </div>
       </div>
     </div>
   );

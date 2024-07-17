@@ -5,7 +5,7 @@ import "./View.css";
 // import Webcam from "react-webcam";
 import LiveTable from "./LiveTable";
 import AnalysisTable from "./AnalysisTable";
-// import Auction from "./Auction";
+import Auction from "./Auction";
 // import usbfLogo from "../Images/usbf.png";
 // import lovebridgeLogo from "../Images/lovebridge.png";
 // import kibsyncLogo from "../Images/kibsync.png";
@@ -84,7 +84,9 @@ const View = ({ editable, videoChatContainer }) => {
             ) : null}
           </div>
           <div className="headerInfoItem">
-            <div className="headerTextKey">BOARD: </div>
+            {editable || boardNum ? (
+              <div className="headerTextKey">BOARD: </div>
+            ) : null}
             {editable ? (
               headerInputField(
                 "",
@@ -379,7 +381,7 @@ const View = ({ editable, videoChatContainer }) => {
 
   const rightArea = (
     <div className="rightArea">
-      {/* <Auction /> */}
+      <Auction />
       <div
         className={`bottomRight animate ${reality ? "visible" : "invisible"}`}
       >
