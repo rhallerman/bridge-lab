@@ -557,10 +557,10 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
 
   const bboVisionToSuit = (vision, palette) => {
     vision = vision.replaceAll(" ", "");
-    if (["N", "NT"].includes(vision)) return -1;
-    if (["♦", "◆", "+", ".", "->"].includes(vision)) return 2;
     if (["♥"].includes(vision)) return 1;
+    if (["♦", "◆", "+", ".", "->"].includes(vision)) return 2;
     if (["%", "0", "0%", "of"].includes(vision)) return 3;
+    if (["N", "NT"].includes(vision)) return -1;
     if (["4", "A", ""].includes(vision)) {
       if (
         palette?.some(
