@@ -1610,6 +1610,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
             suitText.vision
               ?.replaceAll(" ", "")
               .replaceAll(".", "")
+              .replaceAll("-", "")
               .replaceAll("10", "T")
               .split("") ?? [];
           for (let card of suitCards) {
