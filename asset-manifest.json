@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/kib-sync/static/css/main.e2c7bf49.css",
-    "main.js": "/kib-sync/static/js/main.68545069.js",
+    "main.css": "/kib-sync/static/css/main.a7b3b41d.css",
+    "main.js": "/kib-sync/static/js/main.0e689d8e.js",
     "static/js/453.85f2d220.chunk.js": "/kib-sync/static/js/453.85f2d220.chunk.js",
     "static/media/Bridge_Base_Online_logo.png": "/kib-sync/static/media/Bridge_Base_Online_logo.775f6ed6a9c983e50b7b.png",
     "index.html": "/kib-sync/index.html",
-    "main.e2c7bf49.css.map": "/kib-sync/static/css/main.e2c7bf49.css.map",
-    "main.68545069.js.map": "/kib-sync/static/js/main.68545069.js.map",
+    "main.a7b3b41d.css.map": "/kib-sync/static/css/main.a7b3b41d.css.map",
+    "main.0e689d8e.js.map": "/kib-sync/static/js/main.0e689d8e.js.map",
     "453.85f2d220.chunk.js.map": "/kib-sync/static/js/453.85f2d220.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e2c7bf49.css",
-    "static/js/main.68545069.js"
+    "static/css/main.a7b3b41d.css",
+    "static/js/main.0e689d8e.js"
   ]
 }
