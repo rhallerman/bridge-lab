@@ -505,7 +505,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       setLastImg,
       true
     );
-    // console.log(vision);
+    console.log(vision);
     const palette = await getPalette(canvas, left, top, width, height, false);
     return { vision, palette };
     // else {
