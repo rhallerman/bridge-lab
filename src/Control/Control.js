@@ -103,101 +103,45 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     setContractSuit,
     calibrationOpen,
     setCalibrationOpen,
-    startHand00,
-    setStartHand00,
-    endHand00,
-    setEndHand00,
-    endHand00Ref,
-    startHand01,
-    setStartHand01,
-    endHand01,
-    setEndHand01,
-    endHand01Ref,
-    startHand02,
-    setStartHand02,
-    endHand02,
-    setEndHand02,
-    endHand02Ref,
-    startHand03,
-    setStartHand03,
-    endHand03,
-    setEndHand03,
-    endHand03Ref,
+    startHand0,
+    setStartHand0,
+    startHand0Ref,
+    endHand0,
+    setEndHand0,
+    endHand0Ref,
     startName0,
     setStartName0,
     endName0,
     setEndName0,
     endName0Ref,
-    startHand10,
-    setStartHand10,
-    endHand10,
-    setEndHand10,
-    endHand10Ref,
-    startHand11,
-    setStartHand11,
-    endHand11,
-    setEndHand11,
-    endHand11Ref,
-    startHand12,
-    setStartHand12,
-    endHand12,
-    setEndHand12,
-    endHand12Ref,
-    startHand13,
-    setStartHand13,
-    endHand13,
-    setEndHand13,
-    endHand13Ref,
+    startHand1,
+    setStartHand1,
+    startHand1Ref,
+    endHand1,
+    setEndHand1,
+    endHand1Ref,
     startName1,
     setStartName1,
     endName1,
     setEndName1,
     endName1Ref,
-    startHand20,
-    setStartHand20,
-    endHand20,
-    setEndHand20,
-    endHand20Ref,
-    startHand21,
-    setStartHand21,
-    endHand21,
-    setEndHand21,
-    endHand21Ref,
-    startHand22,
-    setStartHand22,
-    endHand22,
-    setEndHand22,
-    endHand22Ref,
-    startHand23,
-    setStartHand23,
-    endHand23,
-    setEndHand23,
-    endHand23Ref,
+    startHand2,
+    setStartHand2,
+    startHand2Ref,
+    endHand2,
+    setEndHand2,
+    endHand2Ref,
     startName2,
     setStartName2,
     endName2,
     setEndName2,
     endName2Ref,
-    startHand30,
-    setStartHand30,
-    endHand30,
-    setEndHand30,
-    endHand30Ref,
-    startHand31,
-    setStartHand31,
-    endHand31,
-    setEndHand31,
-    endHand31Ref,
-    startHand32,
-    setStartHand32,
-    endHand32,
-    setEndHand32,
-    endHand32Ref,
-    startHand33,
-    setStartHand33,
-    endHand33,
-    setEndHand33,
-    endHand33Ref,
+    startHand3,
+    setStartHand3,
+    startHand3Ref,
+    endHand3,
+    setEndHand3,
+    endHand3Ref,
     startName3,
     setStartName3,
     endName3,
@@ -233,6 +177,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
 
   const colorThief = new ColorThief();
 
+  const [contractDirectionLastImg, setContractDirectionLastImg] =
+    useState(null);
   const [boardNumLastImg, setBoardNumLastImg] = useState(null);
   const [bidLastImg, setBidLastImg] = useState(null);
   const [hand00LastImg, setHand00LastImg] = useState(null);
@@ -252,6 +198,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   const [hand32LastImg, setHand32LastImg] = useState(null);
   const [hand33LastImg, setHand33LastImg] = useState(null);
 
+  const contractDirectionLastImgRef = useRef();
   const boardNumLastImgRef = useRef();
   const bidLastImgRef = useRef();
   const hand00LastImgRef = useRef();
@@ -271,6 +218,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   const hand32LastImgRef = useRef();
   const hand33LastImgRef = useRef();
 
+  contractDirectionLastImgRef.current = contractDirectionLastImg;
   boardNumLastImgRef.current = boardNumLastImg;
   bidLastImgRef.current = bidLastImg;
   hand00LastImgRef.current = hand00LastImg;
@@ -486,13 +434,19 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   //   captureStream.getTracks().forEach((track) => track.stop());
   // };
 
-  const calibrateArea = async (start, end, lastImg, setLastImg) => {
+  const calibrateArea = async (
+    start,
+    end,
+    lastImg,
+    setLastImg,
+    shouldIncludeSuit
+  ) => {
     const left = start[0] * videoRef.current.videoWidth;
     const width = (end[0] - start[0]) * videoRef.current.videoWidth;
     const top = start[1] * videoRef.current.videoHeight;
     const height = (end[1] - start[1]) * videoRef.current.videoHeight;
     const canvas = createCanvas(width, height);
-    const vision = await getVision(
+    let vision = await getVision(
       canvas,
       left,
       top,
@@ -500,12 +454,29 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       height,
       "TEXT_DETECTION",
       false,
-      false,
+      true,
       lastImg,
       setLastImg,
       true
     );
-    console.log(vision);
+    if (vision !== undefined) console.log(vision);
+    if (shouldIncludeSuit && vision !== undefined && vision.length === 1) {
+      // console.log("trying again");
+      vision = await getVision(
+        canvas,
+        left - 2,
+        top - 2,
+        width + 4,
+        height + 4,
+        "TEXT_DETECTION",
+        false,
+        true,
+        lastImg,
+        setLastImg,
+        true
+      );
+      // if (vision !== undefined) console.log(vision);
+    }
     const palette = await getPalette(canvas, left, top, width, height, false);
     return { vision, palette };
     // else {
@@ -557,11 +528,22 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
 
   const bboVisionToSuit = (vision, palette) => {
     vision = vision.replaceAll(" ", "");
-    if (["♥"].includes(vision)) return 1;
-    if (["♦", "◆", "+", ".", "->"].includes(vision)) return 2;
-    if (["%", "0", "0%", "of"].includes(vision)) return 3;
-    if (["N", "NT"].includes(vision)) return -1;
-    if (["4", "A", "1", ""].includes(vision)) {
+    if (["♥"].some((suitOption) => vision.startsWith(suitOption))) return 1;
+    if (
+      ["♦", "◆", "+", ".", "->"].some((suitOption) =>
+        vision.startsWith(suitOption)
+      )
+    )
+      return 2;
+    if (
+      ["%", "0", "0%", "of"].some((suitOption) => vision.startsWith(suitOption))
+    )
+      return 3;
+    if (["N", "NT"].some((suitOption) => vision.startsWith(suitOption)))
+      return -1;
+    if (
+      ["4", "A", "1", ""].some((suitOption) => vision.startsWith(suitOption))
+    ) {
       if (
         palette?.some(
           (color) => color[0] > 150 && color[1] < 50 && color[2] < 50
@@ -572,6 +554,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         return 0;
       }
     }
+    console.log(`Error on bboVision of "${vision}"`);
     return "Error";
   };
 
@@ -596,44 +579,20 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           .split(",")
           .map((str) => parseFloat(str));
       };
-      setStartHand00(getStoredMouseLocation("startHand00"));
-      setEndHand00(getStoredMouseLocation("endHand00"));
-      setStartHand01(getStoredMouseLocation("startHand01"));
-      setEndHand01(getStoredMouseLocation("endHand01"));
-      setStartHand02(getStoredMouseLocation("startHand02"));
-      setEndHand02(getStoredMouseLocation("endHand02"));
-      setStartHand03(getStoredMouseLocation("startHand03"));
-      setEndHand03(getStoredMouseLocation("endHand03"));
+      setStartHand0(getStoredMouseLocation("startHand0"));
+      setEndHand0(getStoredMouseLocation("endHand0"));
       setStartName0(getStoredMouseLocation("startName0"));
       setEndName0(getStoredMouseLocation("endName0"));
-      setStartHand10(getStoredMouseLocation("startHand10"));
-      setEndHand10(getStoredMouseLocation("endHand10"));
-      setStartHand11(getStoredMouseLocation("startHand11"));
-      setEndHand11(getStoredMouseLocation("endHand11"));
-      setStartHand12(getStoredMouseLocation("startHand12"));
-      setEndHand12(getStoredMouseLocation("endHand12"));
-      setStartHand13(getStoredMouseLocation("startHand13"));
-      setEndHand13(getStoredMouseLocation("endHand13"));
+      setStartHand1(getStoredMouseLocation("startHand1"));
+      setEndHand1(getStoredMouseLocation("endHand1"));
       setStartName1(getStoredMouseLocation("startName1"));
       setEndName1(getStoredMouseLocation("endName1"));
-      setStartHand20(getStoredMouseLocation("startHand20"));
-      setEndHand20(getStoredMouseLocation("endHand20"));
-      setStartHand21(getStoredMouseLocation("startHand21"));
-      setEndHand21(getStoredMouseLocation("endHand21"));
-      setStartHand22(getStoredMouseLocation("startHand22"));
-      setEndHand22(getStoredMouseLocation("endHand22"));
-      setStartHand23(getStoredMouseLocation("startHand23"));
-      setEndHand23(getStoredMouseLocation("endHand23"));
+      setStartHand2(getStoredMouseLocation("startHand2"));
+      setEndHand2(getStoredMouseLocation("endHand2"));
       setStartName2(getStoredMouseLocation("startName2"));
       setEndName2(getStoredMouseLocation("endName2"));
-      setStartHand30(getStoredMouseLocation("startHand30"));
-      setEndHand30(getStoredMouseLocation("endHand30"));
-      setStartHand31(getStoredMouseLocation("startHand31"));
-      setEndHand31(getStoredMouseLocation("endHand31"));
-      setStartHand32(getStoredMouseLocation("startHand32"));
-      setEndHand32(getStoredMouseLocation("endHand32"));
-      setStartHand33(getStoredMouseLocation("startHand33"));
-      setEndHand33(getStoredMouseLocation("endHand33"));
+      setStartHand3(getStoredMouseLocation("startHand3"));
+      setEndHand3(getStoredMouseLocation("endHand3"));
       setStartName3(getStoredMouseLocation("startName3"));
       setEndName3(getStoredMouseLocation("endName3"));
       setStartContractDirection(
@@ -648,29 +607,16 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     setCalibrationOpen(true);
   };
 
-  const getHandInfo = () => {
-    setHandsFromCalibration();
-    setNamesFromCalibration();
-    setBoardNumFromCalibration();
+  const getHandInfo = async () => {
+    await setBoardNumFromCalibration();
+    await setHandsFromCalibration();
+    await setNamesFromCalibration();
+    bidPlayTimer();
   };
 
   // let counter = 0;
   const bidPlayTimer = () => {
     setTimeout(async () => {
-      if (
-        handsRef.current[0].length +
-          handsRef.current[1].length +
-          handsRef.current[2].length +
-          handsRef.current[3].length >
-          0 &&
-        whoseTurnRef.current !== null
-      ) {
-        if (contractLevelRef.current === null) {
-          setBidFromCalibration();
-        } else {
-          setCardFromCalibration();
-        }
-      }
       const left = startBoardNum[0] * videoRef.current.videoWidth;
       const width =
         (endBoardNum[0] - startBoardNum[0]) * videoRef.current.videoWidth;
@@ -678,8 +624,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       const height =
         (endBoardNum[1] - startBoardNum[1]) * videoRef.current.videoHeight;
       const canvas = createCanvas(width, height);
-      if (boardNumRef.current !== "") {
-        const isNextBoardNum = await getVision(
+      const isNextBoardNum =
+        boardNumRef.current !== "" &&
+        (await getVision(
           canvas,
           left,
           top,
@@ -691,20 +638,37 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           boardNumLastImgRef.current,
           setBoardNumLastImg,
           false
-        );
-        if (isNextBoardNum) {
-          resetAll();
-          getHandInfo();
+        ));
+      if (isNextBoardNum) {
+        resetAll();
+        await getHandInfo();
+      } else {
+        if (contractLevelRef.current === null) {
+          await setContractDirectionFromCalibration();
         }
+        console.log(`whoseTurnRef: ${whoseTurnRef.current}`);
+        if (
+          handsRef.current[0].length +
+            handsRef.current[1].length +
+            handsRef.current[2].length +
+            handsRef.current[3].length >
+            0 &&
+          whoseTurnRef.current !== null
+        ) {
+          if (contractLevelRef.current === null) {
+            await setBidFromCalibration();
+          } else {
+            await setCardFromCalibration();
+          }
+        }
+        bidPlayTimer();
       }
-      bidPlayTimer();
     }, 500);
   };
 
   useEffect(() => {
     if (accessToken && endAuctionRef.current) {
       getHandInfo();
-      bidPlayTimer();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, endAuctionRef.current]);
@@ -1247,76 +1211,20 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         );
       };
       const tempPastSelections = [];
-      if (startHand00 && endHand00)
-        tempPastSelections.push(
-          getSavedSelection(["startHand00", "endHand00"])
-        );
-      if (startHand01 && endHand01)
-        tempPastSelections.push(
-          getSavedSelection(["startHand01", "endHand01"])
-        );
-      if (startHand02 && endHand02)
-        tempPastSelections.push(
-          getSavedSelection(["startHand02", "endHand02"])
-        );
-      if (startHand03 && endHand03)
-        tempPastSelections.push(
-          getSavedSelection(["startHand03", "endHand03"])
-        );
+      if (startHand0 && endHand0)
+        tempPastSelections.push(getSavedSelection(["startHand0", "endHand0"]));
       if (startName0 && endName0)
         tempPastSelections.push(getSavedSelection(["startName0", "endName0"]));
-      if (startHand10 && endHand10)
-        tempPastSelections.push(
-          getSavedSelection(["startHand10", "endHand10"])
-        );
-      if (startHand11 && endHand11)
-        tempPastSelections.push(
-          getSavedSelection(["startHand11", "endHand11"])
-        );
-      if (startHand12 && endHand12)
-        tempPastSelections.push(
-          getSavedSelection(["startHand12", "endHand12"])
-        );
-      if (startHand13 && endHand13)
-        tempPastSelections.push(
-          getSavedSelection(["startHand13", "endHand13"])
-        );
+      if (startHand1 && endHand1)
+        tempPastSelections.push(getSavedSelection(["startHand1", "endHand1"]));
       if (startName1 && endName1)
         tempPastSelections.push(getSavedSelection(["startName1", "endName1"]));
-      if (startHand20 && endHand20)
-        tempPastSelections.push(
-          getSavedSelection(["startHand20", "endHand20"])
-        );
-      if (startHand21 && endHand21)
-        tempPastSelections.push(
-          getSavedSelection(["startHand21", "endHand21"])
-        );
-      if (startHand22 && endHand22)
-        tempPastSelections.push(
-          getSavedSelection(["startHand22", "endHand22"])
-        );
-      if (startHand23 && endHand23)
-        tempPastSelections.push(
-          getSavedSelection(["startHand23", "endHand23"])
-        );
+      if (startHand2 && endHand2)
+        tempPastSelections.push(getSavedSelection(["startHand2", "endHand2"]));
       if (startName2 && endName2)
         tempPastSelections.push(getSavedSelection(["startName2", "endName2"]));
-      if (startHand30 && endHand30)
-        tempPastSelections.push(
-          getSavedSelection(["startHand30", "endHand30"])
-        );
-      if (startHand31 && endHand31)
-        tempPastSelections.push(
-          getSavedSelection(["startHand31", "endHand31"])
-        );
-      if (startHand32 && endHand32)
-        tempPastSelections.push(
-          getSavedSelection(["startHand32", "endHand32"])
-        );
-      if (startHand33 && endHand33)
-        tempPastSelections.push(
-          getSavedSelection(["startHand33", "endHand33"])
-        );
+      if (startHand3 && endHand3)
+        tempPastSelections.push(getSavedSelection(["startHand3", "endHand3"]));
       if (startName3 && endName3)
         tempPastSelections.push(getSavedSelection(["startName3", "endName3"]));
       if (startContractDirection && endContractDirection)
@@ -1346,63 +1254,27 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     setEndX(xPercent);
     setEndY(yPercent);
     const mouseLocation = [xPercent, yPercent];
-    if (!startHand00) {
-      setStartHand00(mouseLocation);
-      window.localStorage.setItem("startHand00", mouseLocation);
-    } else if (!startHand01) {
-      setStartHand01(mouseLocation);
-      window.localStorage.setItem("startHand01", mouseLocation);
-    } else if (!startHand02) {
-      setStartHand02(mouseLocation);
-      window.localStorage.setItem("startHand02", mouseLocation);
-    } else if (!startHand03) {
-      setStartHand03(mouseLocation);
-      window.localStorage.setItem("startHand03", mouseLocation);
+    if (!startHand0) {
+      setStartHand0(mouseLocation);
+      window.localStorage.setItem("startHand0", mouseLocation);
     } else if (!startName0) {
       setStartName0(mouseLocation);
       window.localStorage.setItem("startName0", mouseLocation);
-    } else if (!startHand10) {
-      setStartHand10(mouseLocation);
-      window.localStorage.setItem("startHand10", mouseLocation);
-    } else if (!startHand11) {
-      setStartHand11(mouseLocation);
-      window.localStorage.setItem("startHand11", mouseLocation);
-    } else if (!startHand12) {
-      setStartHand12(mouseLocation);
-      window.localStorage.setItem("startHand12", mouseLocation);
-    } else if (!startHand13) {
-      setStartHand13(mouseLocation);
-      window.localStorage.setItem("startHand13", mouseLocation);
+    } else if (!startHand1) {
+      setStartHand1(mouseLocation);
+      window.localStorage.setItem("startHand1", mouseLocation);
     } else if (!startName1) {
       setStartName1(mouseLocation);
       window.localStorage.setItem("startName1", mouseLocation);
-    } else if (!startHand20) {
-      setStartHand20(mouseLocation);
-      window.localStorage.setItem("startHand20", mouseLocation);
-    } else if (!startHand21) {
-      setStartHand21(mouseLocation);
-      window.localStorage.setItem("startHand21", mouseLocation);
-    } else if (!startHand22) {
-      setStartHand22(mouseLocation);
-      window.localStorage.setItem("startHand22", mouseLocation);
-    } else if (!startHand23) {
-      setStartHand23(mouseLocation);
-      window.localStorage.setItem("startHand23", mouseLocation);
+    } else if (!startHand2) {
+      setStartHand2(mouseLocation);
+      window.localStorage.setItem("startHand2", mouseLocation);
     } else if (!startName2) {
       setStartName2(mouseLocation);
       window.localStorage.setItem("startName2", mouseLocation);
-    } else if (!startHand30) {
-      setStartHand30(mouseLocation);
-      window.localStorage.setItem("startHand30", mouseLocation);
-    } else if (!startHand31) {
-      setStartHand31(mouseLocation);
-      window.localStorage.setItem("startHand31", mouseLocation);
-    } else if (!startHand32) {
-      setStartHand32(mouseLocation);
-      window.localStorage.setItem("startHand32", mouseLocation);
-    } else if (!startHand33) {
-      setStartHand33(mouseLocation);
-      window.localStorage.setItem("startHand33", mouseLocation);
+    } else if (!startHand3) {
+      setStartHand3(mouseLocation);
+      window.localStorage.setItem("startHand3", mouseLocation);
     } else if (!startName3) {
       setStartName3(mouseLocation);
       window.localStorage.setItem("startName3", mouseLocation);
@@ -1445,63 +1317,27 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     setEndX(null);
     setEndY(null);
     const mouseLocation = [xPercent, yPercent];
-    if (!endHand00) {
-      setEndHand00(mouseLocation);
-      window.localStorage.setItem("endHand00", mouseLocation);
-    } else if (!endHand01) {
-      setEndHand01(mouseLocation);
-      window.localStorage.setItem("endHand01", mouseLocation);
-    } else if (!endHand02) {
-      setEndHand02(mouseLocation);
-      window.localStorage.setItem("endHand02", mouseLocation);
-    } else if (!endHand03) {
-      setEndHand03(mouseLocation);
-      window.localStorage.setItem("endHand03", mouseLocation);
+    if (!endHand0) {
+      setEndHand0(mouseLocation);
+      window.localStorage.setItem("endHand0", mouseLocation);
     } else if (!endName0) {
       setEndName0(mouseLocation);
       window.localStorage.setItem("endName0", mouseLocation);
-    } else if (!endHand10) {
-      setEndHand10(mouseLocation);
-      window.localStorage.setItem("endHand10", mouseLocation);
-    } else if (!endHand11) {
-      setEndHand11(mouseLocation);
-      window.localStorage.setItem("endHand11", mouseLocation);
-    } else if (!endHand12) {
-      setEndHand12(mouseLocation);
-      window.localStorage.setItem("endHand12", mouseLocation);
-    } else if (!endHand13) {
-      setEndHand13(mouseLocation);
-      window.localStorage.setItem("endHand13", mouseLocation);
+    } else if (!endHand1) {
+      setEndHand1(mouseLocation);
+      window.localStorage.setItem("endHand1", mouseLocation);
     } else if (!endName1) {
       setEndName1(mouseLocation);
       window.localStorage.setItem("endName1", mouseLocation);
-    } else if (!endHand20) {
-      setEndHand20(mouseLocation);
-      window.localStorage.setItem("endHand20", mouseLocation);
-    } else if (!endHand21) {
-      setEndHand21(mouseLocation);
-      window.localStorage.setItem("endHand21", mouseLocation);
-    } else if (!endHand22) {
-      setEndHand22(mouseLocation);
-      window.localStorage.setItem("endHand22", mouseLocation);
-    } else if (!endHand23) {
-      setEndHand23(mouseLocation);
-      window.localStorage.setItem("endHand23", mouseLocation);
+    } else if (!endHand2) {
+      setEndHand2(mouseLocation);
+      window.localStorage.setItem("endHand2", mouseLocation);
     } else if (!endName2) {
       setEndName2(mouseLocation);
       window.localStorage.setItem("endName2", mouseLocation);
-    } else if (!endHand30) {
-      setEndHand30(mouseLocation);
-      window.localStorage.setItem("endHand30", mouseLocation);
-    } else if (!endHand31) {
-      setEndHand31(mouseLocation);
-      window.localStorage.setItem("endHand31", mouseLocation);
-    } else if (!endHand32) {
-      setEndHand32(mouseLocation);
-      window.localStorage.setItem("endHand32", mouseLocation);
-    } else if (!endHand33) {
-      setEndHand33(mouseLocation);
-      window.localStorage.setItem("endHand33", mouseLocation);
+    } else if (!endHand3) {
+      setEndHand3(mouseLocation);
+      window.localStorage.setItem("endHand3", mouseLocation);
     } else if (!endName3) {
       setEndName3(mouseLocation);
       window.localStorage.setItem("endName3", mouseLocation);
@@ -1520,37 +1356,41 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   };
 
   const handsBorders = [
-    [
-      [startHand00, endHand00],
-      [startHand01, endHand01],
-      [startHand02, endHand02],
-      [startHand03, endHand03],
-    ],
-    [
-      [startHand10, endHand10],
-      [startHand11, endHand11],
-      [startHand12, endHand12],
-      [startHand13, endHand13],
-    ],
-    [
-      [startHand20, endHand20],
-      [startHand21, endHand21],
-      [startHand22, endHand22],
-      [startHand23, endHand23],
-    ],
-    [
-      [startHand30, endHand30],
-      [startHand31, endHand31],
-      [startHand32, endHand32],
-      [startHand33, endHand33],
-    ],
+    [startHand0, endHand0],
+    [startHand1, endHand1],
+    [startHand2, endHand2],
+    [startHand3, endHand3],
   ];
 
   const setHandsFromCalibration = async () => {
+    console.log("setHands start");
     const tempHands = [];
     const tempDeck = [];
     for (let hand = 0; hand < handsBorders.length; hand++) {
       const handBorders = handsBorders[hand];
+      const left = handBorders[0][0];
+      const top = handBorders[0][1];
+      const rowHeight = (handBorders[1][1] - handBorders[0][1]) / 4;
+      const rowWidth = handBorders[1][0] - handBorders[0][0];
+      const right = left + rowWidth;
+      const rowsBorders = [
+        [
+          [left, top],
+          [right, top + rowHeight],
+        ],
+        [
+          [left, top + rowHeight],
+          [right, top + 2 * rowHeight],
+        ],
+        [
+          [left, top + 2 * rowHeight],
+          [right, top + 3 * rowHeight],
+        ],
+        [
+          [left, top + 3 * rowHeight],
+          [right, top + 4 * rowHeight],
+        ],
+      ];
       const handsLastImgs = [
         [
           [hand00LastImgRef.current, setHand00LastImg],
@@ -1581,36 +1421,42 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       const tempHand = [];
       await Promise.all([
         calibrateArea(
-          handBorders[0][0],
-          handBorders[0][1],
+          rowsBorders[0][0],
+          rowsBorders[0][1],
           handLastImgs[0][0],
-          handLastImgs[0][1]
+          handLastImgs[0][1],
+          false
         ),
         calibrateArea(
-          handBorders[1][0],
-          handBorders[1][1],
+          rowsBorders[1][0],
+          rowsBorders[1][1],
           handLastImgs[1][0],
-          handLastImgs[1][1]
+          handLastImgs[1][1],
+          false
         ),
         calibrateArea(
-          handBorders[2][0],
-          handBorders[2][1],
+          rowsBorders[2][0],
+          rowsBorders[2][1],
           handLastImgs[2][0],
-          handLastImgs[2][1]
+          handLastImgs[2][1],
+          false
         ),
         calibrateArea(
-          handBorders[3][0],
-          handBorders[3][1],
+          rowsBorders[3][0],
+          rowsBorders[3][1],
           handLastImgs[3][0],
-          handLastImgs[3][1]
+          handLastImgs[3][1],
+          false
         ),
       ]).then((values) => {
+        console.log(values);
         values.forEach((suitText, suitIdx) => {
           const suitCards =
             suitText.vision
               ?.replaceAll(" ", "")
               .replaceAll(".", "")
               .replaceAll("-", "")
+              .replaceAll(`"`, "")
               .replaceAll("10", "T")
               .split("") ?? [];
           for (let card of suitCards) {
@@ -1626,6 +1472,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     }
     setHands(tempHands);
     setDeck(tempDeck);
+    console.log("setHands end");
   };
 
   const setNamesFromCalibration = async () => {
@@ -1637,8 +1484,15 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     ];
     let i = 0;
     for (let nameBorders of namesBorders) {
-      const nameText = (await calibrateArea(nameBorders[0], nameBorders[1]))
-        .vision;
+      const nameText = (
+        await calibrateArea(
+          nameBorders[0],
+          nameBorders[1],
+          undefined,
+          undefined,
+          false
+        )
+      ).vision;
       if (nameText) {
         if (i === 0) setNorthName(nameText);
         else if (i === 1) setEastName(nameText);
@@ -1651,38 +1505,54 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
 
   const setContractDirectionFromCalibration = async () => {
     const contractDirectionText = (
-      await calibrateArea(startContractDirection, endContractDirection)
+      await calibrateArea(
+        startContractDirection,
+        endContractDirection,
+        contractDirectionLastImgRef.current,
+        setContractDirectionLastImg,
+        false
+      )
     ).vision;
     if (contractDirectionText) {
       const splitByLine = contractDirectionText.split("\n");
       const contract = splitByLine[0];
       const splitContract = contract.replace("NT", "N").split("");
       const tempContractLevel = splitContract[0];
-      const tempContractSuit = bboVisionToSuit(splitContract[1]);
+      // console.log(`splitContract: ${JSON.stringify(splitContract)}`);
+      const tempContractSuit = bboVisionToSuit(splitContract[1] ?? "");
       const tempDeclarer = strToDirection(splitByLine[1]);
       setContractLevel(tempContractLevel);
       setContractSuit(tempContractSuit);
       setContractDbl(
-        (splitContract[2] !== undefined) + (splitContract[3] !== undefined)
+        (splitContract[2]?.toUpperCase() === "X") +
+          (splitContract[3]?.toUpperCase() === "X")
       );
       setTrump(tempContractSuit !== -1 ? tempContractSuit : null);
       setDeclarer(tempDeclarer);
+      console.log(`tempDeclarer: ${tempDeclarer}`);
+      console.log(`whoseTurn now: ${(tempDeclarer + 1) % 4}`);
       setLeader((tempDeclarer + 1) % 4);
       setWhoseTurn((tempDeclarer + 1) % 4);
     }
   };
 
   const setBoardNumFromCalibration = async () => {
-    const boardNumText = (
-      await calibrateArea(
-        startBoardNum,
-        endBoardNum,
-        boardNumLastImgRef.current,
-        setBoardNumLastImg
-      )
-    ).vision;
+    console.log("setBoardNum start");
+    const boardNumTextObj = await calibrateArea(
+      startBoardNum,
+      endBoardNum,
+      boardNumLastImgRef.current,
+      setBoardNumLastImg,
+      false
+    );
+    console.log(`boardNumTextObj: ${JSON.stringify(boardNumTextObj)}`);
+    const boardNumText = boardNumTextObj.vision
+      .replaceAll("\n", "")
+      .replaceAll("D", "");
+    console.log(`boardNumText: ${boardNumText}`);
     if (boardNumText) {
       setBoardNum(boardNumText);
+      console.log("set whoseTurn from board num");
       setWhoseTurn((parseInt(boardNumText) - 1) % 4);
     }
   };
@@ -1712,7 +1582,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         startAuctionRef.current[1] + endBidCellTop,
       ],
       bidLastImgRef.current,
-      setBidLastImg
+      setBidLastImg,
+      true
     );
     const nextBid = nextBidVisionAndPalette.vision;
     const nextBidPalette = nextBidVisionAndPalette.palette;
@@ -1736,37 +1607,39 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         bidObj.action = "BID";
         bidObj.level = parseInt(nextBid.substring(0, 1));
         bidObj.strain = bboVisionToSuit(nextBid.substring(1), nextBidPalette);
-        // bidObj.level = parseInt(nextBid.substring(0, 1));
-        // bidObj.strain = nextBidSuitPrediction;
+        console.log(`bidObj: ${JSON.stringify(bidObj)}`);
         bid(bidObj);
       }
     }
   };
 
-  useEffect(() => {
-    const auctionLength = auction.length;
-    if (auctionLength > 0) {
-      if (
-        auctionLength < 4 ||
-        auction[auctionLength - 1].action !== "Pass" ||
-        auction[auctionLength - 2].action !== "Pass" ||
-        auction[auctionLength - 3].action !== "Pass"
-      ) {
-        setWhoseTurn((whoseTurnRef.current + 1) % 4);
-      } else if (
-        auctionLength === 4 &&
-        auction.every((call) => call.action === "Pass")
-      ) {
-        // console.log("hand passed out");
-      } else {
-        setContractDirectionFromCalibration();
-      }
-    }
-  }, [auction]);
-
   const setCardFromCalibration = async () => {
+    console.log("setCard start");
     const hand = whoseTurnRef.current;
     const handBorders = handsBorders[hand];
+    const left = handBorders[0][0];
+    const top = handBorders[0][1];
+    const rowHeight = (handBorders[1][1] - handBorders[0][1]) / 4;
+    const rowWidth = handBorders[1][0] - handBorders[0][0];
+    const right = left + rowWidth;
+    const rowsBorders = [
+      [
+        [left, top],
+        [right, top + rowHeight],
+      ],
+      [
+        [left, top + rowHeight],
+        [right, top + 2 * rowHeight],
+      ],
+      [
+        [left, top + 2 * rowHeight],
+        [right, top + 3 * rowHeight],
+      ],
+      [
+        [left, top + 3 * rowHeight],
+        [right, top + 4 * rowHeight],
+      ],
+    ];
     const handsLastImgs = [
       [
         [hand00LastImgRef.current, setHand00LastImg],
@@ -1799,28 +1672,32 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     );
     await Promise.all([
       calibrateArea(
-        handBorders[0][0],
-        handBorders[0][1],
+        rowsBorders[0][0],
+        rowsBorders[0][1],
         handLastImgs[0][0],
-        handLastImgs[0][1]
+        handLastImgs[0][1],
+        false
       ),
       calibrateArea(
-        handBorders[1][0],
-        handBorders[1][1],
+        rowsBorders[1][0],
+        rowsBorders[1][1],
         handLastImgs[1][0],
-        handLastImgs[1][1]
+        handLastImgs[1][1],
+        false
       ),
       calibrateArea(
-        handBorders[2][0],
-        handBorders[2][1],
+        rowsBorders[2][0],
+        rowsBorders[2][1],
         handLastImgs[2][0],
-        handLastImgs[2][1]
+        handLastImgs[2][1],
+        false
       ),
       calibrateArea(
-        handBorders[3][0],
-        handBorders[3][1],
+        rowsBorders[3][0],
+        rowsBorders[3][1],
         handLastImgs[3][0],
-        handLastImgs[3][1]
+        handLastImgs[3][1],
+        false
       ),
     ]).then((values) => {
       let remainingCardsSet = new Set();
@@ -1829,8 +1706,12 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           const suitCards =
             suitText.vision
               ?.replaceAll(" ", "")
+              .replaceAll(".", "")
+              .replaceAll("-", "")
+              .replaceAll(`"`, "")
               .replaceAll("10", "T")
               .split("") ?? [];
+          // console.log(suitCards);
           for (let card of suitCards) {
             const rank = visionToRank(card);
             remainingCardsSet.add(`${suitIdx},${rank}`);
@@ -1855,6 +1736,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         play({ suit, rank, hand }, true);
       }
     });
+    console.log("setCard end");
   };
 
   const pastOverlay = (
@@ -1951,44 +1833,20 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
             onClick={() => {
               window.localStorage.setItem("KibSync settings", false);
               setPastSelections([]);
-              setStartHand00(null);
-              setEndHand00(null);
-              setStartHand01(null);
-              setEndHand01(null);
-              setStartHand02(null);
-              setEndHand02(null);
-              setStartHand03(null);
-              setEndHand03(null);
+              setStartHand0(null);
+              setEndHand0(null);
               setStartName0(null);
               setEndName0(null);
-              setStartHand10(null);
-              setEndHand10(null);
-              setStartHand11(null);
-              setEndHand11(null);
-              setStartHand12(null);
-              setEndHand12(null);
-              setStartHand13(null);
-              setEndHand13(null);
+              setStartHand1(null);
+              setEndHand1(null);
               setStartName1(null);
               setEndName1(null);
-              setStartHand20(null);
-              setEndHand20(null);
-              setStartHand21(null);
-              setEndHand21(null);
-              setStartHand22(null);
-              setEndHand22(null);
-              setStartHand23(null);
-              setEndHand23(null);
+              setStartHand2(null);
+              setEndHand2(null);
               setStartName2(null);
               setEndName2(null);
-              setStartHand30(null);
-              setEndHand30(null);
-              setStartHand31(null);
-              setEndHand31(null);
-              setStartHand32(null);
-              setEndHand32(null);
-              setStartHand33(null);
-              setEndHand33(null);
+              setStartHand3(null);
+              setEndHand3(null);
               setStartName3(null);
               setEndName3(null);
               setStartContractDirection(null);

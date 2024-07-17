@@ -72,44 +72,20 @@ export const ContextProvider = ({ children }) => {
   const [capturedCards2, setCapturedCards2] = useState([]);
   const [capturedCards3, setCapturedCards3] = useState([]);
   const [calibrationOpen, setCalibrationOpen] = useState(false);
-  const [startHand00, setStartHand00] = useState(null);
-  const [endHand00, setEndHand00] = useState(null);
-  const [startHand01, setStartHand01] = useState(null);
-  const [endHand01, setEndHand01] = useState(null);
-  const [startHand02, setStartHand02] = useState(null);
-  const [endHand02, setEndHand02] = useState(null);
-  const [startHand03, setStartHand03] = useState(null);
-  const [endHand03, setEndHand03] = useState(null);
+  const [startHand0, setStartHand0] = useState(null);
+  const [endHand0, setEndHand0] = useState(null);
   const [startName0, setStartName0] = useState(null);
   const [endName0, setEndName0] = useState(null);
-  const [startHand10, setStartHand10] = useState(null);
-  const [endHand10, setEndHand10] = useState(null);
-  const [startHand11, setStartHand11] = useState(null);
-  const [endHand11, setEndHand11] = useState(null);
-  const [startHand12, setStartHand12] = useState(null);
-  const [endHand12, setEndHand12] = useState(null);
-  const [startHand13, setStartHand13] = useState(null);
-  const [endHand13, setEndHand13] = useState(null);
+  const [startHand1, setStartHand1] = useState(null);
+  const [endHand1, setEndHand1] = useState(null);
   const [startName1, setStartName1] = useState(null);
   const [endName1, setEndName1] = useState(null);
-  const [startHand20, setStartHand20] = useState(null);
-  const [endHand20, setEndHand20] = useState(null);
-  const [startHand21, setStartHand21] = useState(null);
-  const [endHand21, setEndHand21] = useState(null);
-  const [startHand22, setStartHand22] = useState(null);
-  const [endHand22, setEndHand22] = useState(null);
-  const [startHand23, setStartHand23] = useState(null);
-  const [endHand23, setEndHand23] = useState(null);
+  const [startHand2, setStartHand2] = useState(null);
+  const [endHand2, setEndHand2] = useState(null);
   const [startName2, setStartName2] = useState(null);
   const [endName2, setEndName2] = useState(null);
-  const [startHand30, setStartHand30] = useState(null);
-  const [endHand30, setEndHand30] = useState(null);
-  const [startHand31, setStartHand31] = useState(null);
-  const [endHand31, setEndHand31] = useState(null);
-  const [startHand32, setStartHand32] = useState(null);
-  const [endHand32, setEndHand32] = useState(null);
-  const [startHand33, setStartHand33] = useState(null);
-  const [endHand33, setEndHand33] = useState(null);
+  const [startHand3, setStartHand3] = useState(null);
+  const [endHand3, setEndHand3] = useState(null);
   const [startName3, setStartName3] = useState(null);
   const [endName3, setEndName3] = useState(null);
   const [startContractDirection, setStartContractDirection] = useState(null);
@@ -181,82 +157,34 @@ export const ContextProvider = ({ children }) => {
   southNameRef.current = southName;
   const westNameRef = useRef();
   westNameRef.current = westName;
-  const startHand00Ref = useRef();
-  startHand00Ref.current = startHand00;
-  const endHand00Ref = useRef();
-  endHand00Ref.current = endHand00;
-  const startHand01Ref = useRef();
-  startHand01Ref.current = startHand01;
-  const endHand01Ref = useRef();
-  endHand01Ref.current = endHand01;
-  const startHand02Ref = useRef();
-  startHand02Ref.current = startHand02;
-  const endHand02Ref = useRef();
-  endHand02Ref.current = endHand02;
-  const startHand03Ref = useRef();
-  startHand03Ref.current = startHand03;
-  const endHand03Ref = useRef();
-  endHand03Ref.current = endHand03;
+  const startHand0Ref = useRef();
+  startHand0Ref.current = startHand0;
+  const endHand0Ref = useRef();
+  endHand0Ref.current = endHand0;
   const startName0Ref = useRef();
   startName0Ref.current = startName0;
   const endName0Ref = useRef();
   endName0Ref.current = endName0;
-  const startHand10Ref = useRef();
-  startHand10Ref.current = startHand10;
-  const endHand10Ref = useRef();
-  endHand10Ref.current = endHand10;
-  const startHand11Ref = useRef();
-  startHand11Ref.current = startHand11;
-  const endHand11Ref = useRef();
-  endHand11Ref.current = endHand11;
-  const startHand12Ref = useRef();
-  startHand12Ref.current = startHand12;
-  const endHand12Ref = useRef();
-  endHand12Ref.current = endHand12;
-  const startHand13Ref = useRef();
-  startHand13Ref.current = startHand13;
-  const endHand13Ref = useRef();
-  endHand13Ref.current = endHand13;
+  const startHand1Ref = useRef();
+  startHand1Ref.current = startHand1;
+  const endHand1Ref = useRef();
+  endHand1Ref.current = endHand1;
   const startName1Ref = useRef();
   startName1Ref.current = startName1;
   const endName1Ref = useRef();
   endName1Ref.current = endName1;
-  const startHand20Ref = useRef();
-  startHand20Ref.current = startHand20;
-  const endHand20Ref = useRef();
-  endHand20Ref.current = endHand20;
-  const startHand21Ref = useRef();
-  startHand21Ref.current = startHand21;
-  const endHand21Ref = useRef();
-  endHand21Ref.current = endHand21;
-  const startHand22Ref = useRef();
-  startHand22Ref.current = startHand22;
-  const endHand22Ref = useRef();
-  endHand22Ref.current = endHand22;
-  const startHand23Ref = useRef();
-  startHand23Ref.current = startHand23;
-  const endHand23Ref = useRef();
-  endHand23Ref.current = endHand23;
+  const startHand2Ref = useRef();
+  startHand2Ref.current = startHand2;
+  const endHand2Ref = useRef();
+  endHand2Ref.current = endHand2;
   const startName2Ref = useRef();
   startName2Ref.current = startName2;
   const endName2Ref = useRef();
   endName2Ref.current = endName2;
-  const startHand30Ref = useRef();
-  startHand30Ref.current = startHand30;
-  const endHand30Ref = useRef();
-  endHand30Ref.current = endHand30;
-  const startHand31Ref = useRef();
-  startHand31Ref.current = startHand31;
-  const endHand31Ref = useRef();
-  endHand31Ref.current = endHand31;
-  const startHand32Ref = useRef();
-  startHand32Ref.current = startHand32;
-  const endHand32Ref = useRef();
-  endHand32Ref.current = endHand32;
-  const startHand33Ref = useRef();
-  startHand33Ref.current = startHand33;
-  const endHand33Ref = useRef();
-  endHand33Ref.current = endHand33;
+  const startHand3Ref = useRef();
+  startHand3Ref.current = startHand3;
+  const endHand3Ref = useRef();
+  endHand3Ref.current = endHand3;
   const startName3Ref = useRef();
   startName3Ref.current = startName3;
   const endName3Ref = useRef();
@@ -290,6 +218,7 @@ export const ContextProvider = ({ children }) => {
     setDeclarer(null);
     setLeader(0);
     setSuitLed(null);
+    console.log("reset whoseTurn");
     setWhoseTurn(null);
     setTrickCards(new Set());
     setTrickCardsDup(new Set());
@@ -410,6 +339,11 @@ export const ContextProvider = ({ children }) => {
     let tempAuction = [...auctionRef.current];
     tempAuction.push(bid);
     setAuction(tempAuction);
+    if (contractLevelRef.current === null) {
+      const nextTurn = (bid.hand + 1) % 4;
+      console.log("next!");
+      setWhoseTurn(nextTurn);
+    }
   };
 
   const play = (card, playedInReality) => {
@@ -1168,120 +1102,48 @@ export const ContextProvider = ({ children }) => {
         setCapturedCards3,
         calibrationOpen,
         setCalibrationOpen,
-        startHand00,
-        setStartHand00,
-        startHand00Ref,
-        endHand00,
-        setEndHand00,
-        endHand00Ref,
-        startHand01,
-        setStartHand01,
-        startHand01Ref,
-        endHand01,
-        setEndHand01,
-        endHand01Ref,
-        startHand02,
-        setStartHand02,
-        startHand02Ref,
-        endHand02,
-        setEndHand02,
-        endHand02Ref,
-        startHand03,
-        setStartHand03,
-        startHand03Ref,
-        endHand03,
-        setEndHand03,
-        endHand03Ref,
+        startHand0,
+        setStartHand0,
+        startHand0Ref,
+        endHand0,
+        setEndHand0,
+        endHand0Ref,
         startName0,
         setStartName0,
         startName0Ref,
         endName0,
         setEndName0,
         endName0Ref,
-        startHand10,
-        setStartHand10,
-        startHand10Ref,
-        endHand10,
-        setEndHand10,
-        endHand10Ref,
-        startHand11,
-        setStartHand11,
-        startHand11Ref,
-        endHand11,
-        setEndHand11,
-        endHand11Ref,
-        startHand12,
-        setStartHand12,
-        startHand12Ref,
-        endHand12,
-        setEndHand12,
-        endHand12Ref,
-        startHand13,
-        setStartHand13,
-        startHand13Ref,
-        endHand13,
-        setEndHand13,
-        endHand13Ref,
+        startHand1,
+        setStartHand1,
+        startHand1Ref,
+        endHand1,
+        setEndHand1,
+        endHand1Ref,
         startName1,
         setStartName1,
         startName1Ref,
         endName1,
         setEndName1,
         endName1Ref,
-        startHand20,
-        setStartHand20,
-        startHand20Ref,
-        endHand20,
-        setEndHand20,
-        endHand20Ref,
-        startHand21,
-        setStartHand21,
-        startHand21Ref,
-        endHand21,
-        setEndHand21,
-        endHand21Ref,
-        startHand22,
-        setStartHand22,
-        startHand22Ref,
-        endHand22,
-        setEndHand22,
-        endHand22Ref,
-        startHand23,
-        setStartHand23,
-        startHand23Ref,
-        endHand23,
-        setEndHand23,
-        endHand23Ref,
+        startHand2,
+        setStartHand2,
+        startHand2Ref,
+        endHand2,
+        setEndHand2,
+        endHand2Ref,
         startName2,
         setStartName2,
         startName2Ref,
         endName2,
         setEndName2,
         endName2Ref,
-        startHand30,
-        setStartHand30,
-        startHand30Ref,
-        endHand30,
-        setEndHand30,
-        endHand30Ref,
-        startHand31,
-        setStartHand31,
-        startHand31Ref,
-        endHand31,
-        setEndHand31,
-        endHand31Ref,
-        startHand32,
-        setStartHand32,
-        startHand32Ref,
-        endHand32,
-        setEndHand32,
-        endHand32Ref,
-        startHand33,
-        setStartHand33,
-        startHand33Ref,
-        endHand33,
-        setEndHand33,
-        endHand33Ref,
+        startHand3,
+        setStartHand3,
+        startHand3Ref,
+        endHand3,
+        setEndHand3,
+        endHand3Ref,
         startName3,
         setStartName3,
         startName3Ref,
