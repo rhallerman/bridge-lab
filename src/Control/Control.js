@@ -302,7 +302,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       canvas.getContext("2d").drawImage(orientationImage, width, 0);
     }
     // if (render) {
-    //   document.body.appendChild(canvas);
+    document.body.appendChild(canvas);
     // }
     const frame = canvas.toDataURL();
     if (returnOCR) {
