@@ -118,8 +118,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(window.location.href);
-    console.log(window.location.href.length);
     // if (window.location.href.length === 22) {
     if (window.location.href.length === 38) {
       oauthSignIn();
