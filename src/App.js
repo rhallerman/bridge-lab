@@ -82,7 +82,7 @@ function App() {
       client_id:
         "69484809608-tes2e82m3ebcmehh8f5m1dm0cklv0n1l.apps.googleusercontent.com",
       // redirect_uri: "http://localhost:3000",
-      redirect_uri: "https://rhallerman.github.io/kib-sync",
+      redirect_uri: "https://rhallerman.github.io/bridge-lab",
       response_type: "token",
       scope:
         "https://www.googleapis.com/auth/cloud-vision https://www.googleapis.com/auth/cloud-platform",

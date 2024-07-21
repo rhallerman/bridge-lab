@@ -1,8 +1,8 @@
 {
-  "name": "bridgeseer",
+  "name": "bridge-lab",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://rhallerman.github.io/kib-sync",
+  "homepage": "https://rhallerman.github.io/bridge-lab",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

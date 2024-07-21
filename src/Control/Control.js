@@ -572,7 +572,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     tempVideo.srcObject = tempCaptureStream;
     await tempVideo.play();
     setVideo(tempVideo);
-    if (window.localStorage.getItem("KibSync settings") === "true") {
+    if (window.localStorage.getItem("BridgeLab settings") === "true") {
       const getStoredMouseLocation = (name) => {
         return window.localStorage
           .getItem(name)
@@ -1201,7 +1201,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   useEffect(() => {
     if (
       loadFromHistory &&
-      window.localStorage.getItem("KibSync settings") === "true"
+      window.localStorage.getItem("BridgeLab settings") === "true"
     ) {
       const getSavedSelection = (selectionNames) => {
         const convertToInt = (coordStr) =>
@@ -1350,7 +1350,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     } else if (!endAuction) {
       setEndAuction(mouseLocation);
       window.localStorage.setItem("endAuction", mouseLocation);
-      window.localStorage.setItem("KibSync settings", true);
+      window.localStorage.setItem("BridgeLab settings", true);
       setCalibrationOpen(false);
     }
   };
@@ -1838,7 +1838,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           <IconButton
             style={{ color: "white" }}
             onClick={() => {
-              window.localStorage.setItem("KibSync settings", false);
+              window.localStorage.setItem("BridgeLab settings", false);
               setPastSelections([]);
               setStartHand0(null);
               setEndHand0(null);
