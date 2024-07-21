@@ -9,6 +9,7 @@ import Auction from "./Auction";
 // import usbfLogo from "../Images/usbf.png";
 // import lovebridgeLogo from "../Images/lovebridge.png";
 // import kibsyncLogo from "../Images/kibsync.png";
+// import BridgeLabLogo from "../Images/BridgeLabLogo";
 
 const View = ({ editable, videoChatContainer }) => {
   let {
@@ -162,10 +163,10 @@ const View = ({ editable, videoChatContainer }) => {
             </div>
             {!editable && (
               <img
-                src={require("../Images/kibsync.png")}
+                src={require("../Images/BridgeLabLogo2.png")}
                 type="image/png"
                 className="logo"
-                alt="kibsync"
+                alt="bridgelab"
               />
             )}
           </div>
