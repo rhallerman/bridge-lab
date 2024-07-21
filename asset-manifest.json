@@ -1,16 +1,17 @@
 {
   "files": {
     "main.css": "/kib-sync/static/css/main.a7b3b41d.css",
-    "main.js": "/kib-sync/static/js/main.a1f54dd6.js",
+    "main.js": "/kib-sync/static/js/main.a602ec93.js",
     "static/js/453.85f2d220.chunk.js": "/kib-sync/static/js/453.85f2d220.chunk.js",
     "static/media/Bridge_Base_Online_logo.png": "/kib-sync/static/media/Bridge_Base_Online_logo.775f6ed6a9c983e50b7b.png",
+    "static/media/BridgeLabLogo2.png": "/kib-sync/static/media/BridgeLabLogo2.79dbb3cbe4e4060d4981.png",
     "index.html": "/kib-sync/index.html",
     "main.a7b3b41d.css.map": "/kib-sync/static/css/main.a7b3b41d.css.map",
-    "main.a1f54dd6.js.map": "/kib-sync/static/js/main.a1f54dd6.js.map",
+    "main.a602ec93.js.map": "/kib-sync/static/js/main.a602ec93.js.map",
     "453.85f2d220.chunk.js.map": "/kib-sync/static/js/453.85f2d220.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a7b3b41d.css",
-    "static/js/main.a1f54dd6.js"
+    "static/js/main.a602ec93.js"
   ]
 }
