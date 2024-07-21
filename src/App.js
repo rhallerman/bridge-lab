@@ -119,7 +119,7 @@ function App() {
 
   useEffect(() => {
     // if (window.location.href.length === 22) {
-    if (window.location.href.length === 38) {
+    if (window.location.href.length === 40) {
       oauthSignIn();
     } else {
       setAccessToken(getUrlParameter("access_token"));
