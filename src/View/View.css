@@ -12,6 +12,7 @@
     max-height: 100vh;
     container-type: size;
     container-name: bg;
+    z-index: 0;
 }
 
 @container bg (min-width: 20px) {

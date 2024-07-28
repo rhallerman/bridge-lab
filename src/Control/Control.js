@@ -87,7 +87,6 @@ const Control = ({
     unassign,
     trade,
     highlight,
-    draw,
     shape,
     setShape,
     username,
@@ -895,7 +894,7 @@ const Control = ({
           control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
-              <u>D</u>raw (<u>C</u>lear)
+              <u>D</u>raw
             </>
           }
           sx={{ marginLeft: "0px" }}
@@ -1030,9 +1029,20 @@ const Control = ({
     </FormControl>
   );
 
+  const clearDrawing = () => {
+    const canvas0 = canvasRef0.current;
+    const context0 = canvas0.getContext("2d");
+    context0.clearRect(0, 0, canvas0.width, canvas0.height);
+
+    const canvas1 = canvasRef1.current;
+    const context1 = canvas1.getContext("2d");
+    context1.clearRect(0, 0, canvas1.width, canvas1.height);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === "BODY") {
+        clearDrawing();
         if (e.key === "ArrowRight") {
           if (!reality && liveEvents.length < input.events.length) {
             forward();
@@ -1055,16 +1065,6 @@ const Control = ({
           if (!reality) setMode("highlight");
         } else if (e.key === "D") {
           if (!reality) setMode("draw");
-        } else if (e.key === "C") {
-          if (!reality) {
-            const canvas0 = canvasRef0.current;
-            const context0 = canvas0.getContext("2d");
-            context0.clearRect(0, 0, canvas0.width, canvas0.height);
-
-            const canvas1 = canvasRef1.current;
-            const context1 = canvas1.getContext("2d");
-            context1.clearRect(0, 0, canvas1.width, canvas1.height);
-          }
         } else if (e.key === "N") {
           if (["assign", "shape"].includes(mode)) {
             setAssignTo(0);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Grid, TextField } from "@mui/material";
 import { Context } from "../Context/Context";
 import "./View.css";
@@ -411,21 +411,26 @@ const View = ({ editable, videoChatContainer, drawOverlay }) => {
     </div>
   );
 
+  const drawingBoard = useMemo(
+    () => (
+      <div
+        style={{
+          position: "absolute",
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          zIndex: !reality && mode === "draw" ? 2 : -1,
+        }}
+      >
+        {drawOverlay}
+      </div>
+    ),
+    [reality, mode]
+  );
+
   return (
     <div className="background">
-      {!reality && mode === "draw" && (
-        <div
-          style={{
-            position: "absolute",
-            display: "flex",
-            width: "100%",
-            height: "100%",
-            zIndex: 2,
-          }}
-        >
-          {drawOverlay}
-        </div>
-      )}
+      {drawingBoard}
       {header}
       <div className="belowHeader">
         <div className="areas">

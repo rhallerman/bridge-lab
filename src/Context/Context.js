@@ -744,8 +744,6 @@ export const ContextProvider = ({ children }) => {
     if (reality) setHighlightCards(new Set());
   }, [reality]);
 
-  const draw = () => {};
-
   const assignShape = () => {
     let tempHands = [...handsDup];
     const handWithShape = [];
@@ -1070,7 +1068,6 @@ export const ContextProvider = ({ children }) => {
         unassign,
         trade,
         highlight,
-        draw,
         suitChars,
         strToSuit,
         strToDirection,

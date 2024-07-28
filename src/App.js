@@ -82,8 +82,8 @@ function App() {
     var params = {
       client_id:
         "69484809608-tes2e82m3ebcmehh8f5m1dm0cklv0n1l.apps.googleusercontent.com",
-      // redirect_uri: "http://localhost:3000",
-      redirect_uri: "https://rhallerman.github.io/bridge-lab",
+      redirect_uri: "http://localhost:3000",
+      // redirect_uri: "https://rhallerman.github.io/bridge-lab",
       response_type: "token",
       scope:
         "https://www.googleapis.com/auth/cloud-vision https://www.googleapis.com/auth/cloud-platform",
@@ -119,8 +119,8 @@ function App() {
   };
 
   useEffect(() => {
-    // if (window.location.href.length === 22) {
-    if (window.location.href.length === 40) {
+    if (window.location.href.length === 22) {
+      // if (window.location.href.length === 40) {
       oauthSignIn();
     } else {
       setAccessToken(getUrlParameter("access_token"));
@@ -338,7 +338,7 @@ function App() {
 
       setLineProperties(context0, context1);
     }
-  }, [canvasRef0.current]);
+  }, [canvasRef0.current, canvasRef1.current]);
 
   const drawOverlay0 = (
     <canvas ref={canvasRef0} style={{ cursor: "pointer" }} />
