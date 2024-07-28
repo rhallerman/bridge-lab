@@ -11,7 +11,7 @@ import Auction from "./Auction";
 // import kibsyncLogo from "../Images/kibsync.png";
 // import BridgeLabLogo from "../Images/BridgeLabLogo";
 
-const View = ({ editable, videoChatContainer }) => {
+const View = ({ editable, videoChatContainer, drawOverlay }) => {
   let {
     metaEventName,
     setMetaEventName,
@@ -27,11 +27,13 @@ const View = ({ editable, videoChatContainer }) => {
     setNumSegments,
     boardNum,
     setBoardNum,
+    setWhoseTurn,
     numBoards,
     setNumBoards,
     reality,
     // suitChars,
     // strToSuit,
+    mode,
   } = useContext(Context);
 
   const headerInputField = (label, value, onChange, textAlign) => (
@@ -55,7 +57,7 @@ const View = ({ editable, videoChatContainer }) => {
   const header = (
     <div className="header">
       <Grid container alignItems="center">
-        <Grid item xs={2.5}>
+        <Grid item xs={2.25}>
           <div className="headerInfoItem">
             {editable || segmentNum ? (
               <div className="headerTextKey">SEGMENT: </div>
@@ -92,7 +94,10 @@ const View = ({ editable, videoChatContainer }) => {
               headerInputField(
                 "",
                 boardNum,
-                (event) => setBoardNum(event.target.value.toUpperCase()),
+                (event) => {
+                  setBoardNum(event.target.value);
+                  setWhoseTurn((parseInt(event.target.value) - 1) % 4);
+                },
                 "center"
               )
             ) : (
@@ -113,8 +118,8 @@ const View = ({ editable, videoChatContainer }) => {
             )}
           </div>
         </Grid>
-        <Grid item xs={7}>
-          <div className="logoAndTitle">
+        <Grid item xs={1.25}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
             {/* {!editable && (
               <img
                 src={require("../Images/usbflogo.png")}
@@ -131,47 +136,49 @@ const View = ({ editable, videoChatContainer }) => {
                 alt="LoveBridge"
               />
             )} */}
-            {!editable && (
-              <img
-                src={require("../Images/Bridge_Base_Online_logo.png")}
-                type="image/png"
-                className="logo"
-                alt="LoveBridge"
-              />
+            <img
+              src={require("../Images/Bridge_Base_Online_logo.png")}
+              type="image/png"
+              className="logo"
+              alt="LoveBridge"
+            />
+          </div>
+        </Grid>
+        <Grid item xs={5}>
+          <div className={editable ? "title titleInput" : "title"}>
+            {editable ? (
+              headerInputField(
+                "Meta Event Name",
+                metaEventName,
+                (event) => setMetaEventName(event.target.value.toUpperCase()),
+                "center"
+              )
+            ) : (
+              <div className="headerTextVal">{metaEventName}</div>
             )}
-            <div className={editable ? "title titleInput" : "title"}>
-              {editable ? (
-                headerInputField(
-                  "Meta Event Name",
-                  metaEventName,
-                  (event) => setMetaEventName(event.target.value.toUpperCase()),
-                  "center"
-                )
-              ) : (
-                <div className="headerTextVal">{metaEventName}</div>
-              )}
-              {editable ? (
-                headerInputField(
-                  "Event Name",
-                  eventName,
-                  (event) => setEventName(event.target.value.toUpperCase()),
-                  "center"
-                )
-              ) : (
-                <div className="headerTextVal">{eventName}</div>
-              )}
-            </div>
-            {!editable && (
-              <img
-                src={require("../Images/BridgeLabLogo2.png")}
-                type="image/png"
-                className="logo"
-                alt="bridgelab"
-              />
+            {editable ? (
+              headerInputField(
+                "Event Name",
+                eventName,
+                (event) => setEventName(event.target.value.toUpperCase()),
+                "center"
+              )
+            ) : (
+              <div className="headerTextVal">{eventName}</div>
             )}
           </div>
         </Grid>
-        <Grid item xs={2.5}>
+        <Grid item xs={1.25}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              src={require("../Images/BridgeLabLogo4.png")}
+              type="image/png"
+              className="logo"
+              alt="bridgelab"
+            />
+          </div>
+        </Grid>
+        <Grid item xs={2.25}>
           <div className="subtitle">
             {editable ? (
               headerInputField(
@@ -406,6 +413,19 @@ const View = ({ editable, videoChatContainer }) => {
 
   return (
     <div className="background">
+      {!reality && mode === "draw" && (
+        <div
+          style={{
+            position: "absolute",
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            zIndex: 2,
+          }}
+        >
+          {drawOverlay}
+        </div>
+      )}
       {header}
       <div className="belowHeader">
         <div className="areas">

@@ -39,12 +39,8 @@ const LiveTable = ({ editable }) => {
         <div className={`${contractSuit >= 0 ? `suit${contractSuit}` : ""}`}>
           {suitChars[contractSuit]}
         </div>
-        <div>
-          {"X".repeat(contractDbl)}
-        </div>
-        <div>
-          {directionToStr(declarer)?.substring(0, 1) ?? ""}
-        </div>
+        <div>{"X".repeat(contractDbl)}</div>
+        <div>{directionToStr(declarer)?.substring(0, 1) ?? ""}</div>
       </div>
     </div>
   );
@@ -140,7 +136,7 @@ const LiveTable = ({ editable }) => {
       } disabledCursor`}
     >
       {liveStatus}
-      {contractLevel ? contract : null}
+      {contractLevel !== null && contract}
       <div className="board">
         {table}
         {northHand}

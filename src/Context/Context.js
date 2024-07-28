@@ -41,6 +41,7 @@ export const ContextProvider = ({ children }) => {
   const [unassignedCards, setUnassignedCards] = useState([]);
   const [unassignedCardsDup, setUnassignedCardsDup] = useState([]);
   const [tradeCard, setTradeCard] = useState(null);
+  const [highlightCards, setHighlightCards] = useState(new Set());
   const [shape, setShape] = useState([]);
   const [kibitzPlayer, setKibitzPlayer] = useState(null);
   const [history, setHistory] = useState([]);
@@ -203,6 +204,7 @@ export const ContextProvider = ({ children }) => {
   endAuctionRef.current = endAuction;
 
   const resetAll = () => {
+    setReality(true);
     setBoardNum("");
     setVul(null);
     setDeck(null);
@@ -218,7 +220,6 @@ export const ContextProvider = ({ children }) => {
     setDeclarer(null);
     setLeader(0);
     setSuitLed(null);
-    console.log("reset whoseTurn");
     setWhoseTurn(null);
     setTrickCards(new Set());
     setTrickCardsDup(new Set());
@@ -341,7 +342,6 @@ export const ContextProvider = ({ children }) => {
     setAuction(tempAuction);
     if (contractLevelRef.current === null) {
       const nextTurn = (bid.hand + 1) % 4;
-      console.log("next!");
       setWhoseTurn(nextTurn);
     }
   };
@@ -734,6 +734,18 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
+  const highlight = (card) => {
+    const tempHighlightCards = new Set(highlightCards);
+    tempHighlightCards.add(`${card.suit},${card.rank},${card.xIdx}`);
+    setHighlightCards(tempHighlightCards);
+  };
+
+  useEffect(() => {
+    if (reality) setHighlightCards(new Set());
+  }, [reality]);
+
+  const draw = () => {};
+
   const assignShape = () => {
     let tempHands = [...handsDup];
     const handWithShape = [];
@@ -785,9 +797,12 @@ export const ContextProvider = ({ children }) => {
         }`}
         className={`${className} ${
           showAnalysis &&
-          tradeCard?.suit === card.suit &&
-          tradeCard?.rank === card.rank &&
-          tradeCard?.xIdx === card.xIdx
+          ((mode === "trade" &&
+            tradeCard?.suit === card.suit &&
+            tradeCard?.rank === card.rank &&
+            tradeCard?.xIdx === card.xIdx) ||
+            (mode === "highlight" &&
+              highlightCards.has(`${card.suit},${card.rank},${card.xIdx}`)))
             ? "selected"
             : ""
         }`}
@@ -1011,6 +1026,8 @@ export const ContextProvider = ({ children }) => {
         setUnassignedCardsDup,
         tradeCard,
         setTradeCard,
+        highlightCards,
+        setHighlightCards,
         shape,
         setShape,
         kibitzPlayer,
@@ -1052,6 +1069,8 @@ export const ContextProvider = ({ children }) => {
         assign,
         unassign,
         trade,
+        highlight,
+        draw,
         suitChars,
         strToSuit,
         strToDirection,

@@ -18,7 +18,7 @@
     .header {
         display: flex;
         flex-direction: row;
-        height: fit-content;
+        height: 10cqh;
         background-color: rgba(0, 0, 0, 0.6);
         padding: min(1vw, 1vh) min(1vw, 1vh) min(1vw, 1vh) min(1vw, 1vh);
         box-sizing: border-box;

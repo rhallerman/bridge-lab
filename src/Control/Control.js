@@ -42,7 +42,15 @@ const theme = createTheme({
   },
 });
 
-const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
+const Control = ({
+  kibView,
+  videoChatContainer,
+  database,
+  accessToken,
+  drawOverlay0,
+  canvasRef0,
+  canvasRef1,
+}) => {
   let {
     setDeck,
     hands,
@@ -78,6 +86,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     assign,
     unassign,
     trade,
+    highlight,
+    draw,
     shape,
     setShape,
     username,
@@ -332,11 +342,12 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
             }),
           }
         );
-        return ocr
-          .json()
-          .then(
-            (response) => response.responses[0].fullTextAnnotation?.text ?? ""
-          );
+        return ocr.json().then((response) => {
+          if (response.error) {
+            document.body.appendChild(canvas);
+          }
+          return response.responses[0].fullTextAnnotation?.text ?? "";
+        });
       } else {
         return undefined;
       }
@@ -461,7 +472,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     );
     if (vision !== undefined) console.log(vision);
     if (shouldIncludeSuit && vision !== undefined && vision.length === 1) {
-      // console.log("trying again");
       vision = await getVision(
         canvas,
         left - 2,
@@ -475,7 +485,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         setLastImg,
         true
       );
-      // if (vision !== undefined) console.log(vision);
     }
     const palette = await getPalette(canvas, left, top, width, height, false);
     return { vision, palette };
@@ -646,7 +655,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         if (contractLevelRef.current === null) {
           await setContractDirectionFromCalibration();
         }
-        console.log(`whoseTurnRef: ${whoseTurnRef.current}`);
         if (
           handsRef.current[0].length +
             handsRef.current[1].length +
@@ -869,9 +877,25 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         <FormControlLabel
           value="shape"
           control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={<>Shape</>}
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value="highlight"
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label={
             <>
-              Shape (<u>x</u>)
+              <u>H</u>ighlight
+            </>
+          }
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value="draw"
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label={
+            <>
+              <u>D</u>raw (<u>C</u>lear)
             </>
           }
           sx={{ marginLeft: "0px" }}
@@ -1027,8 +1051,20 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           if (!reality) setMode("unassign");
         } else if (e.key === "T") {
           if (!reality) setMode("trade");
-        } else if (e.key === "x") {
-          if (!reality) setMode("shape");
+        } else if (e.key === "H") {
+          if (!reality) setMode("highlight");
+        } else if (e.key === "D") {
+          if (!reality) setMode("draw");
+        } else if (e.key === "C") {
+          if (!reality) {
+            const canvas0 = canvasRef0.current;
+            const context0 = canvas0.getContext("2d");
+            context0.clearRect(0, 0, canvas0.width, canvas0.height);
+
+            const canvas1 = canvasRef1.current;
+            const context1 = canvas1.getContext("2d");
+            context1.clearRect(0, 0, canvas1.width, canvas1.height);
+          }
         } else if (e.key === "N") {
           if (["assign", "shape"].includes(mode)) {
             setAssignTo(0);
@@ -1101,7 +1137,9 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           }
         } else if (e.keyCode >= 48 && e.keyCode <= 57) {
           if (
-            ["play", "assign", "unassign", "trade"].includes(mode) &&
+            ["play", "assign", "unassign", "trade", "highlight"].includes(
+              mode
+            ) &&
             e.keyCode >= 50 &&
             e.keyCode <= 57
           ) {
@@ -1135,7 +1173,7 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         2 = 12
         */
         } else {
-          // console.log(e.key);
+          console.log(e.key);
         }
       }
     };
@@ -1182,6 +1220,8 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
             unassign(card);
           } else if (mode === "trade") {
             trade(card);
+          } else if (mode === "highlight") {
+            highlight(card);
           }
         }
       }
@@ -1363,7 +1403,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   ];
 
   const setHandsFromCalibration = async () => {
-    console.log("setHands start");
     const tempHands = [];
     const tempDeck = [];
     for (let hand = 0; hand < handsBorders.length; hand++) {
@@ -1449,7 +1488,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
           false
         ),
       ]).then((values) => {
-        console.log(values);
         values.forEach((suitText, suitIdx) => {
           const suitCards =
             suitText.vision
@@ -1472,7 +1510,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
     }
     setHands(tempHands);
     setDeck(tempDeck);
-    console.log("setHands end");
   };
 
   const setNamesFromCalibration = async () => {
@@ -1518,7 +1555,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       const contract = splitByLine[0];
       const splitContract = contract.replace("NT", "N").split("");
       const tempContractLevel = splitContract[0];
-      // console.log(`splitContract: ${JSON.stringify(splitContract)}`);
       const tempContractSuit = bboVisionToSuit(splitContract[1] ?? "");
       const tempDeclarer = strToDirection(splitByLine[1]);
       setContractLevel(tempContractLevel);
@@ -1529,15 +1565,12 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       );
       setTrump(tempContractSuit !== -1 ? tempContractSuit : null);
       setDeclarer(tempDeclarer);
-      console.log(`tempDeclarer: ${tempDeclarer}`);
-      console.log(`whoseTurn now: ${(tempDeclarer + 1) % 4}`);
       setLeader((tempDeclarer + 1) % 4);
       setWhoseTurn((tempDeclarer + 1) % 4);
     }
   };
 
   const setBoardNumFromCalibration = async () => {
-    console.log("setBoardNum start");
     const boardNumTextObj = await calibrateArea(
       startBoardNum,
       endBoardNum,
@@ -1545,18 +1578,18 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       setBoardNumLastImg,
       false
     );
-    console.log(`boardNumTextObj: ${JSON.stringify(boardNumTextObj)}`);
     const boardNumText = boardNumTextObj.vision
       .replaceAll("\n", "")
       .replaceAll("D", "")
       .replaceAll("C", "")
       .replaceAll("P", "")
       .replaceAll("O", "")
-      .replaceAll("13\n", "");
-    console.log(`boardNumText: ${boardNumText}`);
+      .replaceAll("13\n", "")
+      .replaceAll("3\n", "")
+      .replaceAll("N", "")
+      .replaceAll("L\n", "");
     if (boardNumText) {
       setBoardNum(boardNumText);
-      console.log("set whoseTurn from board num");
       setWhoseTurn((parseInt(boardNumText) - 1) % 4);
     }
   };
@@ -1589,13 +1622,13 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
       setBidLastImg,
       true
     );
-    const nextBid = nextBidVisionAndPalette.vision
+    const nextBid = (nextBidVisionAndPalette.vision ?? "")
       .replaceAll("\nN", "")
       .replaceAll("N\n", "")
       .replaceAll(" ", "");
     const nextBidPalette = nextBidVisionAndPalette.palette;
     let bidObj = { hand: whoseTurnRef.current };
-    if (nextBid) {
+    if (nextBid !== "") {
       if (["Pass", "Dbl", "Rdbl"].includes(nextBid)) {
         bidObj.action = nextBid;
         bid(bidObj);
@@ -1621,7 +1654,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   };
 
   const setCardFromCalibration = async () => {
-    console.log("setCard start");
     const hand = whoseTurnRef.current;
     const handBorders = handsBorders[hand];
     const left = handBorders[0][0];
@@ -1718,7 +1750,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
               .replaceAll(`"`, "")
               .replaceAll("10", "T")
               .split("") ?? [];
-          // console.log(suitCards);
           for (let card of suitCards) {
             const rank = visionToRank(card);
             remainingCardsSet.add(`${suitIdx},${rank}`);
@@ -1743,7 +1774,6 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
         play({ suit, rank, hand }, true);
       }
     });
-    console.log("setCard end");
   };
 
   const pastOverlay = (
@@ -1794,7 +1824,11 @@ const Control = ({ kibView, videoChatContainer, database, accessToken }) => {
   return (
     <ThemeProvider theme={theme}>
       <div className="viewAndControls">
-        <View editable={true} videoChatContainer={videoChatContainer} />
+        <View
+          editable={true}
+          videoChatContainer={videoChatContainer}
+          drawOverlay={drawOverlay0}
+        />
         {/* {renderHand(
         unassignedCards,
         undefined,

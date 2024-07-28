@@ -11,6 +11,7 @@ const AnalysisTable = ({ editable }) => {
     renderHand,
     unassign,
     trade,
+    highlight,
     vul,
     northName,
     setNorthName,
@@ -93,6 +94,8 @@ const AnalysisTable = ({ editable }) => {
       unassign(card);
     } else if (mode === "trade") {
       trade(card);
+    } else if (mode === "highlight") {
+      highlight(card);
     }
   };
 
@@ -147,7 +150,7 @@ const AnalysisTable = ({ editable }) => {
       } enabledCursor`}
       key="playArea analysis"
     >
-      {contract}
+      {contractLevel !== null && contract}
       <div className="board">
         {table}
         {northHand}
