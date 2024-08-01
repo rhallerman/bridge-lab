@@ -254,8 +254,8 @@ function App() {
   shouldDrawRef.current = shouldDraw;
 
   const setLineProperties = (context0, context1) => {
-    context0.fillStyle = "rgb(255, 0, 0)";
-    context0.strokeStyle = "rgb(255, 0, 0)";
+    context0.fillStyle = "#fcba5b";
+    context0.strokeStyle = "#fcba5b";
     context0.lineWidth = 1;
     context0.lineJoin = "round";
     context0.lineCap = "round";

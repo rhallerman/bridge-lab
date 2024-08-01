@@ -69,10 +69,15 @@ const Control = ({
     typedRank,
     setTypedRank,
     site,
+    setSite,
     broadcastType,
     setBroadcastType,
     showPlayedCards,
     setShowPlayedCards,
+    showPlayerNames,
+    setShowPlayerNames,
+    showDoubleDummy,
+    setShowDoubleDummy,
     auction,
     setAuction,
     auctionRef,
@@ -690,14 +695,25 @@ const Control = ({
     <FormControl className="radioGroupHeader">
       <FormLabel>Bridge site:</FormLabel>
       <RadioGroup
-        row
         value={site}
-        onChange={(event) => setBroadcastType(event.target.value)}
+        onChange={(event) => setSite(event.target.value)}
       >
         <FormControlLabel
           value="BBO"
           control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
           label="BBO"
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value="IntoBridge"
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label="IntoBridge"
+          sx={{ marginLeft: "0px" }}
+        />
+        <FormControlLabel
+          value="LoveBridge"
+          control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
+          label="LoveBridge"
           sx={{ marginLeft: "0px" }}
         />
       </RadioGroup>
@@ -770,7 +786,7 @@ const Control = ({
           </>
         )
       }
-      disabled={lockedBy && lockedBy !== username}
+      disabled={!connectedUser || (lockedBy && lockedBy !== username)}
     />
   );
 
@@ -816,6 +832,32 @@ const Control = ({
       }
       label="Show played cards"
       disabled={lockedBy && lockedBy !== username}
+    />
+  );
+
+  const showPlayerNamesSwitch = (
+    <FormControlLabel
+      control={
+        <Switch
+          checked={showPlayerNames}
+          onChange={(event) => setShowPlayerNames(event.target.checked)}
+        />
+      }
+      label="Show player names"
+    />
+  );
+
+  const showDoubleDummySwitch = (
+    <FormControlLabel
+      control={
+        <Switch
+          checked={showDoubleDummy}
+          onChange={(event) => setShowDoubleDummy(event.target.checked)}
+          disabled={true}
+        />
+      }
+      label="Show double dummy"
+      disabled={true}
     />
   );
 
@@ -876,7 +918,7 @@ const Control = ({
         <FormControlLabel
           value="shape"
           control={<Radio sx={{ paddingTop: "0px", paddingBottom: "0px" }} />}
-          label={<>Shape</>}
+          label={<>Shape (<u>x</u>)</>}
           sx={{ marginLeft: "0px" }}
         />
         <FormControlLabel
@@ -1063,6 +1105,8 @@ const Control = ({
           if (!reality) setMode("trade");
         } else if (e.key === "H") {
           if (!reality) setMode("highlight");
+        } else if (e.key === "x") {
+          if (!reality) setMode("shape");
         } else if (e.key === "D") {
           if (!reality) setMode("draw");
         } else if (e.key === "N") {
@@ -1845,6 +1889,8 @@ const Control = ({
           {lockedBySwitch}
           {analysisSwitch}
           {showPlayedCardsSwitch}
+          {showPlayerNamesSwitch}
+          {showDoubleDummySwitch}
           <div className="row">{modeGroup}</div>
           <div className="row">
             {assignToGroup}

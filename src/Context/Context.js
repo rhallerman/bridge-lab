@@ -52,6 +52,8 @@ export const ContextProvider = ({ children }) => {
   const [site, setSite] = useState("BBO");
   const [broadcastType, setBroadcastType] = useState("stream");
   const [showPlayedCards, setShowPlayedCards] = useState(false);
+  const [showPlayerNames, setShowPlayerNames] = useState(true);
+  const [showDoubleDummy, setShowDoubleDummy] = useState(false);
   const [auction, setAuction] = useState([]);
   const [explanations, setExplanations] = useState([]);
   const [liveEvents, setLiveEvents] = useState([]);
@@ -202,6 +204,8 @@ export const ContextProvider = ({ children }) => {
   startAuctionRef.current = startAuction;
   const endAuctionRef = useRef();
   endAuctionRef.current = endAuction;
+  const showPlayerNamesRef = useRef();
+  showPlayerNamesRef.current = showPlayerNames;
 
   const resetAll = () => {
     setReality(true);
@@ -403,7 +407,7 @@ export const ContextProvider = ({ children }) => {
     let tempPlayedCards = new Set(
       playedInReality ? playedCardsRef.current : playedCardsDupRef.current
     );
-    tempPlayedCards.add(`${card.suit},${card.rank},${card.xIdx ?? ""}`);
+    tempPlayedCards.add(`${card.suit},${card.rank},${card.hand},${card.xIdx ?? ""}`);
     (playedInReality ? setPlayedCards : setPlayedCardsDup)(tempPlayedCards);
     if (playedInReality) {
       const isCardWinning =
@@ -814,7 +818,7 @@ export const ContextProvider = ({ children }) => {
           className={`cardFont suit${card.suit} ${
             showAnalysis &&
             !includeSuit &&
-            playedCardsDup.has(`${card.suit},${card.rank},${card.xIdx ?? ""}`)
+            playedCardsDup.has(`${card.suit},${card.rank},${card.hand},${card.xIdx ?? ""}`)
               ? "playedCard"
               : ""
           }`}
@@ -873,7 +877,7 @@ export const ContextProvider = ({ children }) => {
         const disabled =
           disableAllCards ||
           (showAnalysis ? playedCardsDup : playedCards).has(
-            `${card.suit},${card.rank},${card.xIdx ?? ""}`
+            `${card.suit},${card.rank},${card.hand},${card.xIdx ?? ""}`
           );
         const cardButton = renderCard(
           card,
@@ -916,7 +920,9 @@ export const ContextProvider = ({ children }) => {
           >
             {buttonGroups}
           </div>
-          {!editable && <div className="playerTableName">{playerName}</div>}
+          {!editable && showPlayerNamesRef.current && (
+            <div className="playerTableName">{playerName}</div>
+          )}
           {editable && (
             <TextField
               value={playerName}
@@ -1046,6 +1052,10 @@ export const ContextProvider = ({ children }) => {
         setBroadcastType,
         showPlayedCards,
         setShowPlayedCards,
+        showPlayerNames,
+        setShowPlayerNames,
+        showDoubleDummy,
+        setShowDoubleDummy,
         auction,
         setAuction,
         auctionRef,
