@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/bridge-lab/static/css/main.78b5ba57.css",
-    "main.js": "/bridge-lab/static/js/main.0547d33b.js",
+    "main.js": "/bridge-lab/static/js/main.244625ff.js",
     "static/js/453.7c13c55a.chunk.js": "/bridge-lab/static/js/453.7c13c55a.chunk.js",
     "static/media/BridgeLabLogo4.png": "/bridge-lab/static/media/BridgeLabLogo4.fe578fbae3fa85e4c0ab.png",
     "static/media/Bridge_Base_Online_logo.png": "/bridge-lab/static/media/Bridge_Base_Online_logo.775f6ed6a9c983e50b7b.png",
     "index.html": "/bridge-lab/index.html",
     "main.78b5ba57.css.map": "/bridge-lab/static/css/main.78b5ba57.css.map",
-    "main.0547d33b.js.map": "/bridge-lab/static/js/main.0547d33b.js.map",
+    "main.244625ff.js.map": "/bridge-lab/static/js/main.244625ff.js.map",
     "453.7c13c55a.chunk.js.map": "/bridge-lab/static/js/453.7c13c55a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.78b5ba57.css",
-    "static/js/main.0547d33b.js"
+    "static/js/main.244625ff.js"
   ]
 }
