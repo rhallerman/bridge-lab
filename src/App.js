@@ -260,8 +260,8 @@ function App() {
     context0.lineJoin = "round";
     context0.lineCap = "round";
 
-    context1.fillStyle = "rgb(255, 0, 0)";
-    context1.strokeStyle = "rgb(255, 0, 0)";
+    context1.fillStyle = "#fcba5b";
+    context1.strokeStyle = "#fcba5b";
     context1.lineWidth = 1;
     context1.lineJoin = "round";
     context1.lineCap = "round";
